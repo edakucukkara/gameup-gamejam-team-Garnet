@@ -3,7 +3,7 @@
 ## Durum
 
 - [x] Çekirdek mekanik: kaydırma, 4 denge, önizleme noktaları, yıl sayacı
-- [x] 62 kart, 22 karakter, zincirleme olaylar, bayraklar
+- [x] 66 kart, 22 karakter, zincirleme olaylar, bayraklar
 - [x] Deniz'in dinamik mektupları (giriş + 7 ara mektup + son mektup)
 - [x] Canlı 2075 sahnesi
 - [x] 12 son ve son koleksiyonu

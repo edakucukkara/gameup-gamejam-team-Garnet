@@ -37,7 +37,7 @@ Biri **0'a inerse** ya da **100'e çıkarsa** zaman çizgisi kopar ve oyun biter
 
 ## Özellikler
 
-- **62 karar kartı**, 22 karakter (balıkçı Hasan, otelci Murat Bey, iklim bilimci Dr. Selin, sokak kedisi Tekir, simit hırsızı martı…)
+- **66 karar kartı**, 22 karakter (balıkçı Hasan, otelci Murat Bey, iklim bilimci Dr. Selin, sokak kedisi Tekir, simit hırsızı martı…)
 - **Deniz'in mektupları:** 2032'den 2068'e kadar altı yılda bir gelir. Mektuplar oyuncunun kararlarına göre yazılır: en kritik dengeden ve oyuncunun verdiği belirli kararlardan bahseder.
 - **Canlı 2075 sahnesi:** ağaçlar, deniz seviyesi, duman, şehir ışıkları, insanlar, rüzgâr türbinleri, güneş panelleri. Altında deniz seviyesi (cm) ve temmuz sıcaklığı yazar.
 - **Zincirleme olaylar:** bazı kararların sonuçları yıllar sonra geri döner (ör. av yasağı → 14 yıl sonra balık festivali).
