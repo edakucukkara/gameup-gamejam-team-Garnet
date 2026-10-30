@@ -84,29 +84,30 @@ function buildWorld(){
  W.blds=[...document.querySelectorAll("#wBld .bld")];
  W.wins=[...document.querySelectorAll("#wBld .win")];
  W.ppl=[...document.querySelectorAll("#wPpl .ppl")];
+ W.turbs=[...document.querySelectorAll("#wTurb > g")];W.panels=[...document.querySelectorAll("#wPanels path")];
  ["wSmog","wHeat","wHaze","wSun","wBirds","wTurb","wPanels","wChimney","wSea","wBuoy","wDim"].forEach(id=>W[id]=document.getElementById(id));
 }
 function updateWorld(){
- const {d,h,e,n}=S.m, F=f=>S.flags.includes(f), w=Engine.world(S);
- const t=Math.round(d/100*W.trees.length);
+ const {d,h,e,n}=S.m, F=f=>S.flags.includes(f), w=Engine.world(S), s=S.s, share=Math.min(1,s.tk/s.tal);
+ // Sahne arka plandaki dünyayı gösterir: ormanlar, fosil dumanı, 2075 ısınması ve deniz seviyesi tahmini
+ const t=Math.round(s.or/100*W.trees.length*1.2);
  W.trees.forEach((g,i)=>g.style.opacity=i<t?1:0);
- W.wSmog.style.opacity=Math.max(0,(55-d)/55)*0.85+(F("komur")&&!F("komurkapat")?0.1:0);
- // Isınma gökyüzünü kızartır, aerosol beyazlatır; deniz seviyesi küresel senaryodan gelir
- W.wHeat.style.opacity=Math.max(0,Math.min(.45,(w.t-1.8)/1.2*.45)).toFixed(2);
+ W.wSmog.style.opacity=(Math.max(0,(s.fk-40)/80)*.7+Math.max(0,(45-d)/45)*.3).toFixed(2);
+ W.wHeat.style.opacity=Math.max(0,Math.min(.45,(w.t-1.6)/1.2*.45)).toFixed(2);
  W.wHaze.style.opacity=F("aerosol")?.35:0;
  W.wSun.style.opacity=d<25?0.5:1;
- W.wBirds.style.opacity=d>55?1:0;
- W.wSea.style.transform=`translateY(${-((w.sl-30)/16*14).toFixed(1)}px)`;
+ W.wBirds.style.opacity=s.or>55?1:0;
+ W.wSea.style.transform=`translateY(${-((w.sl-30)/20*14).toFixed(1)}px)`;
  W.blds.forEach((g,i)=>g.style.transform=`scaleY(${(0.5+e/100*(0.9+i%3*0.25)).toFixed(2)})`);
  W.wins.forEach(g=>g.style.opacity=Math.min(1,n/70));
  W.wDim.style.opacity=n<35?((35-n)/35*0.55).toFixed(2):0;
  const p=Math.round(h/100*W.ppl.length);
  W.ppl.forEach((g,i)=>g.style.opacity=i<p?1:0);
- W.wTurb.style.opacity=F("ruzgar")?1:0;
- W.wPanels.style.opacity=F("gunes")?1:0;
- W.wChimney.style.opacity=F("komur")&&!F("komurkapat")?1:0;
+ W.turbs.forEach((g,i)=>g.style.opacity=share>=.3+i*.15?1:0);
+ W.panels.forEach((g,i)=>g.style.opacity=share>=.2+i*.1?1:0);
+ W.wChimney.style.opacity=s.fk>55?1:0;
  W.wBuoy.style.opacity=F("dalga")?1:0;
- document.getElementById("wstat").textContent=`+${String(w.t).replace(".",",")}°C · deniz +${w.sl} cm`;
+ document.getElementById("wstat").textContent=`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C${F("aerosol")?"*":""} · deniz +${w.sl} cm`;
 }
 
 /* ---------- Göstergeler ---------- */
@@ -120,13 +121,17 @@ function buildMeters(){
  document.getElementById("meters").innerHTML=MK.map(k=>`<div class="meter" id="m_${k}">
   <svg viewBox="0 0 24 24"><defs><clipPath id="c_${k}"><rect id="r_${k}" x="0" y="12" width="24" height="24" style="transition:y .6s cubic-bezier(.3,.7,.3,1)"/></clipPath></defs>
   <g class="base">${ICON[k]}</g><g class="fill" clip-path="url(#c_${k})">${ICON[k]}</g></svg>
-  <span class="lbl">${MN[k]}</span><span class="dot" id="dot_${k}"></span></div>`).join("");
+  <span class="lbl">${MN[k]}<i class="pr" id="pr_${k}"></i></span><span class="dot" id="dot_${k}"></span></div>`).join("");
 }
 function renderMeters(prev){
  MK.forEach(k=>{
   const v=S.m[k];document.getElementById("r_"+k).setAttribute("y",(24-24*v/100).toFixed(2));
   const el=document.getElementById("m_"+k);
   el.classList.toggle("danger",v<=15||v>=85);
+  // Arka plandaki sistemlerin bu yılki itişi
+  const d=S.last?S.last[k]:0,pr=document.getElementById("pr_"+k);
+  pr.textContent=d>=1.5?"▲▲":d>=.5?"▲":d<=-1.5?"▼▼":d<=-.5?"▼":"";pr.className="pr"+(d<0?" neg":"");
+  pr.title=pr.textContent?`Arka plan etkisi: ${d>0?"+":""}${d.toFixed(1)} / yıl`:"";
   if(prev&&prev[k]!==v){const c=v>prev[k]?"up":"down";el.classList.remove("up","down");void el.offsetWidth;el.classList.add(c);setTimeout(()=>el.classList.remove(c),700);}
  });
 }
@@ -235,18 +240,52 @@ function endGame(id){
  $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"ANTALYA<br>·<br>2075";
  $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Deniz koltuğa oturdu";
  $("ename").textContent=E.n;
- $("estats").innerHTML=`<span><b>${Math.min(S.year,2075)}</b>ulaşılan yıl</span><span><b>+${String(w.t).replace(".",",")}°C</b>2075 ısınması</span>`+
+ // Sonun altında bir sonraki oyun için ipucu; Kırılgan Umut neyin eksik kaldığını söyler
+ const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),t0=(Math.round(w.t0*10)/10).toString().replace(".",",");
+ const hint=id==="kirilgan"?(bal?`İpucu: Dengeyi korudun ama 2075 ısınması +${t0}°C. Mavi Akdeniz için 2,2°C’nin altında kalmalı.`
+  :"İpucu: Dört denge de 30–70 arasında kalır ve ısınma 2,2°C’nin altında olursa Mavi Akdeniz’e ulaşırsın."):E.h||"";
+ $("ehint").textContent=hint;$("ehint").hidden=!hint;
+ $("estats").innerHTML=`<span><b>${Math.min(S.year,2075)}</b>ulaşılan yıl</span>`+
   (S.doors.length?`<span><b>${shut.length}/${S.doors.length}</b>kapı kapalı</span>`:`<span><b>${shut.length}</b>kapanan kapı</span>`)+`<span><b>${got.length}/12</b>son keşfedildi</span>`;
  $("edoors").hidden=!doors.length;
  $("edoors").innerHTML=doors.length?`<p class="dh">${S.doors.length?"Deniz’e bıraktığın kapılar":"Bu zaman çizgisinde kapanan kapılar"}</p>`+doors.map(d=>d.lock
   ?`<div class="door shut"><b>🔒 ${d.x}</b><span>KAPANDI · ${d.lock.y} — ${d.lock.why}</span></div>`
   :`<div class="door"><b>✓ ${d.x}</b><span>Açık kaldı</span></div>`).join(""):"";
+ const s=S.s,r=v=>String(Math.round(v));
+ $("ekarne").innerHTML=`<p class="dh">${death?"Bu gidişle 2075":"2075 karnesi"}</p>`+[["Isınma",`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C`],["Deniz seviyesi",`+${w.sl} cm`],
+  ["Temiz enerji",`%${w.tem}`],["Ormanlar",r(s.or)],["Okyanuslar",r(s.ok)],["Uyum",r(s.uy)],["Güven",r(s.gv)]].map(([a,b])=>`<span><b>${b}</b>${a}</span>`).join("");
  $("egrid").innerHTML=END_ORDER.map(k=>`<div class="chip${got.includes(k)?" got":""}${k===id?" now":""}">${got.includes(k)?ENDINGS[k].n:"? ? ?"}</div>`).join("");
  $("esrc").innerHTML=SOURCES.map(s=>`<li>${s}</li>`).join("");
  const ov=$("endScreen");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");
  typeInto($("etext"),t);
  S.card=null;
 }
+
+/* ---------- Dosya: arka plandaki dünya sistemleri ---------- */
+function openDossier(){
+ if(!S)return;const s=S.s,p=S.ps||s,w=Engine.world(S),f=(v,dg=0)=>v.toFixed(dg).replace(".",",");
+ // good: değerin artması iyi mi; ok yönü ve rengi buna göre
+ const tr=(k,good)=>{const d=s[k]-p[k];if(Math.abs(d)<.002*Math.max(1,Math.abs(s[k])))return"";return`<i class="${(d>0)===good?"":"bad"}">${d>0?"▲":"▼"}</i>`};
+ const rows=[
+  // Aerosol ısınmayı yalnızca maskeler: rakam maskesiz ısınmayı gösterir, hissedilen ayrıca yazılır
+  ["🌡️","Isınma",`+${f(s.T0,2)}°C`+tr("T0",false),(s.aer?`aerosolle hissedilen +${f(s.T,2)}°C · `:"")+`2075 tahmini: +${f(w.t0,1)}°C`],
+  ["💨","Yıllık CO₂",`${f(s.em)} milyar ton`+tr("em",false),"Isınma birikimli CO₂ ile artar"],
+  ["🌊","Deniz seviyesi",`+${f(s.sl)} cm`+tr("sl",false),`2075 tahmini: +${w.sl} cm · emisyon dursa da yükselir`],
+  ["⚡","Temiz enerji payı",`%${Math.round(100*Math.min(1,s.tk/s.tal))}`+tr("tk",true),`yıllık büyüme hızı %${f(100*s.r,1)}`],
+  ["🏭","Fosil altyapı",f(s.fk)+tr("fk",false),"santraller onlarca yıl yanar"],
+  ["🔌","Enerji talebi",f(s.tal)+tr("tal",false),"2026 = 100 · ısındıkça klima talebi artar"],
+  ["🌳","Ormanlar",`${f(s.or)}/100`+tr("or",true),""],
+  ["🐠","Okyanuslar",`${f(s.ok)}/100`+tr("ok",true),""],
+  ["🛡️","Uyum kapasitesi",`${f(s.uy)}/100`+tr("uy",true),`yıllık afet zararı: ${f(s.D,1)}`],
+  ["🤝","Güven ve adalet",`${f(s.gv)}/100`+tr("gv",true),""],
+ ];
+ $("dtitle").textContent=`Dünya raporu · ${Math.min(S.year,2075)}`;
+ $("drows").innerHTML=rows.map(([ic,n,v,sm])=>`<div class="drow"><span class="ic">${ic}</span><b>${n}</b><span class="v">${v}</span>${sm?`<small>${sm}</small>`:""}</div>`).join("");
+ const L=S.last;$("dpush").textContent=L?"Bu yıl göstergelere etkisi: "+MK.map(k=>`${MN[k]} ${L[k]>=0?"+":"−"}${f(Math.abs(L[k]),1)}`).join(" · "):"Henüz bir yıl geçmedi.";
+ const ov=$("dossier");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");$("dclose").focus({preventScroll:true});
+}
+$("dosyaBtn").addEventListener("click",openDossier);
+$("dclose").addEventListener("click",()=>{$("dossier").hidden=true;});
 
 /* ---------- Kaydırma ---------- */
 const card=$("card");let drag=null;
@@ -263,6 +302,8 @@ card.addEventListener("pointerup",release);card.addEventListener("pointercancel"
  b.addEventListener("focus",()=>{if(!busy)showSide(s,1)});
  b.addEventListener("click",()=>commit(s));});
 document.addEventListener("keydown",e=>{
+ if(!$("dossier").hidden){if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();$("dossier").hidden=true;}return;}
+ if((e.key==="d"||e.key==="D")&&!busy){openDossier();return;}
  if(!$("letterScreen").hidden&&(e.key==="Enter"||e.key===" ")){e.preventDefault();$("lnext").click();return;}
  if(busy)return;if(e.key==="ArrowLeft")commit("l");if(e.key==="ArrowRight")commit("r");});
 

@@ -46,6 +46,21 @@ Dört oyuncu tipiyle (rastgele, yeşil, kahverengi, dengeli) binlerce oyun oynar
 **Amaç:** Dört dengeyi korumak: 🌳 **Doğa**, 👥 **Uluslar**, 🪙 **Fon**, ⚡ **Enerji**.
 Biri **0'a inerse** ya da **100'e çıkarsa** zaman çizgisi kopar ve oyun biter. 2075'e ulaşırsan Deniz Konsey'in başına geçer, kalan kapılarla son kararlarını verir ve son mektubunu yazar.
 
+## Arka plandaki dünya
+
+Dört gösterge kartlarla anında değişir; arkada ise her yıl ilerleyen bir dünya modeli çalışır ve göstergeleri yavaşça iter (göstergelerin yanındaki ▲▼ okları). **DOSYA** düğmesi (ya da `D` tuşu) bu dünyayı gösterir:
+
+| Sistem | Nasıl çalışır | Neyi iter |
+|---|---|---|
+| Isınma | Birikimli CO₂’den: her 1000 milyar ton ≈ +0,45°C (IPCC AR6). Metan kesintisi düşürür, aerosol yalnızca maskeler | Ekosistemler, talep, afetler |
+| Deniz seviyesi | Isınmayla hızlanır, emisyon dursa da yükselir | Afet zararı |
+| Temiz enerji / fosil / talep | Temiz enerji S-eğrisiyle büyür; fosil yavaş emekliye ayrılır; arz yetmezse piyasa gaz kurar; fazla arz talebi şişirir | Enerji, emisyon |
+| Ormanlar, okyanuslar | Kararlar ve ısınma | Doğa, karbon tutumu |
+| Uyum kapasitesi | Yatırımla artar, bakımsız kalınca azalır; afet zararını belirler | Fon, Uluslar |
+| Güven ve adalet | Bedeli kime yüklediğine göre | Uluslar |
+
+Dünya bir eşiği geçince **olay kartı** gelir: mercanların kaybı (1,7°C), Amazon’un kuruması, şebeke çöküşü, büyük afet, 48 derecelik sıcak dalgası, göç dalgası ve olumlu bir eşik olarak temiz enerjinin fosilden ucuzlaması. Üstteki pencere, bugünkü dünyanın yeni karar alınmazsa 2075’e nasıl varacağının tahminidir. Mavi Akdeniz sonu için dört denge 30–70 arasında olmalı ve 2075 ısınması 2,2°C’yi geçmemeli.
+
 ## Özellikler
 
 - **69 karar kartı**, 26 karakter: Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı çiftçi Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı balıkçı Hasan, simit hırsızı martı…
@@ -74,7 +89,9 @@ docs/                   Tasarım dokümanı, içerik rehberi, yapılacaklar (ilk
 | Alan | Anlamı |
 |---|---|
 | `d` `h` `e` `n` | Doğa, Uluslar, Fon, Enerji üzerindeki etki |
-| `c` | Emisyon etkisi (eksi = azaltır); 2075 sıcaklığını ve deniz seviyesini belirler |
+| `tk` `fk` `tal` `r` `tg` | Arka plan: temiz kapasite, fosil kapasite, talep, temiz büyüme hızı, talep artışı |
+| `or` `ok` `uy` `gv` `mt` `rm` | Arka plan: orman, okyanus, uyum, güven ve adalet, metan programı, karbon çekme |
+| `ev:1`, `fire` | Olay kartı (koşulu engine.js `TRIG` içinde), gelirken dünyaya etkisi |
 | `f` | Seçim bir bayrak bırakır (mektuplar, sahne, kilitler bunu kullanır) |
 | `lock:["bayrak"]` | Bu bayrak varsa seçenek kapanır; sebep `LOCKS` içinde yazar |
 | `nx:["kart",yıl]` | Zincirleme kart, kaç yıl sonra geleceği |

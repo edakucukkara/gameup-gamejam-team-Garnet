@@ -164,6 +164,25 @@ h1 em{font-style:normal;color:var(--turquoise)}
 .card.shake{animation:shake .38s ease}
 @keyframes shake{20%{transform:translateX(-12px) rotate(-2deg)}40%{transform:translateX(12px) rotate(2deg)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
 
+/* Dosya ve karne */
+.ehint{font-size:12.5px;line-height:1.4;color:#A4522C;margin:-6px 0 10px;padding-right:80px}
+.meter .pr{font-style:normal;font-size:8px;margin-left:3px;color:var(--turquoise);letter-spacing:-1px;vertical-align:1px}
+.meter .pr.neg{color:var(--terra-l)}
+.dossier{width:100%;max-width:400px;background:var(--paper);color:var(--ink);border-radius:8px;padding:16px 18px 14px;box-sizing:border-box;box-shadow:0 30px 60px -20px #000;border-top:8px solid var(--terra)}
+.overlay.in .dossier{animation:arrive .45s cubic-bezier(.2,.8,.3,1.1)}
+.dk{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px;color:#22474Dc0}
+.drow{display:grid;grid-template-columns:22px 1fr auto;gap:0 8px;align-items:baseline;padding:5px 0;border-bottom:1px solid #22474D1a}
+.drow .ic{grid-row:span 2}
+.drow b{font-family:var(--f-display);font-size:14px}
+.drow .v{font-family:var(--f-mono);font-size:12.5px;font-weight:600;text-align:right;white-space:nowrap}
+.drow .v i{font-style:normal;margin-left:4px;color:#2E8B57}.drow .v i.bad{color:#C9693C}
+.drow small{grid-column:2/4;font-size:11px;color:#22474Db0;line-height:1.3}
+.dpush{font-family:var(--f-mono);font-size:10.5px;margin:10px 0 0;line-height:1.5;color:#22474D}
+.dnote{font-size:11px;color:#22474Db0;margin:6px 0 0;line-height:1.4}
+.karne{display:flex;flex-wrap:wrap;gap:4px 16px;margin:12px 0 2px;font-family:var(--f-mono);font-size:10.5px;color:#22474Dc0}
+.karne .dh{flex-basis:100%;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin:0}
+.karne b{display:block;font-family:var(--f-display);font-size:18px;color:var(--ink)}
+
 /* Final: Deniz'in kararları */
 body.epi{background-color:#1D2B26}
 body.epi .meters{opacity:.3;filter:grayscale(1)}
@@ -196,7 +215,7 @@ body.epi .yearbar .y{color:var(--sun)}
     <span class="tag">Deniz’in dünyası · 2075</span>
     <span class="stat" id="wstat"></span>
   </div>
-  <div class="yearbar"><span class="y" id="year">2026</span><span class="left"><span id="left"></span> · <button class="mute" id="mute" aria-pressed="false">SES AÇIK</button></span></div>
+  <div class="yearbar"><span class="y" id="year">2026</span><span class="left"><span id="left"></span> · <button class="mute" id="dosyaBtn">DOSYA</button> · <button class="mute" id="mute" aria-pressed="false">SES AÇIK</button></span></div>
   <div class="q" aria-live="polite">
     <div class="who" id="who"></div>
     <p class="qt" id="qt"></p>
@@ -239,6 +258,16 @@ body.epi .yearbar .y{color:var(--sun)}
   </div>
 </div>
 
+<div class="overlay" id="dossier" hidden>
+  <div class="dossier">
+    <p class="dk" id="dtitle"></p>
+    <div id="drows"></div>
+    <p class="dpush" id="dpush"></p>
+    <p class="dnote">Dört göstergeyi arkadaki bu sistemler her yıl yavaşça iter. Isınma birikimli CO₂’den hesaplanır: her 1000 milyar ton ≈ +0,45°C.</p>
+    <button class="pbtn" id="dclose">Kapat</button>
+  </div>
+</div>
+
 <div class="overlay" id="letterScreen" hidden>
   <div class="airmail"><div class="paper">
     <div class="postmark">ANTALYA<br>·<br>2075</div>
@@ -254,9 +283,11 @@ body.epi .yearbar .y{color:var(--sun)}
     <div class="postmark" id="epm"></div>
     <p class="from" id="efrom"></p>
     <h2 class="ending-name" id="ename"></h2>
+    <p class="ehint" id="ehint" hidden></p>
     <p class="hand" id="etext"></p>
     <p class="sig">Deniz</p>
     <div class="doors" id="edoors" hidden></div>
+    <div class="karne" id="ekarne"></div>
     <div class="stats" id="estats"></div>
     <div class="grid" id="egrid"></div>
     <details class="src"><summary>Kaynaklar ve notlar</summary><ul id="esrc"></ul></details>
