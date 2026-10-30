@@ -37,7 +37,8 @@ const Engine={
  },
  pickCard(S,rnd=Math.random){
   const forced=CARDS.find(c=>c.at===S.year&&!S.used.includes(c.id)); if(forced)return forced;
-  const qi=S.queue.findIndex(q=>q.at<=S.year);
+  // Sıradaki sonuç kartı vakti geldiyse gelir; havuz kartıysa kendi başlangıç yılını da bekler
+  const qi=S.queue.findIndex(q=>q.at<=S.year&&!(byId[q.id].min>S.year));
   if(qi>=0){const c=byId[S.queue.splice(qi,1)[0].id];if(c&&!S.used.includes(c.id))return c;}
   let pool=CARDS.filter(c=>this.okCard(S,c));
   if(!pool.length){S.used=S.used.filter(id=>byId[id].at||byId[id].chain);pool=CARDS.filter(c=>this.okCard(S,c));}
@@ -47,7 +48,7 @@ const Engine={
  // Kartı seçer, gösterilen kilitleri mektuplar için kaydeder
  draw(S,rnd){
   const c=this.pickCard(S,rnd),L=this.locks(S,c);S.card=c.id;
-  ["l","r"].forEach(s=>{if(L[s])S.hits.push({id:c.id,x:c[s].x,...L[s]})});
+  ["l","r"].forEach(s=>{if(L[s])S.hits.push({id:c.id,x:c[s].x,seen:S.year,...L[s]})});
   return L;
  },
  // Seçimi uygular; bir denge 0 ya da 100 olursa son kimliğini döndürür
@@ -56,7 +57,7 @@ const Engine={
   MK.forEach(k=>S.m[k]=clamp(S.m[k]+(o[k]||0)));
   S.path=Math.max(0,Math.min(1,S.path+(o.c||0)/100));
   if(o.f&&!this.has(S,o.f)){S.flags.push(o.f);S.fy[o.f]=S.year;}
-  if(o.nx)S.queue.push({id:o.nx[0],at:S.year+o.nx[1]});
+  if(o.nx)(Array.isArray(o.nx[0])?o.nx:[o.nx]).forEach(([id,y])=>S.queue.push({id,at:S.year+y}));
   S.used.push(c.id);S.count++;S.year++;
   const dead=MK.find(k=>S.m[k]<=0||S.m[k]>=100);
   return dead?dead+(S.m[dead]<=0?"0":"100"):null;
@@ -83,11 +84,11 @@ const Engine={
  },
 
  /* ---------- Mektuplar ---------- */
- // Aynı satır iki kez gelmesin: önce kullanılmamış varyant
+ // Aynı satır iki kez gelmez: kullanılmamış varyantlardan biri; hepsi kullanıldıysa satır atlanır
  line(S,key,arr,rnd=Math.random){
-  const i=arr.findIndex((_,j)=>!S.said.includes(key+j)),j=i>=0?i:Math.floor(rnd()*arr.length);
-  if(i>=0)S.said.push(key+j);
-  return arr[j];
+  const free=arr.map((_,j)=>j).filter(j=>!S.said.includes(key+j));
+  if(!free.length)return null;
+  const j=free[Math.floor(rnd()*free.length)];S.said.push(key+j);return arr[j];
  },
  introLetter(S){
   return `Sevgili ${S.hitap},\nBu mektubu sana nasıl gönderdiğimi sorma, uzun hikâye. Ben Deniz, torununum. Senin zamanında daha doğmadım bile.\nAnnem hep 2026’yı anlatır: dünya liderlerinin Antalya’da buluştuğu, senin de Küresel İklim Konseyi’nin başına seçildiğin yıl.\nBir şey daha: Bazı kararlar kapıları kalıcı olarak kapatıyor. 2075’te o koltuğa ben oturacağım. Bana hangi kapıları açık bırakacaksın?`;
@@ -96,14 +97,14 @@ const Engine={
   const lines=[`Sevgili ${S.hitap},`];
   if(S.year===2050)lines.push("Annem doğduğum günü anlattı. Beni ilk kucağına aldığında ağlamışsın.");
   let worst=null,dist=0;MK.forEach(k=>{const dd=Math.abs(S.m[k]-50);if(dd>dist){dist=dd;worst=k}});
-  if(dist>=25){const s=S.m[worst]<50?"lo":"hi";lines.push(this.line(S,`w.${worst}.${s}.`,WORLD_LINES[worst][s],rnd));}
-  else lines.push(this.line(S,"calm.",CALM,rnd));
+  const wl=dist>=25?this.line(S,`w.${worst}.${S.m[worst]<50?"lo":"hi"}.`,WORLD_LINES[worst][S.m[worst]<50?"lo":"hi"],rnd):null;
+  lines.push(wl||this.line(S,"calm.",CALM,rnd));
   if(S.year>=2038){const b=this.band(S);lines.push(this.line(S,`c.${b}.`,CLIMATE[b],rnd));}
-  const hit=S.hits.slice(S.told).pop();S.told=S.hits.length;
-  if(hit)lines.push(LOCKLINE.replace("{Y}",hit.y).replace("{W}",hit.why));
+  const hit=S.hits.slice(S.told).pop(),tpl=hit&&this.line(S,"lock.",LOCKLINES,rnd);S.told=S.hits.length;
+  if(tpl)lines.push(tpl.replace("{Y}",hit.y).replace("{W}",hit.why));
   else{const fresh=S.flags.filter(f=>FL[f]&&!S.said.includes(f));if(fresh.length){const f=fresh[fresh.length-1];S.said.push(f);lines.push(FL[f]);}}
   lines.push(S.year>=2062?"2075’e az kaldı. Seni bekliyorum.":"Bir sonraki mektupta görüşürüz.");
-  return lines.join("\n");
+  return lines.filter(Boolean).join("\n");
  },
  epiLetter(S){
   const n=S.epi.filter(id=>{const L=this.locks(S,byId[id]);return L.l||L.r}).length;

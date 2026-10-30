@@ -199,7 +199,8 @@ function choose(side){
  renderMeters(prev);updateWorld();renderYear();
  if(dead){setTimeout(()=>endGame(dead),650);return;}
  if(S.year>=2075){setTimeout(startEpilogue,650);return;}
- if(LETTER_YEARS.includes(S.year)){setTimeout(()=>showLetter(Engine.midLetter(S),nextCard),450);return;}
+ if(LETTER_YEARS.includes(S.year)){const age=7+2*LETTER_YEARS.indexOf(S.year);
+  setTimeout(()=>showLetter(Engine.midLetter(S),nextCard,`Deniz’den · ${age} yaşında yazdı · ${S.year} yılına ulaştı`),450);return;}
  nextCard();
 }
 // 2075: Deniz Konsey'in başına geçer, kalan kapılarla karar verir
@@ -227,16 +228,17 @@ function showLetter(text,then,from){
 }
 function endGame(id){
  busy=true;sfx.end();saveEnd(id);
- const E=ENDINGS[id],{t,death}=Engine.endText(S,id),w=Engine.world(S),got=loadEnds(),shut=S.doors.filter(d=>d.lock);
+ const E=ENDINGS[id],{t,death}=Engine.endText(S,id),w=Engine.world(S),got=loadEnds();
+ // Final oynandıysa Deniz'in kapıları, oynanmadıysa bu zaman çizgisinde kapanan kapılar
+ const doors=S.doors.length?S.doors:[...new Map(S.hits.map(h=>[h.id+h.x,{x:h.x,lock:h}])).values()],shut=doors.filter(d=>d.lock);
  $("epm").className="postmark"+(death?" red":"");
  $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"ANTALYA<br>·<br>2075";
  $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Deniz koltuğa oturdu";
  $("ename").textContent=E.n;
  $("estats").innerHTML=`<span><b>${Math.min(S.year,2075)}</b>ulaşılan yıl</span><span><b>+${String(w.t).replace(".",",")}°C</b>2075 ısınması</span>`+
-  (death?"":`<span><b>${shut.length}/${S.doors.length}</b>kapı kapalı</span>`)+`<span><b>${got.length}/12</b>son keşfedildi</span>`;
- // Deniz'e bıraktığın kapılar: kapalı olanlar sebebiyle
- $("edoors").hidden=!S.doors.length;
- $("edoors").innerHTML=S.doors.length?`<p class="dh">Deniz’e bıraktığın kapılar</p>`+S.doors.map(d=>d.lock
+  (S.doors.length?`<span><b>${shut.length}/${S.doors.length}</b>kapı kapalı</span>`:`<span><b>${shut.length}</b>kapanan kapı</span>`)+`<span><b>${got.length}/12</b>son keşfedildi</span>`;
+ $("edoors").hidden=!doors.length;
+ $("edoors").innerHTML=doors.length?`<p class="dh">${S.doors.length?"Deniz’e bıraktığın kapılar":"Bu zaman çizgisinde kapanan kapılar"}</p>`+doors.map(d=>d.lock
   ?`<div class="door shut"><b>🔒 ${d.x}</b><span>KAPANDI · ${d.lock.y} — ${d.lock.why}</span></div>`
   :`<div class="door"><b>✓ ${d.x}</b><span>Açık kaldı</span></div>`).join(""):"";
  $("egrid").innerHTML=END_ORDER.map(k=>`<div class="chip${got.includes(k)?" got":""}${k===id?" now":""}">${got.includes(k)?ENDINGS[k].n:"? ? ?"}</div>`).join("");

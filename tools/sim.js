@@ -1,5 +1,5 @@
-// Denge simülasyonu ve içerik kontrolü. Kullanım: node tools/sim.js [strateji başına oyun sayısı]
-// data.js ve engine.js'i tarayıcıdaki gibi aynı ortamda yükler, dört oyuncu tipiyle binlerce oyun oynar.
+// Denge simülasyonu ve içerik kontrolü. Kullanım: node tools/sim.js [strateji başına oyun sayısı] [--detay]
+// data.js ve engine.js'i tarayıcıdaki gibi aynı ortamda yükler, farklı oyuncu tipleriyle binlerce oyun oynar.
 const fs=require("fs"),path=require("path"),vm=require("vm");
 const ctx=vm.createContext({});
 for(const f of ["data.js","engine.js"])vm.runInContext(fs.readFileSync(path.join(__dirname,"..",f),"utf8"),ctx,{filename:f});
@@ -14,52 +14,72 @@ function harness(N){
    (o.lock||[]).forEach(k=>{
     if(!LOCKS[k])errs.push(`${c.id}.${s}: LOCKS'ta sebep yok (${k})`);
     if(k[0]!=="@"&&!setFlags.has(k))errs.push(`${c.id}.${s}: kilit bayrağı hiçbir seçenekte konmuyor (${k})`);});
-   if(o.nx&&!(byId[o.nx[0]]&&byId[o.nx[0]].chain))errs.push(`${c.id}.${s}: zincir kartı yok (${o.nx[0]})`);
-   if(o.f&&!FL[o.f])warn.push(`${c.id}.${s}: "${o.f}" için mektup satırı (FL) yok`);});
+   if(o.nx)(Array.isArray(o.nx[0])?o.nx:[o.nx]).forEach(([id])=>{if(!byId[id])errs.push(`${c.id}.${s}: sıradaki kart yok (${id})`)});
+   if(o.f&&!FL[o.f])warn.push(`${c.id}.${s}: "${o.f}" için mektup satırı (FL) yok`);
+   if(o.x.length>24)warn.push(`${c.id}.${s}: seçenek metni uzun (${o.x.length} harf): ${o.x}`);});
+  if(c.t.length>150)warn.push(`${c.id}: soru metni uzun (${c.t.length} harf)`);
   (c.req||[]).concat(c.need||[]).forEach(f=>{if(!setFlags.has(f))errs.push(`${c.id}: koşul bayrağı hiç konmuyor (${f})`)});
  });
- /* ---------- Oyuncu tipleri ---------- */
+ /* ---------- Oyuncu tipleri ----------
+  Kahin tipler (yesil, kahverengi, dengeli) etkileri tam bilir. "insan" tipleri yalnızca bir insanın görebileceğine
+  yakın davranır: kırmızıya yaklaşan göstergeyi kurtarmaya çalışır, bazen yanılır. */
+ const coin=(r)=>r()<.5?"l":"r";
+ const rescue=(S,c)=>{const k=MK.find(k=>S.m[k]<=20||S.m[k]>=80);if(!k)return null;const d=o=>Math.abs(S.m[k]+(o[k]||0)-50);return d(c.l)<=d(c.r)?"l":"r"};
+ const green=o=>(o.c||0)-(o.d||0)/10, brown=o=>(o.c||0)+(o.e||0)/10;
+ const cost=(S,o)=>MK.reduce((a,k)=>a+(S.m[k]+(o[k]||0)-50)**2,0);
  const pickers={
-  rastgele:(S,c,r)=>r()<.5?"l":"r",
-  yesil:(S,c)=>{const v=o=>(o.c||0)-(o.d||0)/10;return v(c.l)<=v(c.r)?"l":"r"},
-  kahverengi:(S,c)=>{const v=o=>(o.c||0)+(o.e||0)/10;return v(c.l)>=v(c.r)?"l":"r"},
-  dengeli:(S,c)=>{const cost=o=>MK.reduce((a,k)=>a+(S.m[k]+(o[k]||0)-50)**2,0)+(o.c||0)*20;return cost(c.l)<=cost(c.r)?"l":"r"},
+  rastgele:(S,c,r)=>coin(r),
+  "hep-sol":()=>"l",
+  "hep-sağ":()=>"r",
+  yesil:(S,c)=>green(c.l)<=green(c.r)?"l":"r",
+  kahverengi:(S,c)=>brown(c.l)>=brown(c.r)?"l":"r",
+  dengeli:(S,c)=>cost(S,c.l)+(c.l.c||0)*20<=cost(S,c.r)+(c.r.c||0)*20?"l":"r",
+  "insan-yeşil":(S,c,r)=>r()<.15?coin(r):rescue(S,c)||(green(c.l)<=green(c.r)?"l":"r"),
+  "insan-dengeli":(S,c,r)=>r()<.25?coin(r):rescue(S,c)||(cost(S,c.l)<=cost(S,c.r)?"l":"r"),
  };
  let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
  const res={};
  for(const [name,pick] of Object.entries(pickers)){
-  const r={ends:{},year:0,t:0,hits:0,shut:0,doors:0,full:0,both:0,n:N};
+  const r={n:N,ends:{},year:0,t:0,band:{lo:0,mid:0,hi:0},hits:0,firstLock:[],noLock:0,shut:0,doors:0,full:0,both:0,epi:{},rep:0,lrep:0,kill:{}};
   for(let i=0;i<N;i++){
-   const S=Engine.newState("Dede");let end=null;
+   const S=Engine.newState("Dede"),seen=new Set(),lines=new Set();let end=null;
    while(!end){
     const L=Engine.draw(S,rnd),c=byId[S.card];
+    if(seen.has(c.id))r.rep++;seen.add(c.id);
     if(L.l&&L.r)r.both++;
     let side=pick(S,c,rnd);if(L[side])side=side==="l"?"r":"l";
     const dead=Engine.apply(S,side);
-    if(LETTER_YEARS.includes(S.year))Engine.midLetter(S,rnd);
-    if(dead)end=dead;
+    if(LETTER_YEARS.includes(S.year)&&!dead)Engine.midLetter(S,rnd).split("\n").slice(1,-1).forEach(l=>{if(lines.has(l))r.lrep++;lines.add(l)});
+    if(dead){end=dead;const k=c.id+"→"+dead;r.kill[k]=(r.kill[k]||0)+1;}
     else if(S.year>=2075){
-     Engine.startEpi(S);
+     Engine.startEpi(S);r.epi[S.epi.length]=(r.epi[S.epi.length]||0)+1;
      for(;;){const Le=Engine.epiDraw(S);if(Engine.epiApply(S,Le.l?"r":"l"))break;}
      end=Engine.finalType(S);r.full++;r.shut+=S.doors.filter(d=>d.lock).length;r.doors+=S.doors.length;
+     r.t+=Engine.world(S).t;r.band[Engine.band(S)]++;
     }
    }
-   r.ends[end]=(r.ends[end]||0)+1;r.year+=Math.min(S.year,2075);r.t+=Engine.world(S).t;r.hits+=S.hits.length;
+   const fl=S.hits.find(h=>h.id!=="afrika");if(fl)r.firstLock.push(fl.seen);else r.noLock++;
+   r.ends[end]=(r.ends[end]||0)+1;r.year+=Math.min(S.year,2075);r.hits+=S.hits.length;
   }
   res[name]=r;
  }
- return{errs,warn,res};
+ // Kart başına ortalama kayma (rastgele seçimde)
+ const drift={};MK.concat("c").forEach(k=>{drift[k]=CARDS.filter(c=>!c.chain).reduce((a,c)=>a+((c.l[k]||0)+(c.r[k]||0))/2,0)/CARDS.filter(c=>!c.chain).length});
+ return{errs,warn,res,drift};
 }
 
-const N=+process.argv[2]||3000;
-const {errs,warn,res}=vm.runInContext(`(${harness})(${N})`,ctx);
-const pct=(a,b)=>(100*a/b).toFixed(0).padStart(3)+"%";
-console.log(`İçerik: ${errs.length} hata, ${warn.length} uyarı`);
-errs.forEach(e=>console.log("  HATA  "+e));warn.forEach(w=>console.log("  uyarı "+w));
+const N=+process.argv[2]||3000, detail=process.argv.includes("--detay");
+const {errs,warn,res,drift}=vm.runInContext(`(${harness})(${N})`,ctx);
+const pct=(a,b)=>(b?100*a/b:0).toFixed(0)+"%";
+console.log(`İçerik: ${errs.length} hata, ${warn.length} uyarı · kart başı kayma: `+Object.entries(drift).map(([k,v])=>`${k} ${v>=0?"+":""}${v.toFixed(2)}`).join(", "));
+errs.forEach(e=>console.log("  HATA  "+e));if(detail)warn.forEach(w=>console.log("  uyarı "+w));
 for(const [k,r] of Object.entries(res)){
- const ends=Object.entries(r.ends).sort((a,b)=>b[1]-a[1]).map(([e,n])=>`${e} ${pct(n,r.n).trim()}`).join(" · ");
- console.log(`\n${k.padEnd(10)} 2075'e varan${pct(r.full,r.n)} · ort. yıl ${(r.year/r.n).toFixed(0)} · 2075 ısınması +${(r.t/r.n).toFixed(2)}°C · oyunda görülen kilit ${(r.hits/r.n).toFixed(1)}`+
-  (r.full?` · Deniz'e kapanan kapı ${(r.shut/r.full).toFixed(1)}/${(r.doors/r.full).toFixed(1)}`:"")+(r.both?` · İKİ SEÇENEĞİ DE KİLİTLİ KART: ${r.both}`:""));
- console.log("           "+ends);
+ const top=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
+ const fl=r.firstLock.length?(r.firstLock.reduce((a,b)=>a+b,0)/r.firstLock.length).toFixed(0):"-";
+ console.log(`\n${k.padEnd(14)} 2075'e varan ${pct(r.full,r.n).padStart(4)} · ort. yıl ${(r.year/r.n).toFixed(0)} · görülen kilit ${(r.hits/r.n).toFixed(1)} (2029 dışında hiç görmeyen ${pct(r.noLock,r.n)}, ilk yenisi ort. ${fl})`+
+  (r.full?` · 2075 +${(r.t/r.full).toFixed(2)}°C (${["lo","mid","hi"].map(b=>b+" "+pct(r.band[b],r.full)).join(" ")}) · Deniz'e kapanan ${(r.shut/r.full).toFixed(1)}/${(r.doors/r.full).toFixed(1)} · final kart sayısı ${top(r.epi,4).map(([n,c])=>n+":"+pct(c,r.full)).join(" ")}`:"")+
+  ` · tekrar kart/oyun ${(r.rep/r.n).toFixed(2)} · tekrar mektup satırı/oyun ${(r.lrep/r.n).toFixed(2)}`+(r.both?` · İKİ SEÇENEĞİ DE KİLİTLİ: ${r.both}`:""));
+ console.log("               sonlar: "+top(r.ends,12).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
+ if(detail)console.log("               öldüren kartlar: "+top(r.kill,6).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
 }
 if(errs.length||Object.values(res).some(r=>r.both))process.exitCode=1;
