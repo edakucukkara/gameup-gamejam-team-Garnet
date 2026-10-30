@@ -1,0 +1,759 @@
+<title>Gelecekten Mektup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Layout: tek ekranlık mobil kart oyunu. Üstte 4 denge, altında 2075'in canlı penceresi, ortada kaydırılan kart, mektuplar uçak postası kâğıdında. */
+:root{
+  color-scheme: dark;
+  --sea-ink:#0D2830;     /* gece Akdeniz'i, zemin */
+  --sea-deep:#15404A;    /* yüzey */
+  --foam:#EAF2EF;        /* metin */
+  --mist:#8DB0AC;        /* ikincil metin */
+  --turquoise:#3CC8B4;   /* vurgu */
+  --sun:#F2B544;         /* uyarı / sıcak */
+  --ember:#E5654E;       /* tehlike */
+  --paper:#F4EFE3;       /* mektup kâğıdı */
+  --ink:#1E3A66;         /* dolma kalem mürekkebi */
+  --air-red:#C8283A; --air-blue:#1F4F8F;
+  --f-display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --f-hand:"Caveat", "Segoe Print", "Comic Sans MS", cursive;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{
+  background:var(--sea-ink);
+  background-image:radial-gradient(120% 60% at 50% 0%, #17485233 0%, transparent 70%);
+  color:var(--foam);font-family:var(--f-body);margin:0;overflow:hidden;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  -webkit-tap-highlight-color:transparent;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--turquoise);outline-offset:3px}
+#app{max-width:440px;margin:0 auto;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;padding-block:12px}
+
+/* Göstergeler */
+.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:none}
+.meter{display:flex;flex-direction:column;align-items:center;gap:4px}
+.meter svg{width:34px;height:34px;overflow:visible}
+.meter .base{fill:var(--foam);opacity:.16}
+.meter .fill{fill:var(--foam);transition:fill .3s}
+.meter.danger .fill{fill:var(--ember)}
+.meter.danger svg{animation:pulse 1.1s ease-in-out infinite}
+.meter.up .fill{fill:var(--turquoise)}
+.meter.down .fill{fill:var(--sun)}
+.meter .lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--foam);opacity:0;transform:scale(.4);transition:opacity .15s,transform .15s}
+.dot.sm{opacity:.9;transform:scale(1)}
+.dot.lg{opacity:1;transform:scale(1.8)}
+@keyframes pulse{50%{transform:scale(1.12)}}
+
+/* 2075 penceresi */
+.world{position:relative;border-radius:14px;overflow:hidden;flex:none;aspect-ratio:360/150;max-width:100%;box-shadow:0 0 0 1px #ffffff14}
+.world svg{display:block;width:100%;height:100%}
+.world .tag,.world .stat{position:absolute;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;padding:3px 7px;border-radius:5px;background:#0D2830b8;color:var(--foam);font-variant-numeric:tabular-nums}
+.world .tag{top:8px;left:8px;text-transform:uppercase}
+.world .stat{bottom:8px;right:8px}
+.w-t{transition:opacity 1s ease, transform 1.2s cubic-bezier(.3,.7,.3,1)}
+.bld{transform-box:fill-box;transform-origin:50% 100%}
+.blade{animation:spin 5s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
+.smoke{animation:smoke 4s ease-out infinite}
+.smoke:nth-child(2){animation-delay:1.3s}.smoke:nth-child(3){animation-delay:2.6s}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes smoke{0%{transform:translate(0,0) scale(.6);opacity:.7}100%{transform:translate(14px,-30px) scale(1.8);opacity:0}}
+.wave{animation:wave 6s ease-in-out infinite alternate}
+@keyframes wave{to{transform:translateX(-24px)}}
+
+/* Yıl ve soru */
+.yearbar{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex:none}
+.yearbar .y{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.yearbar .left{font-family:var(--f-mono);font-size:11px;color:var(--mist);letter-spacing:.06em}
+.q{flex:none;min-height:5.4em;display:flex;flex-direction:column;gap:4px}
+.who{font-family:var(--f-display);font-weight:700;font-size:15px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.who small{font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--mist)}
+.qt{font-size:16.5px;line-height:1.42;text-wrap:pretty;margin:0}
+
+/* Kart */
+.deck{flex:1;min-height:150px;display:grid;place-items:center;position:relative}
+.stack{position:relative;height:100%;max-height:310px;aspect-ratio:.86;max-width:100%}
+.stack::before,.stack::after{content:"";position:absolute;inset:0;border-radius:18px;background:var(--sea-deep);transform:translateY(8px) scale(.96);opacity:.7}
+.stack::after{transform:translateY(15px) scale(.92);opacity:.35;z-index:-1}
+.card{position:absolute;inset:0;border-radius:18px;overflow:hidden;background:var(--cbg,#3CC8B4);touch-action:none;cursor:grab;user-select:none;z-index:1;box-shadow:0 18px 40px -18px #000c;transition:transform .32s cubic-bezier(.2,.8,.3,1.1)}
+.card.dragging{transition:none;cursor:grabbing}
+.card.fly{transition:transform .32s ease-in, opacity .32s ease-in;opacity:0}
+.card.enter{animation:enter .42s cubic-bezier(.2,.8,.3,1.15)}
+@keyframes enter{from{transform:rotateY(80deg) scale(.9);opacity:.2}}
+.card svg{display:block;width:100%;height:100%;pointer-events:none}
+.card .opt{position:absolute;inset:0 0 auto;padding:14px 16px 16px;background:linear-gradient(#0D2830f2,#0D2830cc 70%,transparent);font-family:var(--f-display);font-weight:700;font-size:19px;opacity:0;transition:opacity .12s;pointer-events:none}
+.card .opt.r{text-align:right}
+
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:none}
+.cb{background:var(--sea-deep);border:1px solid #ffffff1a;border-radius:12px;padding:11px 12px;font-weight:600;font-size:14px;display:flex;gap:6px;align-items:center;min-height:46px;text-align:left;transition:background .15s,border-color .15s}
+.cb.r{justify-content:flex-end;text-align:right}
+.cb:hover{border-color:var(--turquoise);background:#1A4B57}
+.cb .k{font-family:var(--f-mono);color:var(--turquoise);flex:none}
+.hint{font-family:var(--f-mono);font-size:10px;color:var(--mist);text-align:center;letter-spacing:.08em;flex:none;margin:0}
+
+/* Katmanlar */
+.overlay{position:fixed;inset:0;z-index:20;display:grid;place-items:center;overflow:auto;background:#081C22d9;backdrop-filter:blur(6px);
+  padding:max(16px, env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) max(16px, env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px))}
+.overlay{place-items:safe center}
+#startScreen{background:var(--sea-ink);backdrop-filter:none}
+.overlay.in{animation:fade .35s ease}
+@keyframes fade{from{opacity:0}}
+.airmail{width:100%;max-width:400px;padding:9px;border-radius:6px;box-sizing:border-box;
+  background:repeating-linear-gradient(135deg,var(--air-red) 0 14px,var(--paper) 14px 21px,var(--air-blue) 21px 35px,var(--paper) 35px 42px);
+  box-shadow:0 30px 60px -20px #000;transform:rotate(-.6deg)}
+.overlay.in .airmail{animation:arrive .55s cubic-bezier(.2,.8,.3,1.1)}
+@keyframes arrive{from{transform:translateY(40px) rotate(-4deg);opacity:0}}
+.paper{background:var(--paper);color:var(--ink);padding:22px 22px 18px;position:relative;
+  background-image:repeating-linear-gradient(transparent 0 31px,#1E3A6614 31px 32px);background-position:0 14px}
+.postmark{position:absolute;top:14px;right:14px;width:74px;height:74px;border-radius:50%;border:2px solid #1E3A6699;display:grid;place-items:center;text-align:center;
+  font-family:var(--f-mono);font-size:9px;font-weight:600;letter-spacing:.1em;color:#1E3A66b0;transform:rotate(14deg);line-height:1.5}
+.postmark.red{border-color:#C8283Aaa;color:#C8283Ad0}
+.from{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#1E3A66a0;margin:0 0 10px;padding-right:80px}
+.hand{font-family:var(--f-hand);font-size:23px;line-height:32px;white-space:pre-line;min-height:6em;margin:0;cursor:pointer}
+.sig{font-family:var(--f-hand);font-size:26px;text-align:right;margin:4px 0 0}
+.pbtn{display:block;margin:14px 0 0 auto;background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:10px 20px;font-weight:700;font-size:14px}
+.pbtn:hover{background:#2B4E86}
+.pbtn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.ending-name{font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:-.02em;line-height:1.05;margin:0 0 12px;padding-right:80px;text-wrap:balance}
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 4px;font-family:var(--f-mono);font-size:11px;color:#1E3A66c0;font-variant-numeric:tabular-nums}
+.stats b{display:block;font-family:var(--f-display);font-size:22px;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.chip{font-size:11.5px;font-weight:600;padding:7px 6px;border-radius:6px;text-align:center;border:1.5px dashed #1E3A6655;color:#1E3A6680;line-height:1.2}
+.chip.got{border-style:solid;border-color:var(--ink);color:var(--ink);background:#1E3A660d}
+.chip.now{background:var(--ink);color:var(--paper)}
+.row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+/* Başlangıç */
+.start{max-width:400px;width:100%;display:flex;flex-direction:column;gap:18px}
+.envelope{position:relative;aspect-ratio:1.7;border-radius:6px;padding:9px;box-sizing:border-box;transform:rotate(-3deg);
+  background:repeating-linear-gradient(135deg,var(--air-red) 0 14px,var(--paper) 14px 21px,var(--air-blue) 21px 35px,var(--paper) 35px 42px);box-shadow:0 30px 60px -20px #000}
+.envelope .in{background:var(--paper);height:100%;position:relative;color:var(--ink);padding:16px;box-sizing:border-box}
+.envelope .addr{position:absolute;left:18%;bottom:20%;font-family:var(--f-hand);font-size:24px;line-height:1.15}
+.envelope .stampbox{position:absolute;top:12px;right:12px;width:52px;height:62px;background:var(--turquoise);border:3px dotted var(--paper);outline:1px solid #1E3A6640;display:grid;place-items:center;font-family:var(--f-mono);font-size:9px;font-weight:600;color:var(--sea-ink);text-align:center;line-height:1.3}
+.envelope .postmark{top:18px;right:48px}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(40px,12vw,58px);letter-spacing:-.04em;line-height:.92;margin:6px 0 0;text-wrap:balance}
+h1 em{font-style:normal;color:var(--turquoise)}
+.lead{font-size:15.5px;line-height:1.5;color:#CFE0DC;margin:0;max-width:62ch}
+.lead b{color:var(--foam)}
+.ask{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist);margin:0}
+.who-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{background:var(--foam);color:var(--sea-ink);border:0;border-radius:14px;padding:14px;font-family:var(--f-display);font-weight:800;font-size:20px}
+.big:hover{background:var(--turquoise)}
+.found{font-family:var(--f-mono);font-size:11px;color:var(--mist);margin:0}
+.mute{background:none;border:0;padding:0;color:var(--mist);font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px}
+.mute:hover{color:var(--foam)}
+
+@media (max-height:700px){
+  .qt{font-size:15px}.yearbar .y{font-size:24px}.q{min-height:4.8em}.meter svg{width:28px;height:28px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+}
+</style>
+
+<div id="app">
+  <div class="meters" id="meters"></div>
+  <div class="world" aria-label="Deniz'in 2075'teki dünyası">
+    <svg id="world" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <span class="tag">Deniz’in dünyası · 2075</span>
+    <span class="stat" id="wstat"></span>
+  </div>
+  <div class="yearbar"><span class="y" id="year">2026</span><span class="left"><span id="left"></span> · <button class="mute" id="mute" aria-pressed="false">SES AÇIK</button></span></div>
+  <div class="q" aria-live="polite">
+    <div class="who" id="who"></div>
+    <p class="qt" id="qt"></p>
+  </div>
+  <div class="deck">
+    <div class="stack">
+      <div class="card" id="card" tabindex="0" aria-label="Karar kartı. Sola ya da sağa kaydır.">
+        <div id="portrait"></div>
+        <div class="opt" id="optL"></div>
+        <div class="opt r" id="optR"></div>
+      </div>
+    </div>
+  </div>
+  <div class="btns">
+    <button class="cb" id="btnL"><span class="k">←</span><span id="btnLt"></span></button>
+    <button class="cb r" id="btnR"><span id="btnRt"></span><span class="k">→</span></button>
+  </div>
+  <p class="hint">Kartı kaydır · ← → tuşları · Noktalar hangi dengenin değişeceğini gösterir</p>
+</div>
+
+
+<div class="overlay" id="startScreen">
+  <div class="start">
+    <div class="envelope"><div class="in">
+      <div class="stampbox">COP31<br>TÜRKİYE<br>₺75</div>
+      <div class="postmark">ANTALYA<br>·<br>2075</div>
+      <div class="addr">Sevgili büyüğüme,<br>2026 yılına</div>
+    </div></div>
+    <h1>Gelecekten <em>Mektup</em></h1>
+    <p class="lead">Yıl 2026. COP31 Antalya’da bitti ve sen kentin <b>İklim Konseyi</b>’nin başına geçtin. Bir sabah kapına 2075’ten bir mektup geliyor. Gönderen torunun <b>Deniz</b>. Önümüzdeki 49 yıl boyunca verdiğin her karar onun dünyasını değiştirecek.</p>
+    <p class="lead">Dört dengeyi koru: <b>Doğa, Halk, Kasa, Enerji</b>. Hiçbiri sıfıra inmesin, hiçbiri tavana vurmasın.</p>
+    <p class="ask">Deniz sana nasıl seslensin?</p>
+    <div class="who-btns">
+      <button class="big" data-h="Dede">Dede</button>
+      <button class="big" data-h="Nine">Nine</button>
+    </div>
+    <p class="found" id="found"></p>
+  </div>
+</div>
+
+<div class="overlay" id="letterScreen" hidden>
+  <div class="airmail"><div class="paper">
+    <div class="postmark">ANTALYA<br>·<br>2075</div>
+    <p class="from" id="lfrom"></p>
+    <p class="hand" id="ltext"></p>
+    <p class="sig">Deniz</p>
+    <button class="pbtn" id="lnext">Devam et</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="endScreen" hidden>
+  <div class="airmail"><div class="paper">
+    <div class="postmark" id="epm"></div>
+    <p class="from" id="efrom"></p>
+    <h2 class="ending-name" id="ename"></h2>
+    <p class="hand" id="etext"></p>
+    <p class="sig">Deniz</p>
+    <div class="stats" id="estats"></div>
+    <div class="grid" id="egrid"></div>
+    <div class="row"><button class="pbtn" id="again">Yeniden başla</button></div>
+  </div></div>
+</div>
+
+<script>
+/* ---------- Karakterler ---------- */
+const CH={
+ elif:{n:"Elif",r:"İklim aktivisti",bg:"#3CC8B4",p:{skin:"#E8B590",hair:"#3B2416",hs:"long",shirt:"#F2B544",gl:1}},
+ hasan:{n:"Hasan",r:"Balıkçı",bg:"#5B8DB8",p:{skin:"#C98E64",hair:"#6B6B6B",hs:"cap",cap:"#C8452F",shirt:"#2F4E6B",beard:1}},
+ kerem:{n:"Kerem",r:"Balıkçı, Hasan’ın oğlu",bg:"#5B8DB8",p:{skin:"#C98E64",hair:"#2B1B12",hs:"cap",cap:"#2F4E6B",shirt:"#C8452F",mus:1}},
+ murat:{n:"Murat Bey",r:"Otel yatırımcısı",bg:"#D9A441",p:{skin:"#E2B08A",hair:"#1E1A17",hs:"short",shirt:"#22303A",mus:1,tie:1}},
+ ayse:{n:"Ayşe Teyze",r:"Çiftçi",bg:"#8DB86B",p:{skin:"#D69F78",hair:"#C0504D",hs:"scarf",shirt:"#6A4C93"}},
+ mert:{n:"Mert",r:"Ayşe Teyze’nin torunu",bg:"#8DB86B",p:{skin:"#D69F78",hair:"#1E1A17",hs:"curly",shirt:"#6A994E"}},
+ selin:{n:"Dr. Selin",r:"İklim bilimci",bg:"#7FA7C9",p:{skin:"#F0C6A2",hair:"#7A4A2A",hs:"bun",shirt:"#F4F4F0",gl:1}},
+ kemal:{n:"Kemal Bey",r:"Enerji şirketi",bg:"#8C8C8C",p:{skin:"#D8A27E",hair:"#9A9A9A",hs:"bald",shirt:"#3A3A48",tie:1,gl:1}},
+ zeynep:{n:"Zeynep",r:"Öğretmen",bg:"#E07A5F",p:{skin:"#E9BC96",hair:"#2B1B12",hs:"curly",shirt:"#3D5A80"}},
+ yusuf:{n:"Yusuf",r:"Belediye mühendisi",bg:"#F2B544",p:{skin:"#B87C55",hair:"#222",hs:"helmet",cap:"#F5C518",shirt:"#E76F51",beard:1}},
+ can:{n:"Can",r:"Girişimci",bg:"#9B7FD1",p:{skin:"#EFC19D",hair:"#E2B34A",hs:"short",shirt:"#111827"}},
+ leyla:{n:"Leyla",r:"Gazeteci",bg:"#C1666B",p:{skin:"#DDA780",hair:"#141414",hs:"long",shirt:"#F4E9D8"}},
+ nil:{n:"Dr. Nil",r:"Deniz biyoloğu",bg:"#2A9D8F",p:{skin:"#C68B65",hair:"#4A2C1D",hs:"bun",shirt:"#264653"}},
+ ece:{n:"Ece",r:"Kızın",bg:"#E9A6A6",p:{skin:"#EBC09E",hair:"#5A3825",hs:"long",shirt:"#3CC8B4"}},
+ bakan:{n:"Bakanlık",r:"Ankara’dan temsilci",bg:"#5A6578",p:{skin:"#E0AE89",hair:"#2D2D2D",hs:"short",shirt:"#1A202C",tie:1,mus:1}},
+ hans:{n:"Hans",r:"Turist",bg:"#F4A261",p:{skin:"#F6D1B8",hair:"#E8D27A",hs:"bald",shirt:"#E76F51",sun:1}},
+ ahmet:{n:"Ahmet",r:"Köy kooperatifi",bg:"#A3B18A",p:{skin:"#B9805A",hair:"#3A2A20",hs:"cap",cap:"#556B2F",shirt:"#7F5539",mus:1}},
+ ali:{n:"Ali",r:"Öğrenci, 9 yaşında",bg:"#90CAF9",p:{skin:"#E8B48F",hair:"#2A1A10",hs:"short",shirt:"#EF476F"}},
+ gulsum:{n:"Gülsüm Hanım",r:"Mahalle sakini",bg:"#CDB4DB",p:{skin:"#E3AF8A",hair:"#7B2D26",hs:"scarf",shirt:"#2A9D8F"}},
+ bekir:{n:"Bekir Usta",r:"Esnaf",bg:"#B5838D",p:{skin:"#CF9A72",hair:"#555",hs:"bald",shirt:"#E9C46A",mus:1}},
+ marti:{n:"Martı",r:"Simit uzmanı",bg:"#9AD1D4",p:{t:"gull"}},
+ kedi:{n:"Tekir",r:"Sokak kedisi",bg:"#F2CC8F",p:{t:"cat"}},
+};
+
+/* ---------- Kartlar ----------
+ d=Doğa h=Halk e=Kasa n=Enerji · f=bayrak · nx=[kart, kaç yıl sonra]
+ at=o yıl zorunlu · min/max=yıl aralığı · req=gerekli bayraklar · chain=sadece zincirle gelir */
+const CARDS=[
+ {id:"ilk",c:"elif",at:2026,t:"COP31 bitti, kameralar gitti. Antalya dünyaya söz verdi. Şimdi ne yapacağız, Başkan?",
+  l:{x:"Önce ekonomi",e:10,d:-5,h:-5},r:{x:"Sözleri tutalım",d:5,h:5,e:-5}},
+ {id:"otel",c:"murat",max:2045,t:"Konyaaltı’na 40 katlı bir otel kompleksi kurmak istiyoruz. Binlerce iş, milyonlarca turist!",
+  l:{x:"Reddet",d:10,h:-5,e:-10},r:{x:"Onayla",d:-15,e:15,h:5,f:"otel",nx:["otel2",12]}},
+ {id:"av",c:"hasan",max:2040,t:"Körfezde balık kalmadı Başkan. Av yasağı koyarsan ailemi nasıl doyuracağım?",
+  l:{x:"Devam edin",d:-10,h:5,e:5},r:{x:"Av yasağı koy",d:15,h:-10,e:-5,f:"avyasak",nx:["kerem",14]}},
+ {id:"gunes",c:"selin",max:2042,t:"Belediye binalarının çatıları güneş paneli için ideal. Pahalı ama on yılda kendini öder.",
+  l:{x:"Sonra bakarız",n:-5,e:5},r:{x:"Panelleri kur",e:-15,n:15,d:5,f:"gunes"}},
+ {id:"grev",c:"elif",max:2040,t:"Gençler her cuma meydanda iklim grevi yapıyor. Onlarla konuşur musun?",
+  l:{x:"Polise bırak",h:-15,e:5},r:{x:"Kürsüye çık",h:10,d:5,e:-5,f:"genclik"}},
+ {id:"damla",c:"ayse",max:2042,t:"Kuraklık var evladım. Domates tarlam çatladı. Damla sulamaya destek verir misin?",
+  l:{x:"Bütçe yok",h:-5,d:-5,e:5},r:{x:"Destek ver",e:-10,d:5,h:10,f:"damla"}},
+ {id:"komur",c:"kemal",max:2040,t:"Kömür santralinin ömrünü 20 yıl uzatalım. Ucuz ve güvenilir enerji, düşünmeye gerek yok.",
+  l:{x:"Santrali kapat",n:-15,d:10,h:5,f:"komurkapat"},r:{x:"Ömrünü uzat",n:15,e:10,d:-20,f:"komur",nx:["komur2",10]}},
+ {id:"ders",c:"zeynep",max:2042,t:"Okullarda iklim dersi açalım mı? Çocuklar soruyor, cevap veremiyoruz.",
+  l:{x:"Müfredat dolu",h:-5,e:5},r:{x:"Ders açılsın",e:-5,h:5,d:5,f:"egitim"}},
+ {id:"sunger",c:"yusuf",max:2045,t:"Kanalizasyon yağmur suyunu kaldıramıyor. Her sağanakta sokaklar göl oluyor.",
+  l:{x:"Asfaltı yenile",e:-5,h:-5,d:-5},r:{x:"Sünger şehir yap",e:-15,d:10,h:5,f:"sunger"}},
+ {id:"scooter",c:"can",t:"Şehre paylaşımlı elektrikli scooter getirmek istiyoruz. Bize sadece biraz kaldırım lazım.",
+  l:{x:"Kaldırım yayanın",h:5,e:-5},r:{x:"Getir",n:-5,e:5,d:5,h:-5}},
+ {id:"haber",c:"leyla",max:2050,t:"Bir otelin denize atık su bastığını belgeledim. Yayınlamadan önce sana soruyorum.",
+  l:{x:"Yayınlama",e:10,d:-10,h:-5},r:{x:"Yayınla",e:-10,d:10,h:10,f:"basin"}},
+ {id:"caretta",c:"nil",t:"Patara’da caretta yuvaları ışık kirliliği yüzünden yok oluyor. Sahil ışıklarını gece kapatalım.",
+  l:{x:"Turist kaçar",e:5,d:-10},r:{x:"Işıkları kapat",e:-5,d:10,n:5,f:"caretta"}},
+ {id:"ece1",c:"ece",min:2030,max:2040,t:"{E}, İstanbul’da iş teklifi aldım. Burada iklim yüzünden işler kötü. Gitsem mi?",
+  l:{x:"Kal, düzeltiriz",h:5,e:-5,f:"ecekaldi"},r:{x:"Git, şansını dene",h:-5,e:5}},
+ {id:"havalimani",c:"bakan",max:2044,t:"Ankara havalimanı genişletmesi için fon veriyor. Tek şart: pist orman alanından geçecek.",
+  l:{x:"Reddet",e:-15,d:10},r:{x:"Kabul et",e:15,d:-15,n:-5,f:"havalimani"}},
+ {id:"plaj",c:"hans",t:"Antalya çok güzel ama neden plajlarda bu kadar plastik var?",
+  l:{x:"Turist vergisi",e:10,h:-5,d:5},r:{x:"Temizlik başlat",e:-5,d:10,h:5}},
+ {id:"koop",c:"ahmet",max:2048,t:"Köylüler olarak bir gıda kooperatifi kurmak istiyoruz. Belediye bize pazar yeri verir mi?",
+  l:{x:"Marketler kızar",e:5,h:-10},r:{x:"Pazar yeri ver",e:-5,h:10,d:5,f:"kooperatif"}},
+ {id:"ruzgar",c:"selin",max:2048,t:"Toroslar’da rüzgâr türbinleri için harika bir alan buldum. Ama köylüler manzaradan şikâyetçi.",
+  l:{x:"Vazgeç",n:-10,h:5},r:{x:"Türbinleri kur",n:15,h:-10,e:-5,f:"ruzgar"}},
+ {id:"okulagac",c:"ali",max:2040,t:"Okul bahçemize ağaç dikebilir miyiz? Teneffüste çok sıcak oluyor.",
+  l:{x:"Otopark lazım",e:5,h:-5,d:-5},r:{x:"Dikelim!",d:10,e:-5,h:5,f:"okulagac"}},
+ {id:"marka",c:"murat",min:2028,max:2036,t:"COP31’den sonra Antalya’nın adı duyuldu. ‘Yeşil Turizm’ diye bir reklam kampanyası yapalım!",
+  l:{x:"Önce icraat",d:5,e:-5},r:{x:"Reklama yatır",e:10,h:5,d:-5,f:"yesilaklama"}},
+ {id:"dogalgaz",c:"kemal",t:"Klimalar yüzünden yazın şebeke çöküyor. Yeni bir doğalgaz santrali kuralım.",
+  l:{x:"Verimliliğe yatır",e:-10,n:5,d:5},r:{x:"Santrali kur",n:15,d:-10,e:-5}},
+ {id:"su",c:"gulsum",t:"Su faturaları çok yüksek! Belediye suya zam yapmasın!",
+  l:{x:"Zam yap",e:10,h:-10,d:5},r:{x:"Zam yapma",h:10,e:-10,d:-5}},
+ {id:"kruvaziyer",c:"hans",t:"Arkadaşlarımla dev bir kruvaziyer gemisiyle geleceğiz. 5000 kişi! Ama yakıtı biraz… kirli.",
+  l:{x:"Limanı kapat",e:-10,d:10},r:{x:"Yanaşsın",e:10,d:-10}},
+ {id:"poset",c:"bekir",t:"Plastik poşet yasağı esnafı bitirdi Başkan! Kaldır şunu!",
+  l:{x:"Yasak devam",d:5,h:-10},r:{x:"Yasağı kaldır",h:10,d:-10}},
+ {id:"kompost",c:"yusuf",t:"Tüm şehirde organik atık ayrıştırması başlatalım. Kompost parklara gider.",
+  l:{x:"Halk yapmaz",h:5,d:-5},r:{x:"Başlat",e:-5,d:10,h:-5,f:"kompost"}},
+ {id:"isipompasi",c:"selin",t:"Isı pompaları eski kombilerden çok daha verimli. Evlere teşvik verelim mi?",
+  l:{x:"Kombiler yeter",n:-5,e:5},r:{x:"Teşvik ver",e:-10,n:10,d:5}},
+ {id:"ithal",c:"kemal",t:"Komşu ülkelerden ucuz elektrik alabiliriz. Nasıl üretildiğini sormazsak tabii.",
+  l:{x:"Yerli üretelim",e:-10,n:5},r:{x:"İthal et",n:15,e:-5,d:-5}},
+ {id:"golf",c:"murat",t:"Golf sahası için su lazım. Turistler yemyeşil çim istiyor.",
+  l:{x:"Su tarlalara",d:5,e:-10,h:5},r:{x:"Golf sahası",e:10,d:-10,h:-5}},
+ {id:"tamir",c:"elif",t:"Hızlı moda mağazaları indirimde. Karşılarına bir ‘tamir kafe’ açalım mı?",
+  l:{x:"Gerek yok",e:5,d:-5},r:{x:"Tamir kafe",e:-5,h:5,d:5}},
+ {id:"otoyol",c:"bakan",t:"Antalya–Alanya otoyolu: yolculuk 30 dakikaya iner! Ama zeytinliklerden geçecek.",
+  l:{x:"Tren yapın",e:-15,d:5,n:5},r:{x:"Otoyol",e:10,d:-15,h:5}},
+ {id:"golge",c:"gulsum",t:"Çocuklar parka gidemiyor, hiç gölge yok. Belediye bir şey yapsın!",
+  l:{x:"Tente kur",e:-5,h:5},r:{x:"Ağaç dik",d:10,h:-5}},
+ {id:"bisiklet",c:"gulsum",t:"Sokağımıza bisiklet yolu yapılıyormuş ama park yerimiz gidiyor!",
+  l:{x:"Park yeri kalsın",h:5,d:-5},r:{x:"Bisiklet yolu",h:-5,d:5,n:5}},
+ {id:"marti",c:"marti",t:"Gak! (Elindeki simide çok anlamlı bakıyor.)",
+  l:{x:"Simidi ver",h:5,e:-5},r:{x:"Kışt!",h:-5}},
+ {id:"kedi",c:"kedi",req:["gunes"],t:"Miyav. (Belediyenin yeni güneş panelinin tam ortasında güneşleniyor.)",
+  l:{x:"Kaldır onu",n:5,h:-10},r:{x:"Bırak uyusun",n:-5,h:10}},
+ {id:"su2",c:"yusuf",min:2030,t:"Kaçak su kullanımı yüzünden yeraltı suyu çekiliyor. Kuyulara sayaç takalım mı?",
+  l:{x:"Çiftçiyi üzme",h:5,d:-10},r:{x:"Sayaç tak",d:10,h:-10,e:5}},
+
+ // Orta dönem
+ {id:"set",c:"selin",min:2040,max:2062,t:"Deniz seviyesi 20 cm yükseldi. Kıyıya set mi çekelim, yoksa kıyı mahallelerini mi taşıyalım?",
+  l:{x:"Set çek",e:-15,d:-5,h:5},r:{x:"Mahalleyi taşı",h:-15,d:10,e:-5,f:"tasindi"}},
+ {id:"sicak",c:"yusuf",min:2038,t:"Sıcak hava dalgası geliyor, 48 derece bekleniyor. Serinleme merkezleri açalım mı?",
+  l:{x:"Evde kalsınlar",h:-15,n:5},r:{x:"Merkezleri aç",n:-10,h:10,e:-5}},
+ {id:"tohum",c:"ayse",min:2040,max:2060,t:"Seralarımızı tuz bastı evladım. Tuzlu suya dayanıklı tohum lazım.",
+  l:{x:"Tarım bitti",h:-10,e:-5},r:{x:"Tohum bankası kur",e:-10,d:5,h:5,f:"tohum"}},
+ {id:"yapayzeka",c:"can",min:2040,t:"Yapay zekâ ile trafiği ve enerjiyi optimize edebiliriz. Sadece tüm şehir verisine erişim istiyoruz.",
+  l:{x:"Mahremiyet",h:5,n:-5},r:{x:"Erişim ver",n:10,e:5,h:-10}},
+ {id:"roportaj",c:"leyla",min:2038,t:"Halkın bir kısmı seni ‘turizm düşmanı’ ilan etti. Canlı yayında röportaj verir misin?",
+  l:{x:"Sessiz kal",h:-5,e:5},r:{x:"Konuşacağım",h:10,e:-5}},
+ {id:"kerem",c:"kerem",chain:1,t:"Babam av yasağına çok kızmıştı. Ama bak, levrekler geri döndü! Bir balık festivali yapalım mı?",
+  l:{x:"Abartmayalım",h:-5,d:5},r:{x:"Festival!",h:10,e:10,d:-5}},
+ {id:"otel2",c:"murat",chain:1,old:1,t:"Otelimizin önündeki plaj erozyonla yok oldu. Kumu yeniden doldurmak için belediye fonu istiyoruz.",
+  l:{x:"Sizin sorununuz",e:5,h:-5},r:{x:"Fon ver",e:-15,d:-5,h:5}},
+ {id:"komur2",c:"kemal",chain:1,old:1,t:"Santralin filtresi eskidi, şehir duman altında. Yenileyelim mi, kapatalım mı?",
+  l:{x:"Kapat",n:-20,d:15,h:5,f:"komurkapat"},r:{x:"Filtreyi yenile",e:-15,d:5}},
+ {id:"multeci",c:"elif",min:2040,t:"İklim mültecileri Antalya’ya geliyor. Güneyden binlerce aile. Kapılarımızı açalım mı?",
+  l:{x:"Kapasite yok",h:-10,e:5},r:{x:"Kapıları aç",h:10,e:-10,n:-5,f:"multeci"}},
+ {id:"takvim",c:"zeynep",min:2040,t:"Haziranda sınıflar fırın gibi. Okul takvimini kışa kaydıralım mı?",
+  l:{x:"Klimayla devam",n:-10,e:-5,h:5},r:{x:"Takvimi değiştir",h:-5,n:10}},
+ {id:"karbon",c:"bakan",min:2036,t:"Ulusal karbon vergisi geliyor. Antalya pilot şehir olmak ister mi?",
+  l:{x:"Hayır",e:5,d:-5},r:{x:"Pilot olalım",e:10,h:-10,d:10,f:"karbonvergi"}},
+ {id:"aslan",c:"nil",min:2036,t:"Denizde istilacı bir tür yayılıyor: aslan balığı. Yerli balıkları ve mercanları yiyor.",
+  l:{x:"Görmezden gel",d:-10},r:{x:"Menüye koyalım!",d:5,e:5,h:5,f:"aslanbaligi"}},
+ {id:"dogum",c:"ece",at:2049,t:"{E}! Bir kızım oldu. Adını Deniz koyduk. Onun için daha iyi bir dünya mümkün mü sence?",
+  l:{x:"Bilmiyorum",h:-5},r:{x:"Elbette mümkün",h:10}},
+ {id:"dalga",c:"selin",min:2042,old:1,t:"Deniz dalgasından elektrik üreten bir prototipimiz var. Ama henüz kimse denemedi.",
+  l:{x:"Çok riskli",e:5},r:{x:"Fonla",e:-15,n:15,f:"dalga"}},
+ {id:"yangin",c:"yusuf",min:2036,t:"Orman yangını mevsimi uzadı. Yangın şeridi açmak için bazı ağaçları kesmemiz gerekiyor.",
+  l:{x:"Kesme",d:5,h:-10},r:{x:"Kontrollü kes",d:-10,h:5,e:-5}},
+ {id:"menu",c:"gulsum",min:2040,t:"Et fiyatları uçtu! Belediye kantinlerinde bitkisel menü mü olacak şimdi?",
+  l:{x:"Et kalsın",h:5,e:-5,d:-5},r:{x:"Bitkisel menü",h:-10,d:10,e:5}},
+ {id:"cati",c:"can",min:2040,t:"Her çatıya sessiz bir mini rüzgâr türbini. Tasarımı bizim, üretimi Antalya’da.",
+  l:{x:"Geç",e:5,n:-5},r:{x:"Destekle",e:-10,n:10,h:5}},
+ {id:"kis",c:"hans",min:2045,old:1,t:"Yazın artık kimse Antalya’ya gelmiyor, çok sıcak. Turizm sezonunu kışa kaydırsanız?",
+  l:{x:"Yazdan vazgeçmem",e:-10,n:-10},r:{x:"Kış turizmi",e:5,h:-5,n:5}},
+ {id:"maden",c:"elif",min:2036,t:"Bir şirket Toroslar’da altın madeni açmak istiyor. Siyanür kullanacaklar.",
+  l:{x:"Asla",d:10,e:-10},r:{x:"Ruhsat ver",e:20,d:-20,h:-5}},
+ {id:"tarife",c:"kemal",min:2036,t:"Elektrik fiyatını düşürürsek halk bayram eder. Tüketim artar ama…",
+  l:{x:"Akıllı tarife",n:5,h:-5},r:{x:"Fiyatı düşür",h:15,n:-15,e:-5}},
+
+ // Geç dönem
+ {id:"ari",c:"selin",min:2056,old:1,t:"Robot arılar mı, gerçek arıları kurtarmak mı? Bütçe ikisine yetmez.",
+  l:{x:"Robot arılar",e:-10,n:-5,d:-5},r:{x:"Gerçek arılar",d:15,e:-10}},
+ {id:"park",c:"yusuf",min:2056,old:1,t:"Arabaların çoğu artık yok. Eski çevre yolunu yürüyüş parkına çevirelim mi?",
+  l:{x:"Yol kalsın",e:5,d:-5},r:{x:"Park olsun",d:10,h:10,e:-10}},
+ {id:"kiyi",c:"ece",min:2056,req:[],t:"{E}, Deniz plajları hep kapalı gördüğü için denize girmekten korkuyor. Onu bir hafta sonu kıyıya götürür müsün?",
+  l:{x:"İşim çok",h:-10,e:5},r:{x:"Götürürüm",h:10,f:"denizkiyi"}},
+ {id:"ozur",c:"elif",min:2056,old:1,t:"Gençler senin kuşağını suçluyor. Onlardan özür diler misin?",
+  l:{x:"Elimden geleni yaptım",h:-10},r:{x:"Özür dile",h:10,e:-5}},
+ {id:"yakalama",c:"can",min:2054,t:"Havadan CO₂ çeken bir karbon yakalama makinesi! Tek sorun: dev bir enerji yiyor.",
+  l:{x:"Önce emisyonu kes",n:5,d:5,e:-5},r:{x:"Makineyi kur",n:-15,d:10,e:-10}},
+ {id:"geri",c:"bakan",min:2058,t:"Hükümet kıyı şehirleri için ‘yönetilen geri çekilme’ planı hazırladı. Antalya’nın bir kısmı boşaltılacak.",
+  l:{x:"Direnelim",h:10,e:-15},r:{x:"Planlı çekilme",h:-10,d:10,e:5}},
+ {id:"dikey",c:"mert",min:2054,t:"Boş kalan eski otel binalarını dikey tarım kulelerine çevirelim! Babaannem görse çok sevinirdi.",
+  l:{x:"Oteller kalsın",e:5,h:-5},r:{x:"Tarım kulesi",e:-5,h:10,n:-5,d:5}},
+ {id:"mercan",c:"nil",min:2054,old:1,t:"Mercan resifi restorasyonu için gönüllüler hazır. Teknelere yakıt desteği lazım.",
+  l:{x:"Bütçe yok",d:-5,e:5},r:{x:"Destek ver",e:-5,d:10,h:5}},
+ {id:"belgesel",c:"leyla",min:2060,old:1,t:"Arşivde 2026’daki ilk kararını buldum. Hayatını anlatan bir belgesel çekmek istiyorum.",
+  l:{x:"Geçmişte kaldı",h:-5},r:{x:"Anlatalım",h:10,e:-5}},
+ {id:"kapsul",c:"zeynep",min:2058,old:1,t:"Öğrencilerim 2075’te açılacak bir zaman kapsülü hazırlıyor. İçine ne koyalım?",
+  l:{x:"Bir tohum",d:5,h:5},r:{x:"Bir mektup",h:10,f:"kapsul"}},
+ {id:"sel",c:"yusuf",min:2050,t:"Kış fırtınaları her yıl daha sert. Dere yataklarındaki evleri boşaltalım mı?",
+  l:{x:"Halk kızar",h:5,d:-5,e:-5},r:{x:"Boşalt",h:-10,d:5,e:-5}},
+ {id:"klima",c:"gulsum",min:2050,t:"Komşular bütün gün klima açıyor, elektrik kesiliyor. Saat sınırı mı gelecek?",
+  l:{x:"Herkes özgür",h:5,n:-15},r:{x:"Saat sınırı",h:-10,n:10}},
+];
+const byId=Object.fromEntries(CARDS.map(c=>[c.id,c]));
+
+/* ---------- Mektup metinleri ---------- */
+const LETTER_YEARS=[2032,2038,2044,2050,2056,2062,2068];
+const WORLD_LINES={
+ d:{lo:"Bu yaz Toroslar’da yine yangın vardı. Okulda ‘orman’ kelimesini resimlerden öğreniyoruz. Lütfen doğayı biraz düşün.",
+    hi:"Şehrin yarısını sarmaşık sardı, yollar bakımsız. Doğa çok güzel ama insanlar birer birer göç ediyor."},
+ h:{lo:"İnsanlar Konsey’e artık hiç güvenmiyor. Meydanda her gün protesto var ve pankartlarda senin adın yazıyor.",
+    hi:"Herkes seni çok seviyor, heykelini bile dikmişler. Ama annem ‘bazen hayır demek de lazım’ diyor."},
+ e:{lo:"Belediye otobüsleri haftada iki gün çalışıyor, kasada para kalmamış. Sokak lambaları yanmıyor.",
+    hi:"Sahil boyunca her ay yeni bir otel açılıyor. Denizi görmek için artık bilet almak gerekiyor."},
+ n:{lo:"Elektrik kesintileri yine başladı. Geçen hafta 44 derecede vantilatörsüz uyuduk.",
+    hi:"Enerji o kadar bol ki kimse ışıkları kapatmıyor. Gece gökyüzünde tek bir yıldız göremiyorum."},
+};
+const CALM=[
+ "Bugün sahilde yürüdük, deniz turkuazdı. Senin zamanında da böyle miydi?",
+ "Okulda iklim tarihini işliyoruz. Öğretmen 2026’dan bahsedince içim kıpır kıpır oluyor, çünkü sen oradasın.",
+ "Burada her şey biraz kırılgan ama iyi gidiyor. Dengeyi koruduğun için teşekkür ederim.",
+ "Annem senin bir zamanlar çok zor kararlar verdiğini anlatıyor. Şimdi neden olduğunu anlıyorum.",
+];
+const FL={
+ otel:"Konyaaltı’ndaki o dev otel hâlâ duruyor. Sabahları gölgesi bütün plajı kaplıyor.",
+ avyasak:"Kerem Amca’nın teknesiyle balığa çıktık. Levrekler geri dönmüş, hepsi senin av yasağın sayesinde diyor.",
+ gunes:"Belediye binasının çatısındaki paneller hâlâ çalışıyor. Üstlerinde hep kediler uyuyor.",
+ genclik:"Annem gençken iklim grevlerine katılmış. Senin kürsüye çıktığın günü hiç unutmamış.",
+ damla:"Ayşe Teyze’nin torunları hâlâ damla sulamayla domates yetiştiriyor. Dünyanın en güzel domatesi.",
+ komur:"Santralin bacası hâlâ tütüyor. Annem astım ilacını yanından hiç ayırmıyor.",
+ komurkapat:"Eski kömür santralini müzeye çevirmişler. Okulla gittik, girişte senin adın yazıyor.",
+ egitim:"Bugün iklim dersinden sınav vardı. Bu dersi ilk açan senmişsin, öğretmenim söyledi.",
+ sunger:"Dün dev bir sağanak oldu ama sokakları su basmadı. Sünger şehir gerçekten işe yarıyor!",
+ basin:"Leyla Hanım’ın o atık su haberi hâlâ gazetecilik okullarında okutuluyormuş.",
+ caretta:"Patara’da bu yıl 300 caretta yuvası saydık! Gece kumsalda yavruların denize koşusunu izledim.",
+ ecekaldi:"Annem İstanbul’a hiç taşınmamış, iyi ki. Ben burada, denizin yanında büyüdüm.",
+ havalimani:"Havalimanı için kesilen ormanın yerinde şimdi kocaman, bomboş bir otopark var.",
+ kooperatif:"Kooperatif pazarı cumartesileri hâlâ kuruluyor. Annem bana oradan incir aldı.",
+ ruzgar:"Toroslar’daki türbinler gün batımında çok güzel dönüyor. Köylüler artık onlarla gurur duyuyor.",
+ okulagac:"Senin zamanında dikilen okul ağaçları kocaman olmuş. Teneffüste hep gölgelerindeyiz.",
+ yesilaklama:"Okulda ‘yeşil aklama’ konusunu işledik. Örnek olarak Antalya’nın 2030’lardaki reklamlarını gösterdiler. Biraz utandım.",
+ tasindi:"Eski kıyı mahallesi artık su altında. Ama oradaki aileler zamanında taşınmış, kimse zarar görmemiş.",
+ tohum:"Tohum bankasındaki domatesler tuzlu toprakta bile yetişiyor. Çeşide Ayşe Teyze’nin adını vermişler.",
+ multeci:"Sınıfımda Sudan’dan, Pakistan’dan gelen arkadaşlarım var. Senin açtığın kapılar sayesinde buradalar.",
+ karbonvergi:"Karbon vergisi sayesinde otobüsler bedava. Babam her gün bisikletle işe gidiyor.",
+ aslanbaligi:"Aslan balığı dürüm Antalya’nın en meşhur sokak yemeği oldu. Tadı harika!",
+ dalga:"Dalga santrali bütün eski şehre yetiyor. Büyüyünce orada mühendis olmak istiyorum.",
+ denizkiyi:"Seninle kumdan kale yaptığımız günü hatırlıyorum. Bana bir deniz kabuğu vermiştin, hâlâ bende.",
+ kapsul:"Okulda zaman kapsülünü açtık. İçinden senin el yazınla bir mektup çıktı.",
+ kompost:"Okul bahçemiz şehrin kompostuyla besleniyor. Solucanları beslemek benim görevim!",
+};
+
+const ENDINGS={
+ d0:{n:"Kavrulan Toprak",t:"Bugün yine dışarı çıkamadık. Hava turuncu, maskesiz yürümek yasak. Toroslar’da ağaç kalmadı, denizden ölü balık kokusu geliyor. Annem eskiden denizin turkuaz olduğunu söylüyor, ben hiç görmedim.\nDoğayı hep sonraya bıraktın. O sonra hiç gelmedi."},
+ d100:{n:"Sessiz Orman",t:"Antalya’da artık çam ağaçları, yaban keçileri ve sessizlik var. İnsan yok. Fabrikalar, oteller, işler birer birer kapandı, kimse geçinemedi. Biz yıllar önce göç ettik.\nDoğa iyileşti ama içinde bize yer kalmadı."},
+ h0:{n:"Görevden Alındın",t:"Halk seni {Y} yılında görevden aldı. Senden sonra gelenler yaptığın her şeyi tek tek söktü.\nİnsanları ikna etmeden kurtarılan bir dünya ilk seçimde elden gidiyormuş. Doğru kararlar tek başına yetmedi."},
+ h100:{n:"Alkış Tuzağı",t:"Herkes seni çok sevdi, çünkü kimseye hayır demedin. Zor kararlar hep bir sonraki yıla kaldı. Kıyı setleri yapılmadı, sular yükseldi.\nSenin için hâlâ alkış tutuyorlar, ama artık dizlerine kadar suyun içindeler."},
+ e0:{n:"Kasa Boşaldı",t:"Belediye {Y} yılında iflas etti. Otobüsler durdu, çöpler toplanmadı, sel kanalları tıkandı. Güzel projelerin hepsi yarım kaldı, çünkü onları ödeyecek kimse yoktu.\nAnnem ‘yeşil bir şehir de faturasını ödeyebilmeli’ diyor."},
+ e100:{n:"Beton Cennet",t:"Antalya dünyanın en zengin sahil şehri oldu. Kıyının tamamı oteller ve özel plajlarla dolu. Denizi yalnızca otel balkonlarından görebiliyoruz, oraya da biletle giriliyor.\nÇok zenginiz ama sığınacak bir ağaç gölgesi kalmadı."},
+ n0:{n:"Karanlık Yaz",t:"{Y} yazında şebeke çöktü ve bir daha tam düzelmedi. 46 derecede klimasız geceler, bozulan ilaçlar, kapanan hastaneler.\nYeşil enerji vaatleri vardı ama kimse geçiş dönemini planlamamıştı. Karanlık yavaş yavaş geldi."},
+ n100:{n:"Sönmeyen Işıklar",t:"Enerji o kadar ucuz ve bol oldu ki kimse tasarruf etmeyi düşünmedi. Her yer aydınlatıldı, her oda soğutuldu. Şehir dev bir ısı adasına döndü.\nGökyüzünde yıldız göremiyorum. Bolluk da bir tuzakmış."},
+ mavi:{n:"Mavi Antalya",t:"Bugün 26 yaşıma girdim ve sana nihayet teşekkür edebiliyorum. 2075 Antalya’sı kusursuz değil: yazlar sıcak, deniz biraz yükseldi. Ama ormanlar ayakta, deniz hâlâ turkuaz ve insanlar birbirine güveniyor.\nHer kararında dengeyi korudun. Ben o dengenin içinde büyüdüm."},
+ yesil:{n:"Yeşil Miras",t:"Toroslar yemyeşil, kıyıdaki caretta yuvalarını saymaya yetişemiyoruz. Bazen işler yavaş yürüyor, bütçe hep kısıtlı, ama nefes alabildiğimiz bir şehirde yaşıyoruz.\nDoğaya verdiğin söz tutuldu."},
+ kirilgan:{n:"Kırılgan Umut",t:"2075’e vardık. Kolay olmadı: bazı şeyleri kurtardın, bazılarını kaybettik. Sıcak yazlar, kapanan plajlar, yarım kalan projeler var.\nAma hâlâ buradayız ve hâlâ deniyoruz. Senden öğrendiğim en önemli şey belki de bu: vazgeçmemek."},
+ sonsuz:{n:"Sonsuz Mektup",t:"Zaman kapsülünden çıkan mektubunu okudum. ‘Sevgili Deniz, seni tanımadan sevdim’ yazmışsın. Şimdi anlıyorum: ben sana yazarken sen de bana yazıyormuşsun.\nDünya kurtarılmadı ama özenle bakıldı, tıpkı bir bahçe gibi. Bu mektup çemberi hiç kapanmasın."},
+};
+const END_ORDER=["mavi","yesil","kirilgan","sonsuz","d0","d100","h0","h100","e0","e100","n0","n100"];
+
+/* ---------- Portre çizimi ---------- */
+function portrait(p,old){
+ if(p.t==="gull") return `<svg viewBox="0 0 200 232"><circle cx="100" cy="112" r="74" fill="#fff" opacity=".18"/>
+  <ellipse cx="96" cy="170" rx="56" ry="44" fill="#fff"/><path d="M48 168 Q90 138 150 172 Q100 196 48 168Z" fill="#9AA5AD"/>
+  <path d="M60 190 L40 214 L74 200Z" fill="#3B4A54"/><circle cx="112" cy="106" r="34" fill="#fff"/>
+  <path d="M140 104 L172 112 L140 120Z" fill="#F2B544"/><circle cx="160" cy="116" r="3" fill="#E5654E"/>
+  <circle cx="176" cy="122" r="11" fill="none" stroke="#B5651D" stroke-width="7"/><circle cx="176" cy="122" r="11" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-dasharray="2 4"/>
+  <circle cx="122" cy="98" r="5" fill="#1d1d1d"/><path d="M114 88 L132 92" stroke="#1d1d1d" stroke-width="3" stroke-linecap="round"/>
+  <rect x="80" y="210" width="5" height="22" fill="#F2B544"/><rect x="104" y="210" width="5" height="22" fill="#F2B544"/></svg>`;
+ if(p.t==="cat") return `<svg viewBox="0 0 200 232"><circle cx="100" cy="112" r="74" fill="#fff" opacity=".18"/>
+  <ellipse cx="100" cy="206" rx="62" ry="40" fill="#D9803A"/><path d="M52 104 L58 52 L92 86Z" fill="#E08E45"/><path d="M148 104 L142 52 L108 86Z" fill="#E08E45"/>
+  <path d="M60 96 L63 66 L82 86Z" fill="#F4B7A0"/><path d="M140 96 L137 66 L118 86Z" fill="#F4B7A0"/>
+  <ellipse cx="100" cy="128" rx="58" ry="50" fill="#E08E45"/><path d="M88 82 L92 104 M100 80 L100 104 M112 82 L108 104" stroke="#A85A22" stroke-width="5" stroke-linecap="round"/>
+  <path d="M74 124 Q84 116 94 124" stroke="#1d1d1d" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M106 124 Q116 116 126 124" stroke="#1d1d1d" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M94 138 L106 138 L100 146Z" fill="#E5786B"/><path d="M100 146 Q94 154 88 150 M100 146 Q106 154 112 150" stroke="#1d1d1d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M40 136 L80 142 M40 150 L80 148 M160 136 L120 142 M160 150 L120 148" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  <text x="142" y="70" font-family="Caveat,cursive" font-size="26" fill="#0D2830" opacity=".55">z</text><text x="156" y="52" font-family="Caveat,cursive" font-size="20" fill="#0D2830" opacity=".4">z</text></svg>`;
+ const s=p.skin, h=old?"#C9C9C9":p.hair, cap=p.cap||h;
+ let back="",front="";
+ switch(p.hs){
+  case "long": back=`<path d="M60 112 Q56 62 100 60 Q144 62 140 112 L146 178 Q100 190 54 178Z" fill="${h}"/>`;
+   front=`<path d="M63 106 Q64 66 100 64 Q137 66 137 106 Q126 80 96 80 Q76 82 63 106Z" fill="${h}"/>`;break;
+  case "short": front=`<path d="M63 108 Q60 64 100 62 Q141 64 137 108 Q132 84 100 82 Q70 84 63 108Z" fill="${h}"/>`;break;
+  case "curly": front=[[66,100],[70,82],[84,68],[100,63],[116,68],[130,82],[134,100]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="14" fill="${h}"/>`).join("");break;
+  case "bun": front=`<circle cx="100" cy="56" r="15" fill="${h}"/><path d="M63 108 Q60 64 100 62 Q141 64 137 108 Q132 84 100 82 Q70 84 63 108Z" fill="${h}"/>`;break;
+  case "bald": front=`<path d="M64 100 Q61 118 68 126 L71 102Z" fill="${h}"/><path d="M136 100 Q139 118 132 126 L129 102Z" fill="${h}"/>`;break;
+  case "cap": front=`<path d="M64 104 Q62 116 68 122 L70 104Z" fill="${h}"/><path d="M62 100 Q62 62 100 62 Q138 62 138 100 Q120 92 100 92 Q80 92 62 100Z" fill="${cap}"/><ellipse cx="128" cy="99" rx="38" ry="6" fill="${cap}"/>`;break;
+  case "helmet": front=`<path d="M60 104 Q60 60 100 60 Q140 60 140 104Z" fill="${cap}"/><rect x="94" y="60" width="12" height="44" rx="5" fill="#fff" opacity=".35"/><rect x="50" y="98" width="100" height="10" rx="5" fill="${cap}"/>`;break;
+  case "scarf": back=`<path d="M56 116 Q54 56 100 56 Q146 56 144 116 Q150 162 132 172 L68 172 Q50 162 56 116Z" fill="${h}"/>`;
+   front=`<path d="M64 102 Q66 68 100 68 Q134 68 136 102 Q128 82 100 82 Q72 82 64 102Z" fill="${h}"/>`;break;
+ }
+ const neck=`<rect x="88" y="138" width="24" height="26" fill="${s}"/><rect x="88" y="138" width="24" height="10" fill="#000" opacity=".12"/>`;
+ const body=`<path d="M28 232 Q32 162 100 156 Q168 162 172 232Z" fill="${p.shirt}"/>`;
+ const head=`<ellipse cx="100" cy="110" rx="36" ry="40" fill="${s}"/><circle cx="80" cy="124" r="6" fill="#E5654E" opacity=".22"/><circle cx="120" cy="124" r="6" fill="#E5654E" opacity=".22"/>`;
+ const eyes=`<circle cx="87" cy="112" r="3.6" fill="#1d1d1d"/><circle cx="113" cy="112" r="3.6" fill="#1d1d1d"/>`+(old?`<path d="M80 104 L94 105 M106 105 L120 104" stroke="${h}" stroke-width="3" stroke-linecap="round"/>`:"");
+ const beard=p.beard?`<path d="M65 112 Q66 152 100 154 Q134 152 135 112 Q128 140 100 141 Q72 140 65 112Z" fill="${h}"/>`:"";
+ const mouth=`<path d="M91 131 Q100 137 109 131" stroke="#6B3A2A" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+ const mus=p.mus?`<path d="M86 127 Q100 118 114 127 Q100 131 86 127Z" fill="${h}"/>`:"";
+ const gl=p.gl?`<circle cx="87" cy="112" r="10" fill="#fff" fill-opacity=".15" stroke="#1d1d1d" stroke-width="3"/><circle cx="113" cy="112" r="10" fill="#fff" fill-opacity=".15" stroke="#1d1d1d" stroke-width="3"/><path d="M97 112 L103 112" stroke="#1d1d1d" stroke-width="3"/>`:"";
+ const sun=p.sun?`<rect x="74" y="104" width="24" height="14" rx="5" fill="#1d1d1d"/><rect x="102" y="104" width="24" height="14" rx="5" fill="#1d1d1d"/><path d="M98 110 L102 110" stroke="#1d1d1d" stroke-width="3"/>`:"";
+ const tie=p.tie?`<path d="M100 158 L92 164 L100 170 L108 164Z" fill="#fff"/><path d="M96 168 L104 168 L107 200 L100 210 L93 200Z" fill="#C8452F"/>`:"";
+ return `<svg viewBox="0 0 200 232"><circle cx="100" cy="112" r="74" fill="#fff" opacity=".18"/>${back}${body}${tie}${neck}${head}${eyes}${beard}${mouth}${mus}${gl}${sun}${front}</svg>`;
+}
+
+/* ---------- 2075 sahnesi ---------- */
+const W={};
+function buildWorld(){
+ const trees=[],blds=[],people=[];
+ for(let i=0;i<16;i++){const x=12+i*22+((i*37)%9)-4, y=104+((i*13)%5)-2;
+  trees.push(`<g class="w-t tree"><rect x="${x-1}" y="${y}" width="2" height="5" fill="#3A2A20"/><path d="M${x} ${y-14} L${x+6} ${y+1} L${x-6} ${y+1}Z" fill="${i%3?'#2F7D4F':'#3E9460'}"/></g>`);}
+ const B=[[122,14,30],[138,18,44],[158,12,26],[172,20,52],[194,14,36],[210,16,30],[228,12,22],[242,18,40]];
+ B.forEach(([x,w,h])=>{let win="";for(let yy=112-h+5;yy<108;yy+=7)for(let xx=x+3;xx<x+w-3;xx+=5)win+=`<rect x="${xx}" y="${yy}" width="2.4" height="3" fill="#FFD98A"/>`;
+  blds.push(`<g class="w-t bld"><rect x="${x}" y="${112-h}" width="${w}" height="${h}" fill="#1E3F4C"/><g class="w-t win">${win}</g></g>`);});
+ const pc=["#E5654E","#F2B544","#EAF2EF","#3CC8B4","#9B7FD1","#F4A261","#EAF2EF","#E07A5F"];
+ for(let i=0;i<8;i++){const x=24+i*42;people.push(`<g class="w-t ppl"><circle cx="${x}" cy="107" r="1.8" fill="#2B1B12"/><rect x="${x-1.6}" y="109" width="3.2" height="5" rx="1.4" fill="${pc[i]}"/></g>`);}
+ const turb=[[40,72],[76,66],[110,54]].map(([x,y])=>`<g><rect x="${x-.7}" y="${y-18}" width="1.4" height="18" fill="#EAF2EF"/><g class="blade" style="transform-origin:${x}px ${y-18}px;transform-box:view-box"><path d="M${x} ${y-18} L${x+.8} ${y-29} L${x-.8} ${y-29}Z M${x} ${y-18} L${x+10} ${y-13} L${x+9} ${y-11}Z M${x} ${y-18} L${x-10} ${y-13} L${x-9} ${y-11}Z" fill="#EAF2EF"/></g></g>`).join("");
+ const panels=[0,1,2,3].map(i=>`<path d="M${284+i*14} 106 l10 0 l-3 -5 l-10 0Z" fill="#2E5AAC" stroke="#9CC3F0" stroke-width=".5"/>`).join("");
+ document.getElementById("world").innerHTML=`
+ <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E7391"/><stop offset=".6" stop-color="#9ED5D4"/><stop offset="1" stop-color="#F6D9A8"/></linearGradient>
+ <linearGradient id="smog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E4630"/><stop offset="1" stop-color="#D08A48"/></linearGradient>
+ <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2AA6A6"/><stop offset="1" stop-color="#145E73"/></linearGradient></defs>
+ <rect width="360" height="150" fill="url(#sky)"/>
+ <rect id="wSmog" class="w-t" width="360" height="150" fill="url(#smog)" opacity="0"/>
+ <circle id="wSun" class="w-t" cx="300" cy="44" r="15" fill="#FFD27A"/>
+ <g id="wBirds" class="w-t"><path d="M60 30 q4 -4 8 0 q4 -4 8 0" stroke="#173F4A" stroke-width="1.4" fill="none"/><path d="M84 22 q3 -3 6 0 q3 -3 6 0" stroke="#173F4A" stroke-width="1.2" fill="none"/></g>
+ <path d="M0 96 L40 72 L76 84 L110 54 L150 80 L190 62 L232 86 L270 60 L312 82 L360 68 L360 112 L0 112Z" fill="#3D6B6A"/>
+ <g id="wTurb" class="w-t">${turb}</g>
+ <path d="M0 104 Q60 92 120 100 T240 98 T360 100 V114 H0Z" fill="#2F5D57"/>
+ <g id="wTrees">${trees.join("")}</g>
+ <g id="wPanels" class="w-t">${panels}</g>
+ <g id="wChimney" class="w-t"><rect x="262" y="78" width="7" height="34" fill="#5B5B5B"/><g><circle class="smoke" cx="265" cy="76" r="5" fill="#6E6E6E"/><circle class="smoke" cx="265" cy="76" r="5" fill="#6E6E6E"/><circle class="smoke" cx="265" cy="76" r="5" fill="#6E6E6E"/></g></g>
+ <g id="wBld">${blds.join("")}</g>
+ <rect x="0" y="112" width="360" height="5" fill="#D9C08E"/>
+ <g id="wPpl">${people.join("")}</g>
+ <g id="wSea" class="w-t"><rect x="0" y="117" width="360" height="60" fill="url(#seaG)"/>
+  <path class="wave" d="M0 118 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0" stroke="#BFEDE6" stroke-width="1.2" fill="none" opacity=".8"/>
+  <g id="wBuoy" class="w-t"><circle cx="300" cy="124" r="2.2" fill="#F2B544"/><circle cx="322" cy="128" r="2.2" fill="#F2B544"/><circle cx="342" cy="123" r="2.2" fill="#F2B544"/></g></g>
+ <rect id="wDim" class="w-t" width="360" height="150" fill="#06141A" opacity="0"/>`;
+ W.trees=[...document.querySelectorAll("#wTrees .tree")];
+ W.blds=[...document.querySelectorAll("#wBld .bld")];
+ W.wins=[...document.querySelectorAll("#wBld .win")];
+ W.ppl=[...document.querySelectorAll("#wPpl .ppl")];
+ ["wSmog","wSun","wBirds","wTurb","wPanels","wChimney","wSea","wBuoy","wDim"].forEach(id=>W[id]=document.getElementById(id));
+}
+function updateWorld(){
+ const {d,h,e,n}=S.m, F=f=>S.flags.includes(f);
+ const t=Math.round(d/100*W.trees.length);
+ W.trees.forEach((g,i)=>g.style.opacity=i<t?1:0);
+ W.wSmog.style.opacity=Math.max(0,(55-d)/55)*0.85+(F("komur")&&!F("komurkapat")?0.1:0);
+ W.wSun.style.opacity=d<25?0.5:1;
+ W.wBirds.style.opacity=d>55?1:0;
+ W.wSea.style.transform=`translateY(${-((100-d)/100*16).toFixed(1)}px)`;
+ W.blds.forEach((g,i)=>g.style.transform=`scaleY(${(0.5+e/100*(0.9+i%3*0.25)).toFixed(2)})`);
+ W.wins.forEach(g=>g.style.opacity=Math.min(1,n/70));
+ W.wDim.style.opacity=n<35?((35-n)/35*0.55).toFixed(2):0;
+ const p=Math.round(h/100*W.ppl.length);
+ W.ppl.forEach((g,i)=>g.style.opacity=i<p?1:0);
+ W.wTurb.style.opacity=F("ruzgar")?1:0;
+ W.wPanels.style.opacity=F("gunes")?1:0;
+ W.wChimney.style.opacity=F("komur")&&!F("komurkapat")?1:0;
+ W.wBuoy.style.opacity=F("dalga")?1:0;
+ const cm=Math.round(18+(100-d)*0.7+(e>70?5:0));
+ const temp=(31+(100-d)*0.06+(n>85?1.2:0)).toFixed(1).replace(".",",");
+ document.getElementById("wstat").textContent=`Deniz seviyesi +${cm} cm · Temmuz ${temp}°C`;
+}
+
+/* ---------- Göstergeler ---------- */
+const MK=["d","h","e","n"], MN={d:"Doğa",h:"Halk",e:"Kasa",n:"Enerji"};
+const ICON={
+ d:`<path d="M12 1.5 L19.5 12.5 H15.5 L20.5 19.5 H13.5 V23 H10.5 V19.5 H3.5 L8.5 12.5 H4.5 Z"/>`,
+ h:`<circle cx="8" cy="6.5" r="3.6"/><circle cx="16.5" cy="7.5" r="3"/><path d="M1.5 22 Q1.5 12 8 12 Q14.5 12 14.5 22Z"/><path d="M15.5 22 Q15.5 13.5 17 13.2 Q22.5 13 22.5 22Z"/>`,
+ e:`<path fill-rule="evenodd" d="M12 1.5 A10.5 10.5 0 1 1 11.99 1.5Z M10.2 6 V10.6 L8 11.6 V13.4 L10.2 12.4 V13.6 L8 14.6 V16.4 L10.2 15.4 V18 H12 Q16.5 18 17 13.5 H15.2 Q14.8 16.2 12 16.4 V14.6 L14.6 13.4 V11.6 L12 12.8 V11.6 L14.6 10.4 V8.6 L12 9.8 V6Z"/>`,
+ n:`<path d="M14 1 L4 14 H11 L9.5 23 L20 9.5 H13 Z"/>`
+};
+function buildMeters(){
+ document.getElementById("meters").innerHTML=MK.map(k=>`<div class="meter" id="m_${k}">
+  <svg viewBox="0 0 24 24"><defs><clipPath id="c_${k}"><rect id="r_${k}" x="0" y="12" width="24" height="24" style="transition:y .6s cubic-bezier(.3,.7,.3,1)"/></clipPath></defs>
+  <g class="base">${ICON[k]}</g><g class="fill" clip-path="url(#c_${k})">${ICON[k]}</g></svg>
+  <span class="lbl">${MN[k]}</span><span class="dot" id="dot_${k}"></span></div>`).join("");
+}
+function renderMeters(prev){
+ MK.forEach(k=>{
+  const v=S.m[k];document.getElementById("r_"+k).setAttribute("y",(24-24*v/100).toFixed(2));
+  const el=document.getElementById("m_"+k);
+  el.classList.toggle("danger",v<=15||v>=85);
+  if(prev&&prev[k]!==v){const c=v>prev[k]?"up":"down";el.classList.remove("up","down");void el.offsetWidth;el.classList.add(c);setTimeout(()=>el.classList.remove(c),700);}
+ });
+}
+function showDots(o){MK.forEach(k=>{const d=document.getElementById("dot_"+k),v=o?Math.abs(o[k]||0):0;d.className="dot"+(v>=12?" lg":v>0?" sm":"");});}
+
+/* ---------- Ses ---------- */
+let AC=null,muted=false;
+function tone(f,dur,type="sine",vol=.05){if(muted)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.value=vol;g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+dur);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+dur);}catch(e){}}
+const sfx={swipe:()=>tone(320,.12,"triangle",.04),letter:()=>{tone(660,.5);setTimeout(()=>tone(880,.6),120)},end:()=>{tone(392,.7);setTimeout(()=>tone(523,.8),180);setTimeout(()=>tone(659,1),360)}};
+
+/* ---------- Kayıt ---------- */
+function loadEnds(){try{return JSON.parse(localStorage.getItem("gm_endings")||"[]")}catch(e){return[]}}
+function saveEnd(id){try{const a=loadEnds();if(!a.includes(id)){a.push(id);localStorage.setItem("gm_endings",JSON.stringify(a))}}catch(e){}}
+
+/* ---------- Oyun ---------- */
+let S=null,busy=false;
+const $=id=>document.getElementById(id);
+const clamp=v=>Math.max(0,Math.min(100,v));
+const fill=s=>s.replace(/\{E\}/g,S.hitap==="Dede"?"Baba":"Anne").replace(/\{H\}/g,S.hitap).replace(/\{Y\}/g,S.year);
+
+function newGame(hitap){
+ S={m:{d:50,h:50,e:50,n:50},year:2026,flags:[],used:[],queue:[],hitap,said:[],card:null,count:0};
+ renderMeters();updateWorld();renderYear();
+ showLetter(introLetter(),nextCard);
+}
+function introLetter(){
+ return `Sevgili ${S.hitap},\nBu mektubu sana nasıl gönderdiğimi sorma, uzun hikâye. Ben Deniz, torununum. Senin zamanında daha doğmadım bile.\nAnnem hep 2026’yı anlatır, İklim Konseyi’nin başına geçtiğin yılı. Burada dünyamızın her köşesinde senin kararlarının izi var.\nHer seçimin bana ulaşıyor. Lütfen dikkatli ol.`;
+}
+function midLetter(){
+ const lines=[`Sevgili ${S.hitap},`];
+ if(S.year===2050) lines.push("Annem doğduğum günü anlattı. Beni ilk kucağına aldığında ağlamışsın.");
+ let worst=null,dist=0;MK.forEach(k=>{const dd=Math.abs(S.m[k]-50);if(dd>dist){dist=dd;worst=k}});
+ if(dist>=25) lines.push(WORLD_LINES[worst][S.m[worst]<50?"lo":"hi"]);
+ else lines.push(CALM[(S.year/6|0)%CALM.length]);
+ const fresh=S.flags.filter(f=>FL[f]&&!S.said.includes(f));
+ if(fresh.length){const f=fresh[fresh.length-1];S.said.push(f);lines.push(FL[f]);}
+ lines.push(S.year>=2062?"2075’e az kaldı. Seni bekliyorum.":"Bir sonraki mektupta görüşürüz.");
+ return lines.join("\n");
+}
+function okCard(c){
+ if(c.at||c.chain||S.used.includes(c.id))return false;
+ if(c.min&&S.year<c.min)return false; if(c.max&&S.year>c.max)return false;
+ if(c.req&&!c.req.every(f=>S.flags.includes(f)))return false;
+ return true;
+}
+function pickCard(){
+ const forced=CARDS.find(c=>c.at===S.year&&!S.used.includes(c.id)); if(forced)return forced;
+ const qi=S.queue.findIndex(q=>q.at<=S.year);
+ if(qi>=0){const c=byId[S.queue.splice(qi,1)[0].id];if(c&&!S.used.includes(c.id))return c;}
+ let pool=CARDS.filter(okCard);
+ if(!pool.length){S.used=S.used.filter(id=>byId[id].at||byId[id].chain||byId[id].f);pool=CARDS.filter(okCard);}
+ if(!pool.length)pool=CARDS.filter(c=>!c.at&&!c.chain);
+ return pool[Math.floor(Math.random()*pool.length)];
+}
+function renderYear(){$("year").textContent=S.year;const l=2075-S.year;$("left").textContent=l>0?`2075’e ${l} yıl`:"2075";}
+function nextCard(){
+ S.card=pickCard().id;showCard(true);busy=false;
+}
+function showCard(anim){
+ const c=byId[S.card],ch=CH[c.c],card=$("card");
+ card.className="card";card.style.transform="";card.style.setProperty("--cbg",ch.bg);
+ $("portrait").innerHTML=portrait(ch.p,c.old);
+ $("who").innerHTML=`${ch.n} <small>${ch.r}</small>`;
+ $("qt").textContent=fill(c.t);
+ $("optL").textContent=c.l.x;$("optR").textContent=c.r.x;
+ $("btnLt").textContent=c.l.x;$("btnRt").textContent=c.r.x;
+ showSide(null,0);
+ if(anim){void card.offsetWidth;card.classList.add("enter");}
+}
+function showSide(side,a){
+ $("optL").style.opacity=side==="l"?a:0;$("optR").style.opacity=side==="r"?a:0;
+ showDots(side?byId[S.card][side]:null);
+}
+function commit(side){
+ if(busy||!S||!S.card)return;busy=true;sfx.swipe();
+ const card=$("card");card.classList.remove("dragging","enter");card.classList.add("fly");
+ card.style.transform=`translateX(${side==="l"?-150:150}%) rotate(${side==="l"?-24:24}deg)`;
+ showSide(null,0);
+ setTimeout(()=>choose(side),300);
+}
+function choose(side){
+ const c=byId[S.card],o=c[side],prev={...S.m};
+ MK.forEach(k=>S.m[k]=clamp(S.m[k]+(o[k]||0)));
+ if(o.f&&!S.flags.includes(o.f))S.flags.push(o.f);
+ if(o.nx)S.queue.push({id:o.nx[0],at:S.year+o.nx[1]});
+ S.used.push(c.id);S.count++;S.year++;
+ renderMeters(prev);updateWorld();renderYear();
+ const dead=MK.find(k=>S.m[k]<=0||S.m[k]>=100);
+ if(dead){setTimeout(()=>endGame(dead+(S.m[dead]<=0?"0":"100")),650);return;}
+ if(S.year>=2075){setTimeout(()=>endGame(finalType()),650);return;}
+ if(LETTER_YEARS.includes(S.year)){setTimeout(()=>showLetter(midLetter(),nextCard),450);return;}
+ nextCard();
+}
+function finalType(){
+ const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),F=f=>S.flags.includes(f);
+ if(bal&&F("kapsul")&&F("denizkiyi"))return"sonsuz";
+ if(bal)return"mavi"; if(S.m.d>=65)return"yesil"; return"kirilgan";
+}
+
+/* Mektup gösterimi: daktilo efekti, dokununca tamamlanır */
+let typer=null;
+function typeInto(el,text,done){
+ clearInterval(typer);el.textContent="";
+ const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ if(reduce){el.textContent=text;done&&done();return;}
+ let i=0;typer=setInterval(()=>{i+=2;el.textContent=text.slice(0,i);if(i>=text.length){clearInterval(typer);typer=null;done&&done();}},18);
+ el.onclick=()=>{if(typer){clearInterval(typer);typer=null;el.textContent=text;done&&done();}};
+}
+function showLetter(text,then){
+ busy=true;sfx.letter();
+ const ov=$("letterScreen");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");
+ $("lfrom").textContent=`Deniz’den · ${S.year} yılına ulaştı`;
+ typeInto($("ltext"),text);
+ $("lnext").onclick=()=>{clearInterval(typer);ov.hidden=true;then();};
+ $("lnext").focus({preventScroll:true});
+}
+function endGame(id){
+ busy=true;sfx.end();saveEnd(id);
+ const E=ENDINGS[id],death=!["mavi","yesil","kirilgan","sonsuz"].includes(id);
+ let text=`Sevgili ${S.hitap},\n`+fill(E.t);
+ if(death&&S.year<2049)text+="\nAnnem bu dünyaya çocuk getirmemeye karar vermiş. Yani ben belki de hiç doğmadım. Bu mektubu kim yazıyor, bilmiyorum.";
+ if(!death){const f=S.flags.filter(x=>FL[x]).slice(-2);if(f.length)text+="\n"+f.map(x=>FL[x]).join(" ");}
+ $("epm").className="postmark"+(death?" red":"");
+ $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"ANTALYA<br>·<br>2075";
+ $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"2075’e ulaştın";
+ $("ename").textContent=E.n;
+ const got=loadEnds();
+ $("estats").innerHTML=`<span><b>${S.year}</b>ulaşılan yıl</span><span><b>${S.count}</b>karar</span><span><b>${got.length}/12</b>son keşfedildi</span>`;
+ $("egrid").innerHTML=END_ORDER.map(k=>`<div class="chip${got.includes(k)?" got":""}${k===id?" now":""}">${got.includes(k)?ENDINGS[k].n:"? ? ?"}</div>`).join("");
+ const ov=$("endScreen");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");
+ typeInto($("etext"),text);
+ S.card=null;
+}
+
+/* ---------- Kaydırma ---------- */
+const card=$("card");let drag=null;
+card.addEventListener("pointerdown",e=>{if(busy)return;drag={x:e.clientX,dx:0,id:e.pointerId};card.setPointerCapture(e.pointerId);card.classList.add("dragging");card.classList.remove("enter");});
+card.addEventListener("pointermove",e=>{if(!drag)return;drag.dx=e.clientX-drag.x;const dx=drag.dx;
+ card.style.transform=`translateX(${dx}px) rotate(${dx/14}deg)`;
+ showSide(dx<-20?"l":dx>20?"r":null,Math.min(1,Math.abs(dx)/80));});
+function release(){if(!drag)return;const dx=drag.dx;drag=null;card.classList.remove("dragging");
+ if(Math.abs(dx)>90)commit(dx<0?"l":"r");else{card.style.transform="";showSide(null,0);}}
+card.addEventListener("pointerup",release);card.addEventListener("pointercancel",release);
+["l","r"].forEach(s=>{const b=$(s==="l"?"btnL":"btnR");
+ b.addEventListener("mouseenter",()=>{if(!busy){showSide(s,1);card.style.transform=`translateX(${s==="l"?-14:14}px) rotate(${s==="l"?-3:3}deg)`;}});
+ b.addEventListener("mouseleave",()=>{if(!busy){showSide(null,0);card.style.transform="";}});
+ b.addEventListener("focus",()=>{if(!busy)showSide(s,1)});
+ b.addEventListener("click",()=>commit(s));});
+document.addEventListener("keydown",e=>{
+ if(!$("letterScreen").hidden&&(e.key==="Enter"||e.key===" ")){e.preventDefault();$("lnext").click();return;}
+ if(busy)return;if(e.key==="ArrowLeft")commit("l");if(e.key==="ArrowRight")commit("r");});
+
+$("mute").addEventListener("click",()=>{muted=!muted;$("mute").textContent=muted?"SES KAPALI":"SES AÇIK";$("mute").setAttribute("aria-pressed",muted);});
+document.querySelectorAll("[data-h]").forEach(b=>b.addEventListener("click",()=>{$("startScreen").hidden=true;newGame(b.dataset.h);}));
+$("again").addEventListener("click",()=>{$("endScreen").hidden=true;showStart();});
+function showStart(){const g=loadEnds().length;$("found").textContent=g?`Keşfedilen sonlar: ${g}/12`:"12 farklı son seni bekliyor.";const ov=$("startScreen");ov.hidden=false;}
+
+/* ---------- Başlat ---------- */
+buildMeters();buildWorld();
+function boot(data){
+ if(data&&data.S&&data.S.card){S=data.S;$("startScreen").hidden=true;renderMeters();updateWorld();renderYear();showCard(false);busy=false;return;}
+ S={m:{d:50,h:50,e:50,n:50},year:2026,flags:[],used:[],queue:[],hitap:"Dede",said:[],card:"ilk",count:0};
+ renderMeters();updateWorld();renderYear();showCard(false);busy=true;showStart();
+}
+const hot=window.claude&&window.claude.hot;
+if(hot&&hot.snapshot)hot.snapshot(()=>({S}));
+if(hot&&hot.ready)hot.ready(boot);else boot(hot&&hot.data||{});
+</script>
