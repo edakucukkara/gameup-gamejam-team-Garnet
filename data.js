@@ -188,7 +188,7 @@ const LOCKS={
  ormanyol:"Amazon’un ortasından otoyolu onayladın; orman parçalandı",
  mangrovkes:"Mangrovların kesilmesine izin verdin; doğal kıyı kalmadı",
  kuyu:"Sınırsız kuyu izni verdin; çöken akifer suyu bir daha tutamaz",
- afrikakomur:"2029’da Afrika’da kurulan kömür santrallerinin uzun vadeli alım sözleşmeleri hâlâ sürüyor",
+ afrikakomur:"Afrika’da kurduğun kömür santrallerinin uzun vadeli alım sözleşmeleri hâlâ sürüyor",
  uyarired:"Erken uyarı sistemi için fonu reddettin; insanlara haber verecek bir sistem yok",
  madencilik:"Derin deniz tabanının kazılmasına izin verdin; o canlıların yaşadığı yer kazıldı",
  adared:"Ada ülkelerinin uyum fonu talebini reddettin",
@@ -245,7 +245,7 @@ const CALM=[
  "Annem senin bir zamanlar çok zor kararlar verdiğini anlatıyor. Şimdi neden olduğunu anlıyorum.",
  "Arkadaşlarla Konyaaltı’nda bisiklet sürdük. Rüzgâr hep denizden esiyor, sen de sever miydin?",
 ];
-// 2075 ısınmasına göre (Engine.world): lo ≈ 2°C altı, hi ≈ 2,8°C üstü
+// 2075 ısınmasına göre (Engine.band): lo = 2°C altı, hi = 2,5°C ve üstü
 const CLIMATE={
  lo:["Öğretmenimiz bir zamanlar ısınmanın 3 dereceye gidebileceğini anlattı. Biz 2 derecenin altında kaldık; sınıfça alkışladık.","Bu yaz sıcak ama dayanılır. Annem ‘eskiden çok daha kötü olacak sanıyorduk’ diyor.",
   "Kışın Saklıkent’e kayağa gittik. Annem ‘çocukluğumdaki kadar kar var’ dedi.","Belek’te bu yıl çıkan yavruların arasında erkekler de varmış. Dr. Nil ‘kum çok ısınmadı’ diye sevindi."],

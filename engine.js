@@ -17,7 +17,7 @@ const Engine={
   return{t:Math.round((t0-(this.has(S,"aerosol")?.5:0))*10)/10,t0,sl:Math.round(lerp(32,38,45))};
  },
  // Mektuplar ve kilitler maskelenmemiş ısınmaya bakar: aerosolle "2 derecenin altında kaldık" denmez
- band(S){const t=this.world(S).t0;return t<2?"lo":t>=2.7?"hi":"mid"},
+ band(S){const t=this.world(S).t0;return t<2?"lo":t>=2.5?"hi":"mid"},
 
  /* Kapanan kapılar: seçeneğin lock listesindeki bayraklardan biri varsa kapalıdır */
  lockOf(S,o){
