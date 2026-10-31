@@ -91,7 +91,7 @@ Dünya bir eşiği geçince bir **olay dosyası** gelir; bekletilemez. Yedi olay
 ## Repo yapısı
 
 ```
-index.html              Sayfa iskeleti ve stiller (gece masası paleti)
+index.html              Sayfa iskeleti ve stiller (retro poster paleti)
 data.js                 İçerik: karakterler, kartlar, kilit sebepleri, kapı bildirimleri, gelecekten notlar, final, mektuplar, sonlar, kaynaklar
 engine.js               Oyun kuralları (DOM'a dokunmaz): gündem ve dosyalar, kilitler, iklim modeli, mektup metinleri
 ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, açık dosya, final ve çember sahnesi, rapor

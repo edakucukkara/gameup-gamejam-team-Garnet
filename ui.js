@@ -457,12 +457,12 @@ function showReflect(){
 // Deniz, 2026'daki büyüğüne ilk mektubu yazar: oyun açılışındaki mektup budur. İyi sonlarda bir teşekkür mektubu olur
 function drawLoopSky(){
  const stars=Array.from({length:24},(_,i)=>`<circle cx="${(i*47+13)%220}" cy="${(i*29)%46+4}" r="${i%3?.45:.8}" fill="#fff" opacity="${(.35+(i%4)*.15).toFixed(2)}"/>`).join("");
- $("loopsky").innerHTML=`<defs><linearGradient id="lsk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141B3A"/><stop offset="1" stop-color="#3B3F6E"/></linearGradient></defs>
-  <rect width="220" height="100" fill="url(#lsk)"/>${stars}<circle cx="168" cy="24" r="9" fill="#F7F1E3"/><circle cx="172" cy="21" r="8" fill="#2A3160" opacity=".35"/>
-  <path d="M0 62 L30 46 L58 57 L86 38 L118 55 L150 44 L182 59 L220 49 V70 H0Z" fill="#232A52"/>
-  <g fill="#F2A65A">${[[34,64],[46,62],[58,65],[72,63],[98,60],[110,63],[122,61],[134,64],[146,62]].map(([x,y])=>`<rect x="${x}" y="${y}" width="1.6" height="1.6"/>`).join("")}</g>
-  <rect y="68" width="220" height="32" fill="#1B3A5A"/><path d="M160 71 h16 M155 77 h26 M161 83 h14 M157 89 h22 M162 95 h12" stroke="#F7F1E3" stroke-width=".8" opacity=".45"/>
-  <path d="M110 0 V100 M0 50 H220" stroke="#0B1020" stroke-width="3"/><rect width="220" height="100" fill="none" stroke="#0B1020" stroke-width="6"/>
+ $("loopsky").innerHTML=`<defs><linearGradient id="lsk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#21404C"/><stop offset="1" stop-color="#D08A55"/></linearGradient></defs>
+  <rect width="220" height="100" fill="url(#lsk)"/>${stars}<circle cx="168" cy="24" r="9" fill="#F7F1E3"/><circle cx="172" cy="21" r="8" fill="#21404C" opacity=".35"/>
+  <path d="M0 62 L30 46 L58 57 L86 38 L118 55 L150 44 L182 59 L220 49 V70 H0Z" fill="#4A3340"/>
+  <g fill="#F4C77A">${[[34,64],[46,62],[58,65],[72,63],[98,60],[110,63],[122,61],[134,64],[146,62]].map(([x,y])=>`<rect x="${x}" y="${y}" width="1.6" height="1.6"/>`).join("")}</g>
+  <rect y="68" width="220" height="32" fill="#1E6E73"/><path d="M160 71 h16 M155 77 h26 M161 83 h14 M157 89 h22 M162 95 h12" stroke="#F7F1E3" stroke-width=".8" opacity=".45"/>
+  <path d="M110 0 V100 M0 50 H220" stroke="#2A1B12" stroke-width="3"/><rect width="220" height="100" fill="none" stroke="#2A1B12" stroke-width="6"/>
   <g>${[[110,48],[96,40],[124,38],[104,28],[118,58],[90,56]].map(([x,y],i)=>`<circle class="spark" cx="${x}" cy="${y}" r="${1.4+i%2}" style="transform-box:fill-box;transform-origin:center;animation-delay:${i*.12}s"/>`).join("")}</g>`;
 }
 function rollYear(from,to,ms){
