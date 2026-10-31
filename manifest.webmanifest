@@ -1,0 +1,19 @@
+{
+  "name": "Gelecekten Mektup",
+  "short_name": "Mektup",
+  "description": "2075'teki torunun Deniz sana mektup yazıyor. Kararlarınla onun dünyasını değiştir.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F1E2C4",
+  "theme_color": "#F1E2C4",
+  "categories": ["games", "education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

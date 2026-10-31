@@ -38,6 +38,13 @@ Sonra tarayıcıda `http://localhost:8765` adresini açın. Telefon görünümü
 
 **Demo modu:** Açılış ekranının sağ altındaki "Demo modu" bağlantısına basıp sonra Dede ya da Nine'yi seçin. Her tur 2 yıl ilerler ve mektuplar daha hızlı yazılır. Oynanış videosu çekmek için.
 
+**Uygulama olarak kurulum (PWA):** Oyun bir web oyunu ama telefona uygulama gibi kurulabilir: kendi simgesiyle ana ekrana gelir, adres çubuğu olmadan tam ekran açılır ve internet olmadan da çalışır. Bunun için oyunun HTTPS üzerinden açılması gerekir (GitHub Pages yeterli; `localhost` da sayılır).
+- **Bilgisayarda (Chrome/Edge):** `http://localhost:8765`'i açın → adres çubuğunun sağındaki "Yükle" simgesine basın. F12 → *Application* sekmesinde *Manifest* (simge ve ad) ve *Service workers* (durum: activated) görünmeli. Çevrimdışı denemek için *Network* sekmesinde "Offline" seçip sayfayı yenileyin.
+- **Android (Chrome):** GitHub Pages adresini açın → menü (⋮) → "Ana ekrana ekle" ya da "Uygulamayı yükle".
+- **iPhone (Safari):** GitHub Pages adresini açın → Paylaş → "Ana Ekrana Ekle".
+- **Güncelleme:** Kurulu oyun önce önbellekteki sürümü açar, arkada yenisini indirir; yeni sürüm bir sonraki açılışta görünür. Geliştirirken eski sürüm görürseniz sayfayı iki kez yenileyin ya da F12 → *Application* → *Service workers* → "Update on reload" kutusunu işaretleyin. Önbelleğe giren dosya listesi `sw.js` içinde; yeni bir dosya eklerseniz oraya da yazın ve `CACHE` adını artırın.
+- **Simge:** `icons/icon.svg` asıl çizim; PNG'ler (192, 512, 180 ve maskable 512) ondan üretildi.
+
 **Denge simülasyonu ve içerik kontrolü** (Node gerekir):
 
 ```bash
@@ -95,6 +102,9 @@ index.html              Sayfa iskeleti ve stiller (retro poster paleti)
 data.js                 İçerik: karakterler, kartlar, kilit sebepleri, kapı bildirimleri, gelecekten notlar, final, mektuplar, sonlar, kaynaklar
 engine.js               Oyun kuralları (DOM'a dokunmaz): gündem ve dosyalar, kilitler, iklim modeli, mektup metinleri
 ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, açık dosya, final ve çember sahnesi, rapor
+manifest.webmanifest    Uygulama tanımı (ad, simge, renk); telefona kurulum için
+sw.js                   Service worker: çevrimdışı çalışma ve önbellek
+icons/                  Uygulama simgesi (SVG asıl çizim, PNG kopyaları)
 tools/sim.js            Denge simülasyonu ve içerik kontrolü
 docs/                   Yapılanlar ve yapılacaklar; TASARIM ve İÇERİK-REHBERİ ilk sürüme göre (güncellenecek)
 ```
@@ -119,7 +129,7 @@ docs/                   Yapılanlar ve yapılacaklar; TASARIM ve İÇERİK-REHBE
 ## Yayınlama (jam teslimi)
 
 **itch.io:**
-1. `index.html`, `data.js`, `engine.js` ve `ui.js` dosyalarını birlikte zip'leyin.
+1. `index.html`, `data.js`, `engine.js`, `ui.js`, `manifest.webmanifest`, `sw.js` ve `icons/` klasörünü birlikte zip'leyin.
 2. itch.io'da yeni proje açın; *Kind of project* olarak *HTML* seçin.
 3. Zip'i yükleyin ve *This file will be played in the browser* seçeneğini işaretleyin.
 4. Pencere boyutunu 440 × 820 yapın ve "Mobile friendly" seçeneğini açın.

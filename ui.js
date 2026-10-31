@@ -599,3 +599,7 @@ function boot(data){
 const hot=window.claude&&window.claude.hot;
 if(hot&&hot.snapshot)hot.snapshot(()=>({S}));
 if(hot&&hot.ready)hot.ready(boot);else boot(hot&&hot.data||{});
+
+/* ---------- Uygulama olarak kurulum (PWA) ----------
+ sw.js oyunu çevrimdışı çalıştırır; telefonda "Ana ekrana ekle" ile uygulama gibi açılır. Dosyadan (file://) açılınca devre dışı. */
+if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
