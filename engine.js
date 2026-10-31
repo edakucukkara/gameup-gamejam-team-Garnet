@@ -1,0 +1,216 @@
+/* Oyun motoru: DOM'a dokunmaz. Tarayıcıda ui.js, Node'da tools/sim.js kullanır. data.js'ten sonra yüklenir. */
+const MK=["d","h","e","n"], MN={d:"Doğa",h:"Uluslar",e:"Fon",n:"Enerji"};
+const byId=Object.fromEntries(CARDS.concat(EPI).map(c=>[c.id,c]));
+const clamp=v=>Math.max(0,Math.min(100,v));
+const cap=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------- Arka plan: dünya sistemleri ----------
+ Görünen dört denge kartlarla anında değişir; arkadaki sistemler her yıl onları yavaşça iter.
+ tk temiz enerji kapasitesi · fk fosil kapasite · tal enerji talebi (2026 talebi = 100) · r temiz kapasitenin yıllık büyümesi
+ tg talebin yıllık artışı (%) · or ormanlar · ok okyanuslar · uy uyum kapasitesi · gv güven ve adalet (0–100)
+ mt metan programı (0–1) · rm havadan karbon çekme (Gt/yıl) · em yıllık CO₂ (Gt) · cum 2026'dan beri birikimli CO₂ (Gt)
+ T ısınma (°C, sanayi öncesine göre; T0 aerosolsüz) · sl deniz seviyesi (cm, 2000'e göre) · D yıllık afet zararı */
+const SYS0={tk:20,fk:85,tal:100,r:.025,tg:.8,or:60,ok:55,uy:30,gv:50,mt:0,mtr:0,rm:0,aer:0,em:40,cum:0,T:1.4,T0:1.4,sl:10,D:.56};
+const HK=["tk","fk","tal","r","tg","or","ok","uy","gv","mt","rm"]; // seçeneklerin arka plan etkileri
+
+const Sys={
+ // Dünyayı bir yıl ilerletir
+ step(s,y){
+  s.tk+=s.tk*s.r*Math.max(0,1-s.tk/(s.tal*1.1));              // temiz enerji S-eğrisiyle büyür, talebe yaklaşınca yavaşlar
+  s.fk*=s.tk>s.tal*.8?.9:s.tk>s.tal*.6?.95:.98;                // fosil emekliye ayrılır; temiz enerji ucuzlayınca daha hızlı
+  const extra=Math.max(0,s.tk+s.fk-s.tal);                     // fazla arz ucuzluk getirir, talep şişer (geri tepme)
+  s.tal*=1+(s.tg+Math.max(0,s.T-1.4)*.5+extra*.03)/100;        // ısındıkça klima talebi de artar
+  const gap=s.tal-s.tk-s.fk;if(gap>0)s.fk+=gap*.7;             // arz yetmezse piyasa gaz santrali kurar
+  const land=cap(4*(1-(s.or-60)/40),-1,8);                     // orman kaybı karbon salar, korunan orman tutar
+  s.em=36*Math.max(0,s.tal-s.tk)/80+land;s.cum+=s.em-s.rm;
+  s.mtr=Math.min(1,s.mt,s.mtr+.1);                             // metan kesintisi birkaç yılda etkisini gösterir
+  // Her 1000 milyar ton CO₂ ≈ +0,45°C (IPCC AR6, TCRE); diğer gazlar yavaşça ekler, metan kesintisi düşürür
+  s.T0=1.4+.00045*s.cum+.002*(y-2026)-.2*s.mtr;s.T=s.T0-(s.aer?.5:0);
+  s.sl+=.45*(s.T0-.5);                                         // deniz ısınmayla hızlanır, emisyon dursa da yükselir
+  s.or=cap(s.or-.15*Math.max(0,s.T-1.5),0,100);s.ok=cap(s.ok-.2*Math.max(0,s.T-1.2),0,100);
+  s.uy=cap(s.uy-.3,0,100);s.gv=cap(s.gv,0,100);
+  s.D=(Math.max(0,s.T-1.2)*3+Math.max(0,s.sl-15)/8)*(1-s.uy/100); // tehlike × hazırlıksızlık
+ },
+};
+// Durum olayları: koşul gerçekleşince ilgili kart (data.js'te ev:1) bir kez gelir ve aynı adlı bayrağı bırakır
+const TRIG={
+ ev_mercan:s=>s.T>=1.7,
+ ev_sebeke:s=>s.tk+s.fk-s.tal<-6,
+ ev_temiz:s=>s.tk>=s.tal*.5,
+ ev_afet:s=>s.D>=3,
+ ev_sicak:s=>s.T>=2,
+ ev_goc:s=>s.D>=2&&s.gv<45,
+ ev_amazon:s=>s.or<40||(s.T>=2.3&&s.or<55),
+};
+
+const Engine={
+ // "tam": her tur 1 yıl · "hizli": her tur 2 yıl, kararların arka plan etkisi de iki yıllık sayılır
+ newState(mode="tam"){
+  return{m:{d:50,h:50,e:50,n:50},s:{...SYS0},year:2026,mode,step:mode==="hizli"?2:1,flags:[],fy:{},fired:[],used:[],queue:[],offer:null,sunk:[],said:[],hits:[],told:0,card:null,count:0,epi:null,ei:0,doors:[],last:null,ps:null};
+ },
+ has(S,f){return S.flags.includes(f)},
+ fill(S,s){return s.replace(/\{Y\}/g,S.year)},
+
+ // 2075 tahmini: bugünkü dünya yeni karar alınmadan 2075'e nasıl varır (her kararda bir kez hesaplanır)
+ world(S){
+  if(S._wc===S.count)return S._w;
+  const s={...S.s};for(let y=S.year;y<2075;y++)Sys.step(s,y);
+  S._wc=S.count;
+  return S._w={t:Math.round(s.T*10)/10,t0:s.T0,sl:Math.round(s.sl),tem:Math.round(100*Math.min(1,s.tk/s.tal))};
+ },
+ // Mektuplar maskelenmemiş ısınmaya bakar: aerosolle "2 derecenin altında kaldık" denmez
+ band(S){const t=this.world(S).t0;return t<2?"lo":t>=2.5?"hi":"mid"},
+
+ /* Kapanan kapılar: seçeneğin lock listesindeki bayraklardan biri varsa kapalıdır */
+ lockOf(S,o){
+  for(const k of o.lock||[]){
+   const on=k==="@hot"?this.world(S).t0>=2.6:k==="@notcut"?S.s.em>20:this.has(S,k);
+   if(on)return{k,y:S.fy[k]||S.year,why:LOCKS[k]};
+  }
+  return null;
+ },
+ locks(S,c){return{l:this.lockOf(S,c.l),r:this.lockOf(S,c.r)}},
+
+ // Denizde olan (ertelenmiş ya da sonucu beklenen) şişe havuzdan tekrar çıkmaz
+ okCard(S,c){
+  if(c.at||c.chain||c.ev||S.used.includes(c.id)||S.queue.some(q=>q.id===c.id))return false;
+  if(c.min&&S.year<c.min)return false; if(c.max&&S.year>c.max)return false;
+  if(c.req&&!c.req.every(f=>this.has(S,f)))return false;
+  return true;
+ },
+ poolCard(S,rnd,skip){
+  const ok=c=>this.okCard(S,c)&&!skip.includes(c.id);
+  let pool=CARDS.filter(ok);
+  if(!pool.length){S.used=S.used.filter(id=>byId[id].at||byId[id].chain||byId[id].ev);pool=CARDS.filter(ok);}
+  return pool.length?pool[Math.floor(rnd()*pool.length)]:null;
+ },
+ /* Gelgit: bu turun şişeleri kıyıya vurur (S.offer). Zorunlu kart ve eşik olayı tek gelir, bekletilemez.
+  Yoksa iki şişe gelir: önce vakti gelenler (kararlarının sonuçları, geri dönen mektuplar), sonra havuzdan.
+  Önce süresi dolan şişeler batar; batanları döndürür. */
+ tide(S,rnd=Math.random){
+  const sunk=this.expire(S);let ids;
+  const forced=CARDS.find(c=>c.at&&c.at<=S.year&&!S.used.includes(c.id));
+  const ev=!forced&&Object.keys(TRIG).find(id=>!S.fired.includes(id)&&TRIG[id](S.s));
+  if(forced)ids=[forced.id];
+  else if(ev){const c=byId[ev];S.fired.push(ev);S.flags.push(ev);S.fy[ev]=S.year;HK.forEach(k=>{if(c.fire&&c.fire[k])S.s[k]+=c.fire[k]});S._wc=-1;ids=[ev];}
+  else{
+   ids=[];S.queue=S.queue.filter(q=>!S.used.includes(q.id));   // açılmış kartın sonucu ikinci kez gelmez
+   S.queue.filter(q=>q.at<=S.year&&!(byId[q.id].min>S.year)).sort((a,b)=>a.at-b.at)
+    .forEach(q=>{if(ids.length<2&&!ids.includes(q.id))ids.push(q.id)});
+   while(ids.length<2){const c=this.poolCard(S,rnd,ids);if(!c)break;ids.push(c.id);}
+  }
+  S.offer=ids.map(id=>{const q=S.queue.find(q=>q.id===id);return{id,from:q?q.from:null,back:!!(q&&q.p)}});
+  S.queue=S.queue.filter(q=>!ids.includes(q.id));
+  return sunk;
+ },
+ // Seçilen şişe açılır; açılmayan denize döner ve birkaç yıl sonra yine gelir. Görülen kilitler mektuplar için kaydedilir
+ open(S,id){
+  S.offer.forEach(o=>{if(o.id!==id)S.queue.push({id:o.id,at:S.year+(S.step===2?4:3),p:1,from:o.from})});
+  S.offer=null;S.card=id;
+  const c=byId[id],L=this.locks(S,c);
+  ["l","r"].forEach(s=>{if(L[s])S.hits.push({id:c.id,x:c[s].x,seen:S.year,...L[s]})});
+  return L;
+ },
+ // Süresi dolan ertelenmiş şişe açılmadan batar ve hiçbir şey yapmamanın sonucu (idle) işler; batış kimseyi öldürmez
+ expire(S){
+  const sunk=[];
+  S.queue=S.queue.filter(q=>{
+   const c=byId[q.id];if(!q.p||!c.max||S.year<=c.max)return true;
+   const o=c.idle&&c[c.idle];if(o)this.effects(S,o,true);
+   S.used.push(c.id);sunk.push({id:c.id,y:S.year,x:o?o.x:null});return false;});
+  S.sunk.push(...sunk);return sunk;
+ },
+ // Seçeneğin etkileri: görünen dengeler, arka plan (hızlı oyunda iki yıllık), bayrak, sıradaki kartlar
+ effects(S,o,soft){
+  MK.forEach(k=>{const v=S.m[k]+(o[k]||0);S.m[k]=soft?cap(v,1,99):clamp(v)});
+  HK.forEach(k=>{if(o[k])S.s[k]+=o[k]*S.step});
+  if(o.f&&!this.has(S,o.f)){S.flags.push(o.f);S.fy[o.f]=S.year;if(o.f==="aerosol")S.s.aer=1;}
+  if(o.nx)(Array.isArray(o.nx[0])?o.nx:[o.nx]).forEach(([id,y])=>S.queue.push({id,at:S.year+y,from:S.year}));
+  S._wc=-1;
+ },
+ // Seçimi uygular, dünyayı bir tur (1 ya da 2 yıl) ilerletir; bir denge 0 ya da 100 olursa son kimliğini döndürür
+ apply(S,side){
+  const c=byId[S.card];S.ps={...S.s};
+  this.effects(S,c[side]);S.used.push(c.id);S.count++;S.card=null;
+  const avg={d:0,h:0,e:0,n:0};let dead=null;
+  for(let i=0;i<S.step&&!dead;i++){
+   Sys.step(S.s,S.year);S.year++;
+   const dr=this.drift(S);MK.forEach(k=>{S.m[k]=clamp(S.m[k]+dr[k]);avg[k]+=dr[k]/S.step});
+   dead=MK.find(k=>S.m[k]<=0||S.m[k]>=100);
+  }
+  S.last=avg;
+  return dead?dead+(S.m[dead]<=0?"0":"100"):null;
+ },
+ // Arka plandaki sistemlerin görünen dengelere yıllık itişi (en fazla ±3)
+ drift(S){
+  const s=S.s,F=f=>this.has(S,f),c=v=>cap(v,-3,3);
+  return{
+   d:c(((s.or+s.ok)/2-55)/15),
+   h:c((s.gv-50)/15-s.D*(F("multeci")?.1:.2)),
+   // Fon: üye katkısı − afet zararı + karbon geliri (emisyon düştükçe azalır) + uçuş vergisi − sübvansiyon
+   e:c(1-s.D*.5+(F("karbonfiyat")?.03*s.em*(F("muafiyet")?.7:1):0)+(F("ucakvergi")?.4:0)-(F("subv")?.8:0)),
+   n:cap((s.tk+s.fk-s.tal-5)/6,-2.5,3),
+  };
+ },
+ // Başarı sonları dünyanın durumuna da bakar: dengeyi korusan bile ısınma yüksekse dünya kırılgandır
+ finalType(S){
+  const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),t=this.world(S).t0;
+  if(bal&&t<=2.2&&this.has(S,"kapsul")&&this.has(S,"denizkiyi"))return"sonsuz";
+  if(bal&&t<=2.2)return"mavi"; if(S.m.d>=65)return"yesil"; return"kirilgan";
+ },
+
+ /* Final: kapısı kapanmış kartlar öne alınır, en fazla 4 kart + kapanış kartı */
+ epilogue(S){
+  const shut=c=>{const L=this.locks(S,c);return L.l||L.r?1:0};
+  const pool=EPI.filter(c=>!c.last&&(!c.need||c.need.some(f=>this.has(S,f)))).sort((a,b)=>shut(b)-shut(a));
+  return pool.slice(0,4).concat(EPI.filter(c=>c.last)).map(c=>c.id);
+ },
+ startEpi(S){S.epi=this.epilogue(S);S.ei=0;S.card=S.epi[0]},
+ epiDraw(S){S.card=S.epi[S.ei];return this.locks(S,byId[S.card])},
+ // Deniz'in seçimini kaydeder; final bittiyse true döndürür
+ epiApply(S,side){
+  const c=byId[S.card];
+  if(c.l.lock||c.r.lock){const o=c.l.lock?c.l:c.r;S.doors.push({id:c.id,x:o.x,lock:this.lockOf(S,o)});}
+  S.ei++;return S.ei>=S.epi.length;
+ },
+
+ /* ---------- Mektuplar ---------- */
+ // Aynı satır iki kez gelmez: kullanılmamış varyantlardan biri; hepsi kullanıldıysa satır atlanır
+ line(S,key,arr,rnd=Math.random){
+  const free=arr.map((_,j)=>j).filter(j=>!S.said.includes(key+j));
+  if(!free.length)return null;
+  const j=free[Math.floor(rnd()*free.length)];S.said.push(key+j);return arr[j];
+ },
+ // Mektupları Deniz yazar: dünyadaki bütün suların sesi
+ introLetter(S){
+  return "Sevgili insan,\nBen Deniz: okyanusların, nehirlerin, yağmurun, buzulların ve toprağın altındaki suyun sesi.\n"+
+   "Siz insanlar beni yıllarca kötü kullandınız: kıyılarımı betona gömdünüz, kuyularımı kuruttunuz, havayı ısıtıp beni de ısıttınız.\n"+
+   "Bu yıl dünya liderleri benim kıyımda, Antalya’da buluşuyor ve sen Küresel İklim Konseyi’nin başındasın. Vereceğin kararlar dünyayı çok değiştirecek. Birlikte değiştirebiliriz.\n"+
+   "Kıyına şişeler göndereceğim; hepsini açamayacaksın. Bazı kararlar da kapıları kalıcı olarak kapatır, onları ben bile açamam.";
+ },
+ midLetter(S,rnd){
+  const lines=["Sevgili insan,"];
+  let worst=null,dist=0;MK.forEach(k=>{const dd=Math.abs(S.m[k]-50);if(dd>dist){dist=dd;worst=k}});
+  const wl=dist>=25?this.line(S,`w.${worst}.${S.m[worst]<50?"lo":"hi"}.`,WORLD_LINES[worst][S.m[worst]<50?"lo":"hi"],rnd):null;
+  lines.push(wl||this.line(S,"calm.",CALM,rnd));
+  if(S.year>=2038){const b=this.band(S);lines.push(this.line(S,`c.${b}.`,CLIMATE[b],rnd));}
+  const hit=S.hits.slice(S.told).pop(),tpl=hit&&this.line(S,"lock.",LOCKLINES,rnd);S.told=S.hits.length;
+  if(tpl)lines.push(tpl.replace("{Y}",hit.y).replace("{W}",hit.why));
+  else{const fresh=S.flags.filter(f=>FL[f]&&!S.said.includes(f));if(fresh.length){const f=fresh[fresh.length-1];S.said.push(f);lines.push(FL[f]);}}
+  lines.push(S.year>=2062?"2075’e az kaldı. Kıyıda bekliyorum.":"Yeni şişelerde görüşürüz.");
+  return lines.filter(Boolean).join("\n");
+ },
+ // 2075: görev biter, oyuncu Deniz olur; insanlar ondan bir şey ister, kapanan kapılar verilemez
+ epiLetter(S){
+  const n=S.epi.filter(id=>{const L=this.locks(S,byId[id]);return L.l||L.r}).length;
+  return "Sevgili insan,\nGörev süren doldu; Konsey yeni başkanını seçti.\nŞimdi senden son bir şey isteyeceğim: bir süre benim yerimde ol. 2075’te insanlar benden bir şeyler istiyor. "+
+   (n?`Bazılarını artık veremem; ${n>1?n+" kapıyı":"bir kapıyı"} sen kapattın.`:"Kapıları açık bırakmışsın, hepsini verebilirim. Teşekkür ederim.")+
+   "\nArtık Deniz sensin.";
+ },
+ endText(S,id){
+  const E=ENDINGS[id],death=!["mavi","yesil","kirilgan","sonsuz"].includes(id);
+  let t="Sevgili insan,\n"+this.fill(S,E.t);
+  if(!death){const f=S.flags.filter(x=>FL[x]).slice(-2);if(f.length)t+="\n"+f.map(x=>FL[x]).join(" ");}
+  return{t,death};
+ },
+};
