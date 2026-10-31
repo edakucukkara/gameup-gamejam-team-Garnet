@@ -108,7 +108,15 @@ Dünya bir eşiği geçince **olay şişesi** gelir; bu şişe bekletilemez. Yed
 - **Final, Deniz olursun:** En fazla 4 kapı ve son söz. Bitiş ekranı Deniz'e bıraktığın kapıları ve açılmadan batan şişeleri listeler.
 - **İklim modeli:** 2075 sıcaklığı ve deniz seviyesi arka plandaki dünyadan hesaplanır (yukarıdaki tablo). Aerosol ısınmayı maskeler ama deniz seviyesini durdurmaz.
 - **Deniz'in mektupları:** 2032'den 2068'e kadar altı yılda bir gelir. Mektuplarda şunlar geçer: en kritik denge, ısınma düzeyi, kapanan kapılar ve verdiğin kararlar. Aynı cümle tekrar etmez.
-- **Canlı 2075 sahnesi:** Ağaçlar, ısınmayla kızaran gökyüzü, aerosolle beyazlayan hava, deniz seviyesi, şehir ışıkları, türbinler, paneller ve denizde dönmeyi bekleyen şişeler.
+- **Kararlarla değişen 2075 sahnesi:** Önemli her karar sahneye kalıcı bir iz bırakır. Cevabın üzerine gelince iz soluk bir önizleme olarak görünür ve "Seçersen: …" notu çıkar; seçince canlanır.
+  - **Kömür ve gaz:** Kömür santrali dumanla ya da kapanınca müze bayrağıyla görünür; gaz platformu yanar.
+  - **Orman ve tarım:** Ormandan otoyol geçer, ağaçlar devrilir; koruma koridorunda jaguar görünür. Tarlalarda obruklar açılır ya da tarlalar yeşil kalır.
+  - **Kıyı:** Kumsala otel ve marina kurulur ya da carettalar yuva yapar. Mangrovlar, karides havuzları, sulak alan ya da beton set görünür.
+  - **Temiz enerji ve ulaşım:** Açık deniz türbinleri, güneş tarlası ve bataryalar kurulur; kıyıdan tren geçer ya da araba kuyruğu oluşur.
+  - **Deniz:** Maden gemisi ve bulanık su, aerosol uçağı, uyarı kulesi; taşınan ya da yıkılan kıyı evleri; korunan ya da batan ada; dönen balıklar ya da plastik.
+  - **Olaylar:** Kuruyan ağaçlar, sıcak dalgası ve göç tekneleri.
+  - **Genel durum:** Ağaçlar, duman, ısınma, deniz seviyesi ve denizde dönmeyi bekleyen şişeler de dünyayla birlikte değişir.
+  - **Canlılık:** Martı sürüsü kanat çırparak uçar; bir martı kumsala konup gagalar ve havalanır. İnsanlar kumsalda yürür, çiftler sohbet eder. Konuşma balonu dünyanın durumunu gösterir: sıcakta güneş, karanlıkta sönük ampul, deniz iyiyse balık, değilse kalp. Jaguar koridorda dört bacağıyla yürür, bulutlar süzülür, ağaçlar sallanır, yelkenli geçer; okyanus sağlıklıysa yunus su sıçratarak zıplar. Carettalar kumsalda kürek çeker gibi ilerler, yavrular denize iner. Otoyolda araba trafiği akar. Kıyı evleri begonvilli, kiremit çatılı Akdeniz evleridir. Bütün canlılar yan profilden çizildi.
 - **12 son:** 8 kaybetme sonu (Halksız Yeşil, Ekleme Tuzağı, Satılık Konsey…) ve 4 başarı sonu (biri gizli). Bulunan sonlar tarayıcıda kaydedilir.
 - **Kaynaklar:** Bitiş ekranında oyundaki gerçek bilgilerin kaynakları listelenir.
 - **Erişim:** Telefonda ve bilgisayarda çalışır, ses açılıp kapatılabilir, `prefers-reduced-motion` ayarına uyar.

@@ -67,14 +67,69 @@ button:focus-visible{outline:2px solid var(--turquoise);outline-offset:3px}
 .world svg{display:block;width:100%;height:100%}
 .world .tag,.world .stat{position:absolute;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;padding:3px 7px;border-radius:5px;background:#0D2830b8;color:var(--foam);font-variant-numeric:tabular-nums}
 .world .tag{top:8px;left:8px;text-transform:uppercase}
-.world .stat{bottom:8px;right:8px}
+.world .stat{top:8px;right:8px}
+.world .cap{position:absolute;bottom:7px;left:7px;max-width:78%;box-sizing:border-box;font-family:var(--f-body);font-weight:700;font-size:12px;line-height:1.3;padding:4px 9px;border-radius:7px;background:#F6EEDCf2;color:var(--ink);box-shadow:0 4px 14px -6px #000a;animation:capin .35s cubic-bezier(.2,.8,.3,1.2)}
+.world .cap.pre{background:#0D2830d9;color:var(--foam);border:1px dashed #3CC8B4aa;font-weight:600;animation:none}
+@keyframes capin{from{transform:translateY(8px);opacity:0}}
+.splash{animation:splash 2.2s ease-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes splash{0%,100%{transform:scaleY(.2);opacity:0}30%{transform:scaleY(1);opacity:.9}}
+/* Kararların sahnedeki izleri */
+.dc{opacity:0;transition:opacity .9s ease;transform-box:fill-box;transform-origin:50% 100%}
+.dc.on{opacity:1}
+.dc.gout{opacity:.28}
+.dc.gin{opacity:.6;animation:ghost 1.1s ease-in-out infinite}
+@keyframes ghost{50%{opacity:.2}}
+.dc.pop{animation:pop 1.1s cubic-bezier(.2,.8,.3,1.25)}
+@keyframes pop{from{transform:scale(.15);opacity:0}}
+.tree{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1.1s ease-in,opacity 1.1s}
+.tree.fell{transform:rotate(84deg);opacity:0!important}
+.tree.gout{opacity:.3!important}
+.tree.dry path{fill:#A07E46}
+.ride{animation:ride 7s linear infinite}@keyframes ride{from{transform:translateX(-32px)}to{transform:translateX(152px)}}
+.traffic{animation:traffic 3.2s linear infinite}@keyframes traffic{to{transform:translateX(16px)}}
+.fly{animation:fly 3s ease-in-out infinite}@keyframes fly{50%{transform:translateY(-1.5px)}}
+.heat{animation:heat 2.4s ease-in-out infinite}@keyframes heat{50%{transform:translateY(-4px);opacity:.15}}
+.blink{animation:blink 1.2s steps(2) infinite}@keyframes blink{50%{opacity:.15}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flame .5s ease-in-out infinite alternate}@keyframes flame{to{transform:scaleY(1.35) scaleX(.85)}}
+/* Sahnede yaşam: martılar, insanlar, jaguar, bulutlar, yelkenli, yunus */
+.flock{animation:flock 34s linear infinite}@keyframes flock{0%{transform:translate(-50px,40px)}35%{transform:translate(110px,31px)}70%{transform:translate(250px,37px)}100%{transform:translate(410px,30px)}}
+.bob{animation:bob2 2.8s ease-in-out infinite alternate}@keyframes bob2{to{transform:translateY(-1.6px)}}
+.wL,.wR{transform-box:fill-box}.wL{transform-origin:100% 70%}.wR{transform-origin:0% 70%}
+.flapL{animation:flapL .5s ease-in-out infinite alternate}@keyframes flapL{from{transform:rotate(30deg)}to{transform:rotate(-26deg)}}
+.flapR{animation:flapR .5s ease-in-out infinite alternate}@keyframes flapR{from{transform:rotate(-30deg)}to{transform:rotate(26deg)}}
+.glideL{transform:rotate(9deg)}.glideR{transform:rotate(-9deg)}
+.g1{animation:g1 18s infinite}
+@keyframes g1{0%{transform:translate(400px,22px);animation-timing-function:ease-in-out}17%{transform:translate(215px,62px);animation-timing-function:ease-out}26%{transform:translate(139px,117.6px)}68%{transform:translate(139px,117.6px);animation-timing-function:ease-in}76%{transform:translate(116px,94px);animation-timing-function:linear}100%{transform:translate(-50px,28px)}}
+.g1glide,.g1stand,.g1flap{animation:18s infinite step-end}.g1glide{animation-name:g1a}.g1stand{animation-name:g1b}.g1flap{animation-name:g1c}
+@keyframes g1a{0%{opacity:1}26%,100%{opacity:0}}@keyframes g1b{0%{opacity:0}26%{opacity:1}68%,100%{opacity:0}}@keyframes g1c{0%{opacity:0}68%,100%{opacity:1}}
+.peck .ghead{animation:peck 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:15% 90%}@keyframes peck{0%,55%,100%{transform:rotate(0)}68%{transform:rotate(38deg)}78%{transform:rotate(0)}}
+.prowl{animation:prowl 22s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes prowl{0%{transform:translateX(0) scaleX(1)}46%{transform:translateX(62px) scaleX(1)}50%{transform:translateX(62px) scaleX(-1)}96%{transform:translateX(0) scaleX(-1)}100%{transform:translateX(0) scaleX(1)}}
+.jleg{transform-box:fill-box;transform-origin:50% 0;animation:jstep .62s ease-in-out infinite alternate}.jleg.f2,.jleg.b1{animation-delay:-.62s}@keyframes jstep{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.jtail{transform-box:fill-box;transform-origin:100% 0;animation:jtail 1.9s ease-in-out infinite alternate}@keyframes jtail{from{transform:rotate(-9deg)}to{transform:rotate(10deg)}}
+.jhead{transform-box:fill-box;transform-origin:0% 100%;animation:jhead .62s ease-in-out infinite alternate}@keyframes jhead{to{transform:translateY(.35px)}}
+.tcrawl{animation:tcrawl 16s ease-in-out infinite alternate}@keyframes tcrawl{to{transform:translateX(7px)}}
+.fflip{transform-box:fill-box;transform-origin:0% 30%;animation:fflip 1.1s ease-in-out infinite alternate}@keyframes fflip{from{transform:rotate(-24deg)}to{transform:rotate(18deg)}}
+.rflip{transform-box:fill-box;transform-origin:100% 30%;animation:rflip 1.1s ease-in-out infinite alternate}@keyframes rflip{from{transform:rotate(16deg)}to{transform:rotate(-16deg)}}
+.hatch{animation:hatch 3.9s ease-in infinite}@keyframes hatch{0%{transform:translate(0,0);opacity:0}12%{opacity:1}80%{transform:translate(3px,4.6px);opacity:1}100%{transform:translate(3.6px,5.6px);opacity:0}}
+.cloud{animation:cloud 90s linear infinite}@keyframes cloud{from{transform:translateX(-30px)}to{transform:translateX(400px)}}
+.sway{animation:sway 4.5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}@keyframes sway{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.walk{animation:walk 16s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes walk{0%{transform:translateX(0) scaleX(1)}46%{transform:translateX(var(--d)) scaleX(1)}50%{transform:translateX(var(--d)) scaleX(-1)}96%{transform:translateX(0) scaleX(-1)}100%{transform:translateX(0) scaleX(1)}}
+.walk .leg{animation:stride .45s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 0}.walk .leg.r{animation-delay:-.45s}@keyframes stride{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.chat{animation:chat 1.3s ease-in-out infinite alternate}@keyframes chat{to{transform:translateY(-.5px)}}
+.bubA,.bubB{opacity:0;animation:bubA 8s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}.bubB{animation-name:bubB}
+@keyframes bubA{0%,4%{opacity:0;transform:scale(.4)}9%,38%{opacity:1;transform:scale(1)}43%,100%{opacity:0;transform:scale(.4)}}
+@keyframes bubB{0%,50%{opacity:0;transform:scale(.4)}55%,86%{opacity:1;transform:scale(1)}91%,100%{opacity:0;transform:scale(.4)}}
+.sail{animation:sail 55s linear infinite}@keyframes sail{from{transform:translateX(-20px)}to{transform:translateX(380px)}}
+.dolph{opacity:0}.splash .rip,.splash .rip2,.splash .drop{opacity:0}.splash .rip,.splash .rip2{transform-box:fill-box;transform-origin:center}
+.jump{animation:jump 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes jump{0%,60%,100%{transform:translateY(5px);opacity:0}75%{transform:translateY(-2px);opacity:1}}
 .w-t{transition:opacity 1s ease, transform 1.2s cubic-bezier(.3,.7,.3,1)}
 .bld{transform-box:fill-box;transform-origin:50% 100%}
 .blade{animation:spin 5s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
-.smoke{animation:smoke 4s ease-out infinite}
+.smoke{animation:smoke 4s ease-out infinite;transform-box:fill-box;transform-origin:center}
 .smoke:nth-child(2){animation-delay:1.3s}.smoke:nth-child(3){animation-delay:2.6s}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes smoke{0%{transform:translate(0,0) scale(.6);opacity:.7}100%{transform:translate(14px,-30px) scale(1.8);opacity:0}}
+@keyframes smoke{0%{transform:translate(0,0) scale(.6);opacity:.75}100%{transform:translate(12px,-22px) scale(1.9);opacity:0}}
 .wave{animation:wave 6s ease-in-out infinite alternate}
 .sbob{animation:bob 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes wave{to{transform:translateX(-24px)}}
@@ -250,6 +305,7 @@ body.epi .yearbar .y{color:var(--sun)}
     <svg id="world" viewBox="0 0 360 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
     <span class="tag">Deniz’in dünyası · 2075</span>
     <span class="stat" id="wstat"></span>
+    <span class="cap" id="wcap" hidden></span>
   </div>
   <div class="yearbar"><span class="y" id="year">2026</span><span class="left"><span id="left"></span> · <button class="mute" id="dosyaBtn">DOSYA</button> · <button class="mute" id="mute" aria-pressed="false">SES AÇIK</button></span></div>
   <div class="stage" aria-live="polite">

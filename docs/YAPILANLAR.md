@@ -48,7 +48,7 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **Mavi Akdeniz** artık hem dört dengeyi (30–70) hem de 2075'te en fazla 2,2°C ısınmayı istiyor.
 - **Düzeltilen hata:** İlk denge ayarında bir betik değerleri zincirleme değiştirmiş, bütün Fon maliyetlerini −5'e indirmişti. Tasarlanan değerlere geri alındı.
 
-## 4. Final: koltuk değil, dünya miras kalır
+## 4. Final: koltuk değil, dünya miras kalır · commit `9d39942`
 *(Aynı gün 5. bölümle yeniden değişti: Deniz artık torun değil, deniz. "Deniz olursun" finali korundu.)*
 
 **Sorun:** Torunun 2075'te dedesinin ya da ninesinin koltuğuna oturması padişahlık, yani babadan oğula geçen iktidar gibi okunuyordu. Bu, iklim adaletinin tersi bir mesajdı. Reigns'in kral hanedanına da fazla benziyordu.
@@ -73,7 +73,7 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
   - Zaman kapsülü satırı her yaşta tutarlı.
   - Final etiketleri 24 harfin altında; içerik kontrolü 0 uyarı veriyor.
 
-## 5. Denizden Mektup: yeni oynanış
+## 5. Denizden Mektup: yeni oynanış · commit `1540308`
 **Neden:** Takım geri bildirimi üç noktada toplandı:
 - **Lapse'a benzerlik:** Oyun Lapse'a fazla benziyordu (tek kart, sağa sola kaydırma, üstte dört gösterge). Farklı bir arayüz ve mekanik istendi.
 - **Kilitlerin muğlaklığı:** Kapanan seçenekler muğlak görünmeliydi.
@@ -94,6 +94,60 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **İki mod:** Hızlı oyun (her tur 2 yıl, ~25 karar, ~5 dk) ve tam oyun (her tur 1 yıl, ~49 karar). Hızlı oyunda kararların arka plan etkisi iki yıllık sayılır.
 - **Simülasyon:** `tools/sim.js` artık iki adımı (şişe seçimi, cevap) ve iki modu ölçüyor; süreli kartta `idle` eksikse uyarıyor.
 
+## 6. Kararlarla değişen, canlı sahne
+**Neden:** 2075 penceresi yalnızca genel dengeleri (ağaç sayısı, duman, deniz) gösteriyordu. Takım daha etkileşimli ve göze hitap eden bir sahne istedi: kararlar sahnede görünsün, sahne canlı olsun.
+
+**Kararların izleri:** Önemli her karar ve olay pencereye kalıcı bir iz bırakıyor (`ui.js` → `DEC`, notlar `CAP`). Tablonun tamamı README'de.
+- Kömür santrali dumanla ya da kapanınca müze bayrağıyla görünüyor; gaz platformu yanıyor.
+- Ormandan otoyol geçiyor ve ağaçlar devriliyor. Koruma koridorunda jaguar yürüyor, yerli halka verilen toprakta kulübe duruyor.
+- Tarlalarda obruklar açılıyor ya da tarlalar yeşil kalıyor.
+- Kumsalda otel ve marina ya da yuva yapan carettalar görünüyor.
+- Kıyıda mangrovlar, karides havuzları, sulak alan ya da beton set var.
+- Açık deniz türbinleri, dağda güneş tarlası, batarya parkı ve dalga şamandıraları kuruluyor.
+- Kıyıdan hızlı tren geçiyor ya da otoyolda araba trafiği akıyor.
+- Aerosol püskürten uçak ve kıyıda erken uyarı kulesi görünüyor.
+- Kıyı evleri yerinde kalıyor, yıkılıyor ya da taşınıp çatıları su altında kalıyor.
+- Ada korunuyor ya da batıyor; balıklar dönüyor ya da denizde plastik yüzüyor.
+- Olaylar da sahneye geliyor: kuruyan ağaçlar, sıcak dalgası, göç tekneleri.
+
+**Önizleme:** Cevabın üzerine gelince iz soluk ve yanıp sönen bir önizleme olarak görünüyor, altta "Seçersen: …" notu çıkıyor. Seçince iz büyüyerek beliriyor, not birkaç saniye kalıyor.
+
+**Canlılık:**
+- Martı sürüsü kanat çırparak uçuyor. Bir martı süzülüp kumsala konuyor, gagalıyor, çırparak havalanıyor.
+- İnsanlar kumsalda yürüyor, çiftler sohbet ediyor. Balondaki simge dünyanın durumunu gösteriyor: sıcakta güneş, karanlıkta sönük ampul, deniz iyiyse balık, değilse kalp.
+- Jaguar koridorda dört bacakla yürüyor, kuyruğunu sallıyor.
+- Carettalar kürek çeker gibi ilerliyor, yavrular denize iniyor.
+- Okyanus sağlıklıysa yunus zıplıyor. Zıplama tek bir parabol: gövde her an yörüngeye teğet dönüyor; çıkışta ve dalışta suda halkalar ve damlalar beliriyor.
+- Bulutlar süzülüyor, ağaçlar sallanıyor, denizden yelkenli geçiyor.
+- Kıyı evleri begonvilli, kiremit çatılı, mavi kapılı Akdeniz evleri.
+- İnsan sayısı Uluslar'a, kuşlar ormanlara bağlı. Uluslar düşünce kumsal boşalıyor, orman yok olunca martılar gidiyor.
+
+**Takımın incelemesiyle düzeltilenler:**
+
+| Sorun | Düzeltme |
+|---|---|
+| Kıyı evleri suyun içinde görünüyordu | Evler karada, şehrin önünde. Deniz seviyesi görüntüsü oyun başındaki tahminden (~+42 cm) başlıyor; daha kötüsünde deniz kıyıya çıkıyor, +52 cm'de kıyı su altında |
+| Dağdaki türbin havada uçuyordu | Türbinler sırt çizgisinin üstünde |
+| Açık deniz türbinleri suya girmiş gibiydi | Denizden yükselen direk, su hizasında sarı geçiş parçası |
+| Denizde çalılar vardı | Mangrovlar, sazlar ve karides havuzları kıyıda, kumun üstünde |
+| Beton set yol gibi duruyordu | Su hizasında, dalgaların çarptığı bir rıhtım duvarı |
+| Uçak kuyruklu yıldız gibiydi | Ok kanatlı uçak silüeti ve arkasında solan püskürtme bulutu |
+| Martılar çizgi gibiydi, konuşları kötüydü | Yan profilden martılar: kanatlar omuzdan çırpıyor, uçları siyah; konan martı süzülüp iniyor, ayakta gagalıyor, aynı yöne havalanıyor |
+| Caretta yukarıdan bakışla çizilmişti | Yan profil: kubbe kabuk, baş, kürek gibi paletler |
+| Jaguar şekilsizdi | Yan profil: rozet benekleri, kulaklar, dört bacakla adım, sallanan kuyruk |
+| Ormanın altındaki renkli kutucuklar anlaşılmıyordu | Yandan çizilmiş arabalar, şeritli yol, kesintisiz akan trafik |
+| Yunus kötü görünüyordu ve zıplaması takılıyordu | Yan profil yunus; tek parabol halinde akıcı zıplama |
+| Zıplamadan sonraki sıçrama kötüydü | Suda genişleyen halkalar ve yukarı fırlayıp düşen damlalar |
+| Kumsalda iki martı vardı, martı carettanın sırtına konuyordu | Eski çizim silindi, iniş noktası ve kumsaldakiler yeniden yerleştirildi |
+| Not ile sıcaklık kutusu çakışıyordu | Not pencerenin altında |
+
+- **İki yeni bayrak:** Beton set (`betonset`) ve otoyollar (`otoyol`).
+- **Kontrol yöntemi:**
+  - Dört karar senaryosu (en kötü, en yeşil, sulak alan, beton set) yüksek çözünürlükte çizdirildi.
+  - Canlılar, animasyon belli anlarda dondurularak 5–6 kat büyütülmüş karelerde incelendi.
+  - Yunusun yörüngesi, 9 anın üst üste çizildiği bir karede kontrol edildi.
+  - Her değişiklikten sonra iki modda baştan sona oyun oynatıldı.
+
 ## Bugünkü durum
 | | |
 |---|---|
@@ -104,4 +158,5 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 | İnsan gibi yalnızca yeşil oynayan | Tam %39, hızlı %48; siyaseti ve enerjiyi ihmal edince kaybediyor |
 | Rastgele oynayan | Tam %8, hızlı %23 |
 | Batan şişe | İnsan gibi oynayanda oyun başına ~0,5; erteleyen oyuncuda finaldeki kapıların hepsi kapanabiliyor |
-| Tarayıcı | Hızlı oyun 440×820, tam oyun 375×667 (erteleyen oyuncuyla): baştan sona hatasız |
+| Tarayıcı | Hızlı oyun 440×820 ve 390×844, tam oyun 375×667 (erteleyen oyuncuyla): baştan sona hatasız |
+| Sahne | 30'dan fazla kararın ve olayın izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli |
