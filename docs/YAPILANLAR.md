@@ -178,6 +178,14 @@ Denizin ortasındaki adada artık kararlara sık ama abartısız tepki veren bir
 - **Not konumu:** Palmiye kırılırken ya da filizlenirken sahnedeki not üste çıkar, böylece ada görünür kalır.
 - **Kontrol:** Dört hâl, filiz hâlleri, büyüme, kütük, sağa ve sola devrilme, sürüklenme kare kare yakından incelendi; kötü (demo) ve dengeli (tam) oynanan iki oyunda konsolda hata yok.
 
+## 9. Yayın paketi: küçültme ve PWA · branch `ada-palmiye`
+Oyunu telefona uygulama gibi kurulabilir ve kodu okunması zor hâle getirilmiş olarak yayınlamak için `tools/yayin.py`.
+- **Ne yapar:** `data.js` + `engine.js` + `ui.js`'i tek bir işleve (IIFE) sarıp esbuild ile küçültür. Değişken adları anlamsızlaşır (`Engine` gibi adlar kalmaz), yorumlar silinir; pakete telif notu (banner) gömülür.
+- **İki çıktı (`dist/`, git'e girmez):** `dist/pwa/` HTTPS'e yüklenecek PWA paketi (index.html → tek `app.min.js`, güncel önbellek adlı `sw.js`, manifest, simgeler); `dist/Gelecekten-Mektup.html` küçültülmüş tek dosya.
+- **Private repo sorunu çözüldü:** Yüklenen yalnızca birkaç oyun dosyasıdır, repo'nun geri kalanı private kalır. GitHub Pages yerine Netlify/Cloudflare Pages/itch.io yeterli.
+- **Dürüst sınır:** Tarayıcı oyunu cihazda çalışır, kod oraya iner; küçültme sıradan merakı keser ama kararlı birini durdurmaz. Asıl koruma repo'nun private olması ve telif notu.
+- **Kontrol:** Küçültülmüş sürüm (IIFE, adlar karartılmış) hem tam hem demo modunda baştan sona oynandı, konsolda hata yok. PWA paketi yerel HTTP sunucusunda: service worker kaydoldu, manifest tanındı, çevrimdışı yeniden yükleme çalıştı. Tek dosya da baştan sona oynandı.
+
 ## Bugünkü durum (31 Ekim, `secimler`)
 | | |
 |---|---|

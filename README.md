@@ -147,12 +147,21 @@ Oyun telefona kendi simgesiyle kurulabilir, adres çubuğu olmadan tam ekran aç
 - Bazı editörlerin içindeki önizleme tarayıcıları service worker'a izin vermez; konsolda bir kayıt hatası görünür ama oyun çalışır.
 
 ### Yayınlama
-- **Tek dosya (en kolayı; jüri, demo ve arkadaşlar için):**
+- **Yayın paketi (küçültülmüş; telefona kurulum + tek dosya):**
+  ```bash
+  python3 tools/yayin.py
+  ```
+  `data.js`, `engine.js` ve `ui.js`'i tek bir işleve sarıp küçültür (minify) ve okunmasını zorlaştırır (değişken adları anlamsızlaşır, yorumlar silinir). İki çıktı:
+  - `dist/pwa/` → HTTPS bir yere (Netlify, Cloudflare Pages, itch.io) yüklenecek PWA paketi. Telefonda "Ana ekrana ekle" ile uygulama gibi kurulur, çevrimdışı açılır. **Repo private kalabilir:** yüklenen yalnızca bu birkaç dosyadır, repo'nun geri kalanı GitHub'da private durur.
+  - `dist/Gelecekten-Mektup.html` → çift tıklayınca açılan tek, küçültülmüş dosya; WhatsApp/Drive/e-posta ile gönderilir.
+
+  Not: Tarayıcıda çalışan her oyun gibi kod oyuncunun cihazına iner; küçültme bir kapı kilididir, kasa değil. Asıl koruma repo'nun private olması ve pakete gömülü telif notudur.
+- **Okunur tek dosya (küçültmesiz; hızlı demo için):**
   ```bash
   py tools/tekdosya.py
   ```
-  `dist/Gelecekten-Mektup.html` oluşur. Bu tek dosyaya çift tıklayınca oyun tarayıcıda açılır; sunucu, kurulum ya da internet gerekmez. WhatsApp, Drive ya da e-postayla gönderilebilir. (Telefona uygulama gibi kurulum bu sürümde yok; o GitHub Pages sürümünde.)
-- **GitHub Pages:** Repo → Settings → Pages → *Deploy from a branch* → `main` / `/ (root)` → Save. Birkaç dakika sonra oyun `https://edakucukkara.github.io/gameup-gamejam-team-Garnet/` adresinde açılır.
+  `dist/Gelecekten-Mektup.html` oluşur (küçültmesiz). Çift tıklayınca açılır; sunucu, kurulum ya da internet gerekmez.
+- **GitHub Pages (repo public ise):** Repo → Settings → Pages → *Deploy from a branch* → `main` / `/ (root)` → Save. Private repoda Pages ücretsiz planda açılmaz; onun yerine yukarıdaki PWA paketini Netlify'a yükleyin.
 - **itch.io paketi (isteğe bağlı):**
   ```bash
   py tools/paket.py
@@ -168,6 +177,7 @@ ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, fi
 manifest.webmanifest    Uygulama tanımı (ad, simge, renk)
 sw.js                   Service worker: çevrimdışı çalışma
 icons/                  Simge (icon.svg asıl çizim; PNG'ler ondan üretildi)
+tools/yayin.py          Yayın paketi: küçültülmüş PWA (dist/pwa/) ve tek dosya (esbuild gerekir)
 oyna.bat                Windows'ta tek tıkla çalıştırma
 tools/sim.js            Denge simülasyonu ve içerik kontrolü (Node ve tarayıcı)
 tools/test.html         Simülasyonun tarayıcı sayfası
