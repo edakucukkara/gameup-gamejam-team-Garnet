@@ -157,7 +157,7 @@ function newGame(hitap){
 }
 function renderYear(){
  $("year").textContent=Math.min(S.year,2075);
- const l=2075-S.year;$("left").textContent=S.epi?"Deniz’in kararları":l>0?`2075’e ${l} yıl`:"2075";
+ const l=2075-S.year;$("left").textContent=S.epi?"Artık Deniz’sin":l>0?`2075’e ${l} yıl`:"2075";
 }
 function nextCard(){
  if(S.epi)Engine.epiDraw(S);else Engine.draw(S);
@@ -171,13 +171,21 @@ function showCard(anim){
  $("qt").textContent=Engine.fill(S,c.t);
  ["l","r"].forEach(s=>{const o=c[s],k=L[s],b=$(s==="l"?"btnL":"btnR");
   $(s==="l"?"optL":"optR").textContent=k?"KAPANDI":o.x;
-  $(s==="l"?"btnLt":"btnRt").textContent=(k?"🔒 ":"")+o.x;
-  b.classList.toggle("locked",!!k);b.setAttribute("aria-disabled",k?"true":"false");});
- // Kapanan kapı: sebebiyle birlikte damga
+  // Kapanan kapı muğlak görünür: yazısı silik ve okunmaz; ne olduğu bitiş ekranında açılır
+  $(s==="l"?"btnLt":"btnRt").innerHTML=k?`🔒 <span class="smear" aria-hidden="true">${smear(o.x)}</span>`:o.x;
+  b.classList.toggle("locked",!!k);b.setAttribute("aria-disabled",k?"true":"false");
+  k?b.setAttribute("aria-label","Kapalı kapı"):b.removeAttribute("aria-label");});
+ // Damga yalnızca yılı söyler; sebebi mektuplarda ve bitiş ekranında
  const k=L.l||L.r,ll=$("lockline");ll.hidden=!k;
- if(k)ll.innerHTML=`<b>KAPANDI · ${k.y}</b> ${k.why}.`;
+ if(k)ll.innerHTML=`<b>KAPANDI · ${k.y}</b>`;
  showSide(null,0);
  if(anim){void card.offsetWidth;card.classList.add("enter");}
+}
+// Kapanan seçeneğin yazısı: aynı uzunlukta, harfleri karışık; hep aynı görünsün diye metinden türetilir
+function smear(t){
+ let h=0;for(const ch of t)h=(h*31+ch.charCodeAt(0))>>>0;
+ const a="aeıioöuüklmnrstyzçğş";
+ return [...t].map(ch=>ch===" "?" ":a[(h=(h*1103515245+12345)>>>0)%a.length]).join("");
 }
 function showSide(side,a){
  $("optL").style.opacity=side==="l"?a:0;$("optR").style.opacity=side==="r"?a:0;
@@ -208,10 +216,10 @@ function choose(side){
   setTimeout(()=>showLetter(Engine.midLetter(S),nextCard,`Deniz’den · ${age} yaşında yazdı · ${S.year} yılına ulaştı`),450);return;}
  nextCard();
 }
-// 2075: Deniz Konsey'in başına geçer, kalan kapılarla karar verir
+// 2075: görev biter, oyuncu Deniz olur ve kendi hayatındaki kapılarla karar verir (koltuk miras kalmaz)
 function startEpilogue(){
  Engine.startEpi(S);document.body.classList.add("epi");renderYear();
- showLetter(Engine.epiLetter(S),nextCard,"Deniz’den · 2075 · Konsey’in yeni başkanı");
+ showLetter(Engine.epiLetter(S),nextCard,"Deniz’den · 2075 · 26 yaşında");
 }
 
 /* Mektup gösterimi: daktilo efekti, dokununca tamamlanır */
@@ -238,7 +246,7 @@ function endGame(id){
  const doors=S.doors.length?S.doors:[...new Map(S.hits.map(h=>[h.id+h.x,{x:h.x,lock:h}])).values()],shut=doors.filter(d=>d.lock);
  $("epm").className="postmark"+(death?" red":"");
  $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"ANTALYA<br>·<br>2075";
- $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Deniz koltuğa oturdu";
+ $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Görevin bitti · Dünya Deniz’e kaldı";
  $("ename").textContent=E.n;
  // Sonun altında bir sonraki oyun için ipucu; Kırılgan Umut neyin eksik kaldığını söyler
  const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),t0=(Math.round(w.t0*10)/10).toString().replace(".",",");

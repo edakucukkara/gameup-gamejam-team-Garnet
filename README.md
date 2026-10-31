@@ -7,7 +7,9 @@
 
 *Lapse* ve *Reigns* tarzında, kartları sağa ya da sola kaydırarak oynanan, hikâye odaklı bir karar oyunu. Oyuncu 2026'da kurgusal **Küresel İklim Konseyi**'nin başına seçiliyor ve 2075'e kadar dünyanın iklim kararlarını veriyor. Torunu Deniz ona Antalya'dan, 2075'ten mektup yazıyor.
 
-**Türden farkı: Kapanan Kapılar.** Reigns'te iki seçenek de hep oradadır; iklimde değil. Bazı kararlar ileride bazı seçenekleri kalıcı olarak kapatır (kömür santralinin ömrünü uzatmak, ormanın ortasından yol geçirmek, sınırsız kuyu izni vermek…). Kapanan seçenek kartta kilitli görünür ve üstünde **"KAPANDI · yıl — sebep"** damgası olur. 2075'te Konsey'in başına **Deniz geçer** ve senin açık bıraktığın kapılarla karar verir.
+**Türden farkı: Kapanan Kapılar.** Reigns'te iki seçenek de hep oradadır; iklimde değil. Bazı kararlar ileride bazı seçenekleri kalıcı olarak kapatır (kömür santralinin ömrünü uzatmak, ormanın ortasından yol geçirmek, sınırsız kuyu izni vermek…). Kapanan seçenek kartta kilitli görünür ve üstünde **"KAPANDI · yıl — sebep"** damgası olur.
+
+**Final: koltuk değil, dünya miras kalır.** 2075'te görevin biter, Konsey yeni başkanını seçer ve sen **Deniz olursun**. Kapattığın kapılar artık 26 yaşındaki Deniz'in hayatındaki fırsatlardır: Belek'te caretta nöbeti, Konya'daki tarla, Losa'yla adaya dönmek… Reigns'te taht el değiştirir; burada miras kalan şey dünyadır.
 
 ---
 
@@ -44,7 +46,7 @@ Dört oyuncu tipiyle (rastgele, yeşil, kahverengi, dengeli) binlerce oyun oynar
 | 🔒 kilitli seçenek | Seçilemez; kart sallanır ve damga kapının neden kapandığını hatırlatır. |
 
 **Amaç:** Dört dengeyi korumak: 🌳 **Doğa**, 👥 **Uluslar**, 🪙 **Fon**, ⚡ **Enerji**.
-Biri **0'a inerse** ya da **100'e çıkarsa** zaman çizgisi kopar ve oyun biter. 2075'e ulaşırsan Deniz Konsey'in başına geçer, kalan kapılarla son kararlarını verir ve son mektubunu yazar.
+Biri **0'a inerse** ya da **100'e çıkarsa** zaman çizgisi kopar ve oyun biter. 2075'e ulaşırsan görevin biter ve Deniz olursun: onun hayatından birkaç kararı senin bıraktığın kapılarla verirsin, sonra son mektubunu okursun.
 
 ## Arka plandaki dünya
 
@@ -63,10 +65,10 @@ Dünya bir eşiği geçince **olay kartı** gelir: mercanların kaybı (1,7°C),
 
 ## Özellikler
 
-- **69 karar kartı**, 26 karakter: Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı çiftçi Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı balıkçı Hasan, simit hırsızı martı…
-- **Kapanan Kapılar:** 9 karar kilidi ve 2 iklim kilidi (ısınma çok yükselirse ya da emisyon düşmezse); 2029'daki Afrika kartında her oyuncu ilk kilidi görür (açılıştaki Fon kararına göre ya kömür ya güneş kapanır).
-- **Deniz'in finali:** 2075'te Deniz koltuğa oturur; en fazla 4 dosya + kapanış konuşması. Bitiş ekranı Deniz'e bıraktığın kapıları listeler.
-- **Doğru iklim modeli:** 2075 sıcaklığı ve deniz seviyesi, emisyon kararlarından (kartlardaki `c`) IPCC AR6 senaryolarına göre hesaplanır (+1,8°C ile +3,0°C, 32 ile 45 cm arası). Aerosol ısınmayı maskeler ama deniz seviyesini durdurmaz.
+- **71 karar kartı ve 7 olay kartı**, 26 karakter: Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı çiftçi Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı balıkçı Hasan, simit hırsızı martı…
+- **Kapanan Kapılar:** 12 karar kilidi, 2 eşik olayı kilidi (Amazon, mercanlar) ve 2 iklim kilidi (ısınma çok yükselirse ya da emisyon düşmezse); 2029'daki Afrika kartında her oyuncu ilk kilidi görür (açılıştaki Fon kararına göre ya kömür ya güneş kapanır).
+- **Final, Deniz olursun:** 2075'te görevin biter; koltuk miras kalmaz. Deniz'in hayatından en fazla 4 kapı + son söz; kapattığın kapılar kilitli gelir. Bitiş ekranı Deniz'e bıraktığın kapıları listeler.
+- **İklim modeli:** 2075 sıcaklığı ve deniz seviyesi arka plandaki dünyadan hesaplanır (yukarıdaki tablo). Aerosol ısınmayı maskeler ama deniz seviyesini durdurmaz.
 - **Deniz'in mektupları:** 2032'den 2068'e kadar altı yılda bir gelir; en kritik dengeden, ısınma düzeyinden, kapanan kapılardan ve verdiğin kararlardan bahseder. Aynı cümle tekrar etmez.
 - **Canlı 2075 sahnesi:** ağaçlar, ısınmayla kızaran gökyüzü, aerosolle beyazlayan hava, deniz seviyesi, şehir ışıkları, türbinler, paneller.
 - **12 son:** 8 kaybetme sonu (Halksız Yeşil, Ekleme Tuzağı, Satılık Konsey…), 4 başarı sonu (biri gizli). Bulunan sonlar tarayıcıda kaydedilir.

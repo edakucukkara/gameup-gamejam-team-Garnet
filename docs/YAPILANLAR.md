@@ -11,7 +11,7 @@
 - **Küresel İklim Konseyi:** Oyuncu kurgusal bir konseyin başında. Kartlar baştan yazıldı; Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı Hasan… Deniz mektuplarını Antalya'dan yazıyor.
 - **Göstergeler:** Doğa, **Uluslar**, **Fon**, Enerji (₺ simgesi madeni para oldu).
 - **Kapanan Kapılar:** Bazı kararlar ileride bazı seçenekleri kalıcı olarak kapatıyor. Kartta "KAPANDI · yıl — sebep" damgası; kilitli tarafa kaydırınca kart sallanıyor. 2029'daki Afrika kartında herkes ilk kilidi görüyor (açılıştaki Fon kararına göre ya kömür ya güneş kapanıyor).
-- **Final, "Deniz koltuğa geçer":** 2075'te Deniz Konsey'in başına geçiyor ve senin açık bıraktığın kapılarla karar veriyor. Bitiş ekranı Deniz'e bıraktığın kapıları listeliyor.
+- **Final, "Deniz koltuğa geçer":** 2075'te Deniz Konsey'in başına geçiyor ve senin açık bıraktığın kapılarla karar veriyor. Bitiş ekranı Deniz'e bıraktığın kapıları listeliyor. *(Hanedanlık gibi okunduğu için değişti, bkz. 4. bölüm.)*
 - **Yeniden yazılan sonlar:** Halksız Yeşil (doğayı korurken insanları unutmak), Ekleme Tuzağı (temizi ekleyip kirliyi bırakmamak), Satılık Konsey, Konsey Dağıldı, Fon Tükendi, Mavi Akdeniz…
 - **Akdeniz paleti:** Kiremit, zeytin, kum, turkuaz.
 - **Kod yapısı:** Tek dosya dörde ayrıldı (`data.js` içerik, `engine.js` kurallar, `ui.js` arayüz, `index.html`). Build adımı yok.
@@ -47,6 +47,29 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **Bitiş ekranı:** 2075 karnesi ve bir sonraki oyun için ipucu.
 - **Mavi Akdeniz** artık hem dört dengeyi (30–70) hem de 2075'te en fazla 2,2°C ısınmayı istiyor.
 - **Düzeltilen hata:** İlk denge ayarında bir betik değerleri zincirleme değiştirmiş, bütün Fon maliyetlerini −5'e indirmişti. Tasarlanan değerlere geri alındı.
+
+## 4. Final: koltuk değil, dünya miras kalır
+**Sorun:** Torunun 2075'te dedesinin ya da ninesinin koltuğuna oturması padişahlık, yani babadan oğula geçen iktidar gibi okunuyordu. Bu, iklim adaletinin tersi bir mesajdı. Reigns'in kral hanedanına da fazla benziyordu.
+
+- **Yeni final:** 2075'te görev süren dolar ve Konsey yeni başkanını seçer. Oyuncu **Deniz olur**: 26 yaşında, Antalya'da yaşayan sıradan bir genç.
+- **Kapılar artık Deniz'in hayatındaki fırsatlar:**
+  - Belek'te caretta nöbeti tutmak
+  - Konya'daki tarlayı ekmek
+  - Losa'yla Tala'nın adasına dönmek
+  - Amazon'u baştan başa yürümek
+  - resife dalmak
+  - Ama'nın köyünde güneş kooperatifi kurmak
+
+  Oyuncunun yıllar önce kapattığı kapılar bu kartlarda kilitli gelir ve damgası oyuncunun kendi kararını gösterir.
+- **Son kart:** Elif, Deniz'e torunlarına ne bırakacağını sorar.
+- **Metinler:** Giriş ekranı, giriş mektubu ("2075'te o kapıların önünde ben duracağım"), 2075 mektubu, üst çubuk ("Artık Deniz'sin") ve bitiş ekranı ("Görevin bitti · Dünya Deniz'e kaldı") değişti.
+- **Kaynaklar:** İki kaynak eklendi:
+  - Almanya Anayasa Mahkemesi'nin Neubauer kararı (2021): ertelenen emisyon azaltımı gençlerin gelecekteki özgürlüklerini kısıtlar. Kapanan Kapılar'ın hukuktaki karşılığı.
+  - WMO'nun Daniel fırtınası açıklaması: erken uyarı kartının dayanağı.
+- **Küçük düzeltmeler:**
+  - Gençlik koltuğu satırında annenin koltukta oturması yerine oy kullanması anlatılıyor.
+  - Zaman kapsülü satırı her yaşta tutarlı.
+  - Final etiketleri 24 harfin altında; içerik kontrolü 0 uyarı veriyor.
 
 ## Bugünkü durum
 | | |

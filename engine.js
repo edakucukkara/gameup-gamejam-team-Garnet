@@ -149,7 +149,7 @@ const Engine={
   const j=free[Math.floor(rnd()*free.length)];S.said.push(key+j);return arr[j];
  },
  introLetter(S){
-  return `Sevgili ${S.hitap},\nBu mektubu sana nasıl gönderdiğimi sorma, uzun hikâye. Ben Deniz, torununum. Senin zamanında daha doğmadım bile.\nAnnem hep 2026’yı anlatır: dünya liderlerinin Antalya’da buluştuğu, senin de Küresel İklim Konseyi’nin başına seçildiğin yıl.\nBir şey daha: Bazı kararlar kapıları kalıcı olarak kapatıyor. 2075’te o koltuğa ben oturacağım. Bana hangi kapıları açık bırakacaksın?`;
+  return `Sevgili ${S.hitap},\nBu mektubu sana nasıl gönderdiğimi sorma, uzun hikâye. Ben Deniz, torununum. Senin zamanında daha doğmadım bile.\nAnnem hep 2026’yı anlatır: dünya liderlerinin Antalya’da buluştuğu, senin de Küresel İklim Konseyi’nin başına seçildiğin yıl.\nBir şey daha: Bazı kararlar kapıları kalıcı olarak kapatıyor. 2075’te o kapıların önünde ben duracağım. Bana hangilerini açık bırakacaksın?`;
  },
  midLetter(S,rnd){
   const lines=[`Sevgili ${S.hitap},`];
@@ -166,8 +166,9 @@ const Engine={
  },
  epiLetter(S){
   const n=S.epi.filter(id=>{const L=this.locks(S,byId[id]);return L.l||L.r}).length;
-  return `Sevgili ${S.hitap},\nBugün Konsey’in başına seçildim. Senin koltuğuna oturuyorum.\nMasadaki dosyalara baktım. `+
-   (n?`${n} kapıyı benim için çoktan kapatmışsın.`:"Kapıları açık bırakmışsın. Teşekkür ederim.")+"\nŞimdi sıra bende.";
+  return `Sevgili ${S.hitap},\nBugün görev süren doldu. Konsey yeni başkanını seçti; ben de kendi hayatımın kararlarını vermeye başlıyorum.\n`+
+   (n?`Önümdeki kapılardan ${n>1?n+" tanesini":"birini"} sen çoktan kapatmışsın.`:"Önümdeki kapıları açık bırakmışsın. Teşekkür ederim.")+
+   "\nŞimdi bir süre benim yerimde ol: kararları sen ver, kapıları benim gözümden gör.";
  },
  endText(S,id){
   const E=ENDINGS[id],death=!["mavi","yesil","kirilgan","sonsuz"].includes(id);

@@ -7,7 +7,7 @@
 - [ ] **Kısa mod (~3 dk):** Tam oyun 6–10 dakika sürüyor; jüri Deniz'in finaline ulaşamayabilir. Öneri: her kart 2 yıl ilerlesin, açılışta "Hızlı oyun / Tam oyun" seçimi olsun. Dengeyi `node tools/sim.js` ile yeniden ayarla.
 - [ ] **60 saniyelik oynanış videosu ve 4–5 ekran görüntüsü:** Sunum ve itch.io sayfası için. Görüntüler kilit damgasını, Dosya'yı, bir olay kartını ve Deniz'in finalini göstersin.
 - [ ] **Gerçek oyuncu testi (5–10 kişi):** Not al: kaçıncı yılda bitti, kilidi fark etti mi, Dosya'yı açtı mı, finali gördü mü, ne hissetti. Sunuma 2–3 rakam koy.
-- [ ] **Kart metinlerini oku:** Ton, Türkçe ve doğruluk. Özellikle `data.js` içindeki yeni kartlar, olaylar ve mektuplar.
+- [ ] **Kart metinlerini oku:** Ton, Türkçe ve doğruluk. Özellikle `data.js` içindeki yeni kartlar, olaylar, mektuplar ve yeniden yazılan final kartları (`EPI`, Deniz'in hayatı).
 - [ ] **Yayın:** Branch'i `main`'e al, GitHub Pages'i aç. itch.io için `index.html`, `data.js`, `engine.js` ve `ui.js` birlikte zip'lenmeli.
 - [ ] **COP31 göndermesi kararı:** Giriş mektubunda "dünya liderlerinin Antalya'da buluştuğu yıl" satırı var. İstenmiyorsa `engine.js` → `introLetter` içinden çıkar.
 - [ ] **Canlı yayınlar ve webinarlar:** %60 katılım puanlanıyor.
@@ -27,13 +27,13 @@
 - [ ] Erişilebilirlik: kilit damgası ve Dosya için ekran okuyucu duyuruları.
 
 ## Bilinen küçük sorunlar
-- Bazı final seçenekleri uzun (26–28 harf); dar ekranda iki satıra iniyor.
 - Geç yıllarda kart havuzu azalınca oyun başına ~0,2 kart tekrar ediyor. 2060 sonrası için birkaç kart daha eklenebilir.
 - Aerosol: rakamlar maskesiz ısınmayı, Dosya ise hissedilen ısınmayı da gösteriyor. Oyuncu testinde anlaşılıp anlaşılmadığına bak.
 - İklim modeli öğretici bir basitleştirme; kaynaklar ekranında yazıyor. Jüri sorarsa: ısınma IPCC'nin TCRE değeriyle (her 1000 milyar ton CO₂ ≈ +0,45°C), deniz seviyesi yarı-ampirik bir modelle hesaplanıyor; 2075 sonuçları IPCC aralıklarında.
 
 ## Sunumda söylenecekler
-- **Türden farkımız:** Reigns'te seçenekler hep oradadır, iklimde değil. Kapanan Kapılar ve 2075'te koltuğa Deniz'in oturması.
+- **Türden farkımız:** Reigns'te seçenekler hep oradadır, iklimde değil: Kapanan Kapılar. Reigns'te taht el değiştirir; bizde koltuk değil, dünya miras kalır. 2075'te oyuncu Deniz olur ve kendi kapattığı kapılarla yaşar.
+- **Fikrin dayanağı:** Almanya Anayasa Mahkemesi 2021'de (Neubauer kararı) bugün ertelenen emisyon azaltımının gençlerin gelecekteki özgürlüklerini kısıtladığına hükmetti. Kapanan Kapılar bu fikri oynanabilir hâle getiriyor.
 - **Yaşayan bir dünya:** Arkada birikimli CO₂, deniz seviyesi, enerji sistemi, ormanlar, okyanuslar, uyum ve güven çalışıyor. Eşikler aşılınca olaylar geliyor. Dosya panelinde görülebiliyor.
 - **Gerçek ve yerel:** Konya obrukları, Belek carettaları (Anamur'da yavruların %85'i dişi), Antalya'da Temmuz 2025'te 46,1°C, Akdeniz'in dünya ortalamasından %20 hızlı ısınması.
 - **Mesaj:** Tek başına yeşil yetmez (Halksız Yeşil), temiz enerji eklemek yetmez kirliyi bırakmak gerekir (Ekleme Tuzağı), adalet olmadan uzlaşı dağılır (Konsey Dağıldı).
