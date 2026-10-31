@@ -4,8 +4,8 @@
 
 ## Teslimden önce mutlaka (P0)
 - [ ] **PR'ı `main`'e birleştir** (`secimler` dalı).
-- [ ] **GitHub Pages'i aç** ve oyunun açıldığını telefonda dene (adımlar README'de). Telefona "Ana ekrana ekle" ile kurulumu da dene.
-- [ ] **itch.io sayfası:** `py tools/paket.py` → `dist/gelecekten-mektup.zip`'i yükle. Sayfa metni, etiketler ve ayarlar [TESLIM.md](TESLIM.md)'de.
+- [ ] **GitHub Pages:** Repo herkese açılınca aç ve telefonda "Ana ekrana ekle" ile kurulumu dene (adımlar README'de). Şimdilik askıda.
+- [ ] **Jüriye gönderilecek oyun:** `py tools/tekdosya.py` → `dist/Gelecekten-Mektup.html`. Çift tıklayınca açılır. Repo herkese açılınca GitHub Pages linki de verilebilir. itch.io yalnızca jam formu isterse (`py tools/paket.py`).
 - [ ] **60 saniyelik oynanış videosu ve 4–5 ekran görüntüsü** (demo modu bunun için):
   - masada iki ya da üç dosya ve gelecekten not,
   - kapı bildirimi ve yıllar sonra "Bu konuda elin bağlı",

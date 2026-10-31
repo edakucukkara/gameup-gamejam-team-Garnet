@@ -87,8 +87,13 @@ Oyun telefona kendi simgesiyle kurulabilir, adres çubuğu olmadan tam ekran aç
 - Bazı editörlerin içindeki önizleme tarayıcıları service worker'a izin vermez; konsolda bir kayıt hatası görünür ama oyun çalışır.
 
 ### Yayınlama
+- **Tek dosya (en kolayı; jüri, demo ve arkadaşlar için):**
+  ```bash
+  py tools/tekdosya.py
+  ```
+  `dist/Gelecekten-Mektup.html` oluşur. Bu tek dosyaya çift tıklayınca oyun tarayıcıda açılır; sunucu, kurulum ya da internet gerekmez. WhatsApp, Drive ya da e-postayla gönderilebilir. (Telefona uygulama gibi kurulum bu sürümde yok; o GitHub Pages sürümünde.)
 - **GitHub Pages:** Repo → Settings → Pages → *Deploy from a branch* → `main` / `/ (root)` → Save. Birkaç dakika sonra oyun `https://edakucukkara.github.io/gameup-gamejam-team-Garnet/` adresinde açılır.
-- **itch.io paketi:**
+- **itch.io paketi (isteğe bağlı):**
   ```bash
   py tools/paket.py
   ```
@@ -106,7 +111,8 @@ icons/                  Simge (icon.svg asıl çizim; PNG'ler ondan üretildi)
 oyna.bat                Windows'ta tek tıkla çalıştırma
 tools/sim.js            Denge simülasyonu ve içerik kontrolü (Node ve tarayıcı)
 tools/test.html         Simülasyonun tarayıcı sayfası
-tools/paket.py          itch.io zip'ini hazırlar
+tools/tekdosya.py       Çift tıklayınca açılan tek dosyalık oyunu hazırlar
+tools/paket.py          itch.io zip'ini hazırlar (isteğe bağlı)
 docs/TASARIM.md         Oyun tasarım dokümanı: mekanik, sistemler, sonlar, karakterler, görsel kimlik
 docs/ICERIK-REHBERI.md  Kod bilmeden dosya, kilit, not, mektup ve son ekleme
 docs/YAPILACAKLAR.md    Açık işler, son test sonuçları, bilinen sorunlar
