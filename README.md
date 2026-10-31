@@ -5,12 +5,29 @@
 <p align="center"><b>2075'teki torunun Deniz sana mektup yazıyor.<br>Masana gelen dosyaların hepsine yetişemeden verdiğin her karar onun dünyasını değiştiriyor.</b></p>
 
 <p align="center">
-  <a href="https://edakucukkara.github.io/gameup-gamejam-team-Garnet/"><b>▶ Tarayıcıda oyna</b></a> ·
+  <a href="#indir"><b>▶ İndir ve oyna</b></a> ·
   <a href="docs/TASARIM.md">Tasarım</a> ·
+  <a href="#degisiklik">Değişiklik yapmak</a> ·
   <a href="docs/TESLIM.md">Teslim</a>
 </p>
 
 <p align="center">GameUp Game Jam 2026 · Takım Garnet · Tema: İklim · COP31 Türkiye (Antalya)</p>
+
+---
+
+<a id="indir"></a>
+## İndir ve oyna
+
+Kurulum gerekmez; oyun tarayıcıda açılır.
+
+1. Bu sayfanın üstündeki yeşil **Code** düğmesi → **Download ZIP**.
+2. ZIP'i bir klasöre çıkarın (sağ tık → *Tümünü ayıkla*).
+3. Klasördeki **`index.html`** dosyasına çift tıklayın. Oyun varsayılan tarayıcıda açılır.
+   - Windows'ta **`oyna.bat`**'a çift tıklamak daha iyidir: oyunu küçük bir yerel sunucuyla açar, yazı tipleri ve kayıtlar her tarayıcıda düzgün çalışır.
+
+**Başkasına göndermek için tek dosya:** Repo klasöründe `py tools/tekdosya.py` çalıştırın → `dist/Gelecekten-Mektup.html`. Bu tek dosya, çift tıklayınca açılan oyunun tamamıdır; jüriye ya da arkadaşlara WhatsApp, Drive veya e-postayla gönderilebilir.
+
+**Tarayıcıda link (ileride):** Repo herkese açılıp GitHub Pages açılınca oyun https://edakucukkara.github.io/gameup-gamejam-team-Garnet/ adresinde de oynanır ve telefona uygulama gibi kurulabilir (adımlar aşağıda, *Yayınlama*).
 
 ---
 
@@ -42,7 +59,50 @@ COP31'in odak alanlarının hepsi dosyalara dağıtıldı: yenilenebilir enerji,
 
 ## Geliştirme
 
-Kurulum ya da build adımı yok: düz HTML, CSS ve JavaScript.
+Kurulum ya da build adımı yok: düz HTML, CSS ve JavaScript. Gerekenler: Git, bir tarayıcı ve Python (yalnızca yerel sunucu ve paket betikleri için; Windows'ta `py`).
+
+<a id="degisiklik"></a>
+### Takım için: değişiklik yapmak
+`main` her zaman oynanabilir son hâldir. Değişiklikleri ayrı bir dalda yapıp PR ile `main`'e alıyoruz.
+
+**İlk kez (bir kere):**
+```bash
+git clone https://github.com/edakucukkara/gameup-gamejam-team-Garnet.git
+```
+
+**Her değişiklikte:**
+1. En son hâli alın ve yeni bir dal açın (dal adı işi anlatsın):
+   ```bash
+   git switch main
+   ```
+   ```bash
+   git pull
+   ```
+   ```bash
+   git switch -c yeni-kartlar
+   ```
+2. Değişikliği yapın. Neyin nerede olduğu:
+   | Ne değiştirmek istiyorsunuz? | Dosya |
+   |---|---|
+   | Kart metni, yeni kart, karakter, mektup, not, son | `data.js` (rehber: [docs/ICERIK-REHBERI.md](docs/ICERIK-REHBERI.md)) |
+   | Kurallar, iklim modeli, mektup kurgusu | `engine.js` |
+   | Ekranlar, 2075 sahnesi, animasyonlar | `ui.js` |
+   | Renkler, yazı tipleri, yerleşim | `index.html` (üstteki `:root` renkleri) |
+3. Oyunu açıp deneyin (`oyna.bat` ya da aşağıdaki komut) ve **denge testini** çalıştırın: `http://localhost:8765/tools/test.html` → yeşil olmalı.
+4. Kaydedip gönderin:
+   ```bash
+   git add -A
+   ```
+   ```bash
+   git commit -m "Ne değişti, kısaca"
+   ```
+   ```bash
+   git push -u origin yeni-kartlar
+   ```
+5. GitHub'da çıkan **Compare & pull request** düğmesiyle PR açın; diğer kişi bakıp birleştirir.
+6. Birleştikten sonra jüriye gidecek dosyayı yenileyin: `py tools/tekdosya.py`.
+
+Yaptığınız önemli değişiklikleri ve nedenlerini [docs/YAPILANLAR.md](docs/YAPILANLAR.md)'ye, açık işleri [docs/YAPILACAKLAR.md](docs/YAPILACAKLAR.md)'ye yazın.
 
 ### Oyunu çalıştırmak
 Oyun yerel bir sunucuyla açılmalı (dosyaya çift tıklayınca da açılır ama fontlar, kayıt ve uygulama kurulumu sunucuyla düzgün çalışır).
