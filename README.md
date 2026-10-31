@@ -1,28 +1,24 @@
-# Denizden Mektup
+# Gelecekten Mektup
 
-> Deniz, dünyadaki bütün suların sesi, sana mektup yazıyor. Her tur kıyına iki şişe vurur ve yalnız birini açabilirsin. Verdiğin her karar dünyayı değiştirir; bazıları kapıları sonsuza dek kapatır.
+> 2075'teki torunun Deniz sana mektup yazıyor. Masana her yıl dosyalar geliyor ve yalnız birine vaktin var. Verdiğin her karar Deniz'in dünyasını değiştiriyor; bazıları kapıları sonsuza dek kapatıyor.
 
 **GameUp Game Jam · Takım Garnet**
 **Tema:** İklim · COP31 Türkiye (Antalya)
 
-Hikâye odaklı bir karar oyunu. Oyuncu 2026'da kurgusal **Küresel İklim Konseyi**'nin başına seçiliyor ve 2075'e kadar dünyanın iklim kararlarını veriyor.
+Hikâye odaklı bir karar oyunu. Oyuncu 2026'da kurgusal **Küresel İklim Konseyi**'nin başına seçiliyor ve 2075'e kadar dünyanın iklim kararlarını veriyor. Mektupları torunu **Deniz** yazıyor; ona "Dede" ya da "Nine" diye sesleniyor.
 
-Mektupları **Deniz** yazıyor: okyanusların, nehirlerin, yağmurun, buzulların ve toprağın altındaki suyun sesi. *"Siz insanlar beni yıllarca kötü kullandınız. Ama şimdi birlikte değiştirebiliriz."*
+## Oyunu farklı kılan şeyler
 
-## Oyunu farklı kılan üç şey
-
-- **Kıyıya vuran şişeler.** Her tur dünyanın dört bir yanından iki mektup gelir ve yalnız birini açabilirsin. Kimi dinleyeceğini sen seçersin.
-  - Açmadığın şişe denize döner ve sonra yine gelir.
-  - Süresi dolan şişe açılmadan batar. O zaman hiçbir şey yapmamanın sonucu kendiliğinden işler: kuyular izinsiz açılmaya devam eder, adaya fon gitmez. Karar vermemek de bir karardır.
+- **Başkan'ın masası.** Her yıl masana dünyanın dört bir yanından dosyalar gelir: teklifler, krizler, eski kararlarının sonuçları. Genelde iki, yoğun günlerde üç dosya olur ve **yalnız birine vaktin olur**.
+  - Açmadığın dosya bekler, birkaç yıl sonra yine gelir.
+  - Dosyanın son günü geçerse fırsat kaçar ve hiçbir şey yapmamanın sonucu kendiliğinden işler: kuyular izinsiz açılır, adaya fon gitmez. Karar vermemek de bir karardır.
+- **Gelecekten not.** Ara sıra, her turda değil, Deniz masadaki dosyalardan biri hakkında 2075'ten kısa bir not sıkıştırır. Not ne yapacağını söylemez; o kararın ileride nasıl hatırlandığını ima eder.
 - **Kapanan Kapılar.** Bazı kararlar ileride bazı seçenekleri kalıcı olarak kapatır.
-  - Kapanan seçenek mektupta silik ve okunmaz görünür; üstünde yalnızca **"KAPANDI · yıl"** damgası olur.
-  - Ne olduğu ve neden kapandığı Deniz'in mektuplarında ve bitiş ekranında ortaya çıkar.
-- **Final: Deniz olursun.** 2075'te görevin biter ve Konsey yeni başkanını seçer. Bu kez insanlar senden, yani denizden bir şey ister:
-  - Losa büyükannesinin adasına dönmek ister.
-  - Dr. Nil caretta yavrularının sana koşmasını bekler.
-  - Mert, Konya'daki tarla için toprağın altındaki suyunu geri ister.
-
-  Kapattığın kapıları veremezsin. Koltuk miras kalmaz; miras kalan şey dünyadır.
+  - Kapıyı kapatan kararı verdiğin anda kısa bir not çıkar: "Bu kararın bir bedeli olabilir…"
+  - Yıllar sonra o konu masana geldiğinde kapalı seçenek görünmez; yalnızca açık kalan yol ve "Bu konuda elin bağlı" notu görünür.
+- **Final ve çemberin kapanışı.** 2075'te görevin biter, Konsey yeni başkanını seçer ve sen bir süre Deniz'in gözünden onun hayatındaki fırsatlarla yüzleşirsin. Kapattığın kapılar onun önünde de kapalıdır.
+  - Ardından "Bu kadarını başardık" ekranı açık kalanları ve olabilecekleri listeler: *Peki, daha iyisi olabilir miydi?*
+  - Son sahnede Deniz 2026'daki büyüğüne ilk mektubu yazar. Bu, oyunun başında okuduğun mektuptur. İyi bir sona ulaştıysan bunun yerine bir teşekkür mektubu yazar. Mektup katlanır, zarfa girer ve 2075'ten 2026'ya uçar.
 
 ---
 
@@ -40,45 +36,31 @@ python -m http.server 8765
 
 Sonra tarayıcıda `http://localhost:8765` adresini açın. Telefon görünümünü denemek için tarayıcının geliştirici araçlarında mobil görünümü açın (Ctrl+Shift+M).
 
+**Demo modu:** Açılış ekranının sağ altındaki "Demo modu" bağlantısına basıp sonra Dede ya da Nine'yi seçin. Her tur 2 yıl ilerler ve mektuplar daha hızlı yazılır. Oynanış videosu çekmek için.
+
 **Denge simülasyonu ve içerik kontrolü** (Node gerekir):
 
 ```bash
-node tools/sim.js 3000            # iki mod da
-node tools/sim.js 3000 --mod hizli --detay
+node tools/sim.js 3000            # tam oyun ve demo modu
+node tools/sim.js 3000 --mod tam --detay
 ```
 
-Sekiz oyuncu tipiyle binlerce oyun oynar. Her tip önce hangi şişeyi açacağını, sonra cevabını seçer. Çıktıda şunlar var:
-- sonların dağılımı,
-- 2075 ısınması,
-- kapanan kapılar,
-- batan şişeler.
-
-Kartlardaki hatalı kilit, eksik zincir kartı, eksik mektup satırı ya da `idle`'ı olmayan süreli kart varsa da söyler. İçerik değiştirdikten sonra çalıştırın.
+Sekiz oyuncu tipiyle binlerce oyun oynar. Her tip önce hangi dosyayı açacağını, sonra kararını seçer. Çıktıda sonların dağılımı, 2075 ısınması, kapanan kapılar ve vakti dolan dosyalar var. Kartlardaki hatalı kilit, eksik zincir kartı, eksik mektup satırı ya da `idle`'ı olmayan süreli kart varsa da söyler. İçerik değiştirdikten sonra çalıştırın.
 
 ## Nasıl oynanır
 
 | Kontrol | Ne yapar |
 |---|---|
-| Şişeye dokun ya da `1` / `2` | O şişeyi açar; diğeri denize döner |
-| Cevaba dokun ya da `1` `2`, `←` `→` | Cevabı seçer; mektup şişeye girip denize atılır |
-| Cevabın üzerine gel | Hangi testilerin değişeceğini gösterir: testi çalkalanır, altında küçük ya da büyük bir nokta belirir. Yönünü göstermez. |
-| 🔒 silik cevap | Kapanmış kapı. Seçilemez; denersen mektup sallanır. |
-| `D` ya da DOSYA | Arka plandaki dünyanın raporu |
+| Dosyaya dokun ya da `1` `2` `3` | O dosyayı açar; diğerleri bekler |
+| Karara dokun ya da `1` `2`, `←` `→` | Kararı verir |
+| Kararın üzerine gel | Hangi dengelerin değişeceğini gösterir: göstergenin altında küçük ya da büyük bir nokta belirir. Yönünü göstermez. Sahnede de kararın izi soluk bir önizleme olarak görünür. |
+| `R` ya da RAPOR | Dünya raporu: arka plandaki dünyanın durumu ve danışman notu |
 
-**Amaç:** Dört testiyi dengede tutmak: 🌳 **Doğa**, 👥 **Uluslar**, 🪙 **Fon**, ⚡ **Enerji**. Biri kurursa (0) ya da taşarsa (100) zaman çizgisi kopar.
-
-**İki mod:**
-
-| Mod | Tur | Karar | Süre | Kimin için |
-|---|---|---|---|---|
-| Hızlı oyun | 2 yıl | ~25 | ~5 dk | Jüri ve fuar |
-| Tam oyun | 1 yıl | ~49 | ~10 dk | Bütün hikâye |
-
-Hızlı oyunda kararların arka plandaki etkisi de iki yıllık sayılır. Denge iki mod için ayrı ölçüldü.
+**Amaç:** Dört dengeyi korumak: 🌳 **Doğa**, 👥 **Uluslar**, 🪙 **Fon**, ⚡ **Enerji**. Biri sıfırlanırsa (0) ya da taşarsa (100) zaman çizgisi kopar.
 
 ## Arka plandaki dünya
 
-Dört testi kararlarla anında değişir. Arkada ise her yıl ilerleyen bir dünya modeli çalışır ve testileri yavaşça iter (etiketlerin yanındaki ▲▼). **DOSYA** düğmesi (ya da `D` tuşu) bu dünyayı gösterir:
+Dört denge kararlarla anında değişir. Arkada ise her yıl ilerleyen bir dünya modeli çalışır ve dengeleri yavaşça iter (etiketlerin yanındaki ▲▼). **RAPOR** düğmesi bu dünyayı oyuncunun dilinde gösterir: 2075 ısınma tahmini bir ölçek üzerinde, bu yılın dengelere etkisi, temiz enerji payı, ormanlar, okyanuslar, afetlere hazırlık, güven ve adalet çubukları ve en zayıf noktaya göre bir danışman notu.
 
 | Sistem | Nasıl çalışır | Neyi iter |
 |---|---|---|
@@ -89,34 +71,19 @@ Dört testi kararlarla anında değişir. Arkada ise her yıl ilerleyen bir dün
 | Uyum kapasitesi | Yatırımla artar, bakımsız kalınca azalır; afet zararını belirler | Fon, Uluslar |
 | Güven ve adalet | Bedeli kime yüklediğine göre | Uluslar |
 
-Dünya bir eşiği geçince **olay şişesi** gelir; bu şişe bekletilemez. Yedi olay var:
-- mercanların kaybı (1,7°C),
-- Amazon’un kuruması,
-- şebeke çöküşü,
-- büyük afet,
-- 48 derecelik sıcak dalgası,
-- göç dalgası,
-- temiz enerjinin fosilden ucuzlaması (olumlu eşik).
+Dünya bir eşiği geçince bir **olay dosyası** gelir; bekletilemez. Yedi olay var: mercanların kaybı (1,7°C), Amazon’un kuruması, şebeke çöküşü, büyük afet, 48 derecelik sıcak dalgası, göç dalgası ve olumlu eşik olarak temiz enerjinin fosilden ucuzlaması.
 
-Üstteki pencere, bugünkü dünyanın yeni karar alınmazsa 2075’e nasıl varacağının tahminidir. Denizde süzülen şişeler, sonucu yıllar sonra dönecek kararların ve ertelediğin mektuplardır; yalnızca dönecekleri yılı gösterirler. Mavi Akdeniz sonu için dört denge 30–70 arasında olmalı ve 2075 ısınması 2,2°C’yi geçmemeli.
+Üstteki pencere, bugünkü dünyanın yeni karar alınmazsa 2075’e nasıl varacağının tahminidir. Mavi Akdeniz sonu için dört denge 30–70 arasında olmalı ve 2075 ısınması 2,2°C’yi geçmemeli.
 
 ## Özellikler
 
-- **71 karar kartı ve 7 olay kartı, 26 karakter.** Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı çiftçi Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı balıkçı Hasan, simit hırsızı martı…
-- **Süreli mektuplar:** 26 kartın son yılı var. Açılmadan batan şişe, hiçbir şey yapmamanın sonucunu (`idle`) kendiliğinden işletir; batış tek başına oyunu bitirmez.
-- **Kapanan Kapılar:** 12 karar kilidi, 2 eşik olayı kilidi (Amazon, mercanlar) ve 2 iklim kilidi (ısınma çok yükselirse ya da emisyon düşmezse). 2029'daki Afrika kartında her oyuncu ilk kilidi görür: açılıştaki Fon kararına göre ya kömür ya güneş kapanır.
-- **Final, Deniz olursun:** En fazla 4 kapı ve son söz. Bitiş ekranı Deniz'e bıraktığın kapıları ve açılmadan batan şişeleri listeler.
-- **İklim modeli:** 2075 sıcaklığı ve deniz seviyesi arka plandaki dünyadan hesaplanır (yukarıdaki tablo). Aerosol ısınmayı maskeler ama deniz seviyesini durdurmaz.
-- **Deniz'in mektupları:** 2032'den 2068'e kadar altı yılda bir gelir. Mektuplarda şunlar geçer: en kritik denge, ısınma düzeyi, kapanan kapılar ve verdiğin kararlar. Aynı cümle tekrar etmez.
-- **Kararlarla değişen 2075 sahnesi:** Önemli her karar sahneye kalıcı bir iz bırakır. Cevabın üzerine gelince iz soluk bir önizleme olarak görünür ve "Seçersen: …" notu çıkar; seçince canlanır.
-  - **Kömür ve gaz:** Kömür santrali dumanla ya da kapanınca müze bayrağıyla görünür; gaz platformu yanar.
-  - **Orman ve tarım:** Ormandan otoyol geçer, ağaçlar devrilir; koruma koridorunda jaguar görünür. Tarlalarda obruklar açılır ya da tarlalar yeşil kalır.
-  - **Kıyı:** Kumsala otel ve marina kurulur ya da carettalar yuva yapar. Mangrovlar, karides havuzları, sulak alan ya da beton set görünür.
-  - **Temiz enerji ve ulaşım:** Açık deniz türbinleri, güneş tarlası ve bataryalar kurulur; kıyıdan tren geçer ya da araba kuyruğu oluşur.
-  - **Deniz:** Maden gemisi ve bulanık su, aerosol uçağı, uyarı kulesi; taşınan ya da yıkılan kıyı evleri; korunan ya da batan ada; dönen balıklar ya da plastik.
-  - **Olaylar:** Kuruyan ağaçlar, sıcak dalgası ve göç tekneleri.
-  - **Genel durum:** Ağaçlar, duman, ısınma, deniz seviyesi ve denizde dönmeyi bekleyen şişeler de dünyayla birlikte değişir.
-  - **Canlılık:** Martı sürüsü kanat çırparak uçar; bir martı kumsala konup gagalar ve havalanır. İnsanlar kumsalda yürür, çiftler sohbet eder. Konuşma balonu dünyanın durumunu gösterir: sıcakta güneş, karanlıkta sönük ampul, deniz iyiyse balık, değilse kalp. Jaguar koridorda dört bacağıyla yürür, bulutlar süzülür, ağaçlar sallanır, yelkenli geçer; okyanus sağlıklıysa yunus su sıçratarak zıplar. Carettalar kumsalda kürek çeker gibi ilerler, yavrular denize iner. Otoyolda araba trafiği akar. Kıyı evleri begonvilli, kiremit çatılı Akdeniz evleridir. Bütün canlılar yan profilden çizildi.
+- **71 karar kartı ve 7 olay kartı, 26 karakter.** Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı çiftçi Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı balıkçı Hasan, oyuncunun kızı Ece, simit hırsızı martı…
+- **Süreli dosyalar:** 26 kartın son günü var. Vakti dolan dosya, hiçbir şey yapmamanın sonucunu (`idle`) kendiliğinden işletir; bu tek başına oyunu bitirmez.
+- **Kapanan Kapılar:** 12 karar kilidi, 2 eşik olayı kilidi (Amazon, mercanlar) ve 2 iklim kilidi. 14 kapı için karar anında yumuşak bir bildirim yazıldı (`DOORS`).
+- **Gelecekten notlar:** 28 dosya için Deniz'in ipucu notları (`HINTS`). En erken 2028'de, en sık dört turda bir ve yalnızca bazen gelir.
+- **Deniz'in mektupları:** 2032'den 2068'e kadar altı yılda bir gelir; her biri Deniz'in farklı bir yaşından (7, 9 … 19), damgada yazıldığı yıl. Mektuplarda en kritik denge, ısınma düzeyi, kapanan kapılar ve verdiğin kararlar geçer. Aynı cümle tekrar etmez. 2049'dan önce kaybedersen Deniz belki hiç doğmamıştır.
+- **Kararlarla değişen 2075 sahnesi:** Önemli her karar sahneye kalıcı bir iz bırakır (santral, otoyol, obruk, otel, carettalar, mangrov, beton set, türbinler, tren, ada…). Martılar, insanlar, jaguar, carettalar, yunus, trafik ve yelkenliyle canlı bir sahne.
+  - Deniz 2049'da doğar ve kumsalda büyür; çocukken uçurtma uçurur. Onu kıyıya götürdüysen yanında büyüğüyle kumdan kale yapar.
 - **12 son:** 8 kaybetme sonu (Halksız Yeşil, Ekleme Tuzağı, Satılık Konsey…) ve 4 başarı sonu (biri gizli). Bulunan sonlar tarayıcıda kaydedilir.
 - **Kaynaklar:** Bitiş ekranında oyundaki gerçek bilgilerin kaynakları listelenir.
 - **Erişim:** Telefonda ve bilgisayarda çalışır, ses açılıp kapatılabilir, `prefers-reduced-motion` ayarına uyar.
@@ -124,10 +91,10 @@ Dünya bir eşiği geçince **olay şişesi** gelir; bu şişe bekletilemez. Yed
 ## Repo yapısı
 
 ```
-index.html              Sayfa iskeleti ve stiller (Akdeniz paleti)
-data.js                 İçerik: karakterler, kartlar, kilit sebepleri, final, Deniz'in mektupları, sonlar, kaynaklar
-engine.js               Oyun kuralları (DOM'a dokunmaz): gelgit ve şişeler, kilitler, iklim modeli, mektup metinleri
-ui.js                   Arayüz: portreler, 2075 sahnesi, testiler, şişeler ve mektup, ekranlar
+index.html              Sayfa iskeleti ve stiller (gece masası paleti)
+data.js                 İçerik: karakterler, kartlar, kilit sebepleri, kapı bildirimleri, gelecekten notlar, final, mektuplar, sonlar, kaynaklar
+engine.js               Oyun kuralları (DOM'a dokunmaz): gündem ve dosyalar, kilitler, iklim modeli, mektup metinleri
+ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, açık dosya, final ve çember sahnesi, rapor
 tools/sim.js            Denge simülasyonu ve içerik kontrolü
 docs/                   Yapılanlar ve yapılacaklar; TASARIM ve İÇERİK-REHBERİ ilk sürüme göre (güncellenecek)
 ```
@@ -141,11 +108,13 @@ docs/                   Yapılanlar ve yapılacaklar; TASARIM ve İÇERİK-REHBE
 | `or` `ok` `uy` `gv` `mt` `rm` | Arka plan: orman, okyanus, uyum, güven ve adalet, metan programı, karbon çekme |
 | `ev:1`, `fire` | Olay kartı (koşulu engine.js `TRIG` içinde); `fire` gelirken dünyaya etkisi |
 | `f` | Seçim bir bayrak bırakır (mektuplar, sahne ve kilitler bunu kullanır) |
-| `lock:["bayrak"]` | Bu bayrak varsa seçenek kapanır; sebebi `LOCKS` içinde yazar |
-| `nx:["kart",yıl]` | Zincirleme kart ve kaç yıl sonra geleceği (denizde şişe olarak görünür) |
-| `idle:"l"` / `"r"` | Şişe son yılına (`max`) kadar açılmazsa batar ve bu seçenek kendiliğinden işler |
+| `lock:["bayrak"]` | Bu bayrak varsa seçenek kapanır; sebebi `LOCKS`, karar anındaki bildirim `DOORS` içinde |
+| `nx:["kart",yıl]` | Zincirleme kart ve kaç yıl sonra geleceği |
+| `idle:"l"` / `"r"` | Dosya son gününe (`max`) kadar açılmazsa vakti dolar ve bu seçenek kendiliğinden işler |
 | `at` / `min` / `max` / `req` / `chain` / `old` | Zorunlu yıl / yıl aralığı / gerekli bayrak / yalnız zincirle gelir / saçlar ağarır |
+| `HINTS` | Kart id'sine göre Deniz'in gelecekten notu |
 | `EPI` | Finaldeki kartlar; `need` bayraklarından biri varsa gelir |
+| `{E}` `{H}` `{Y}` | Metinde Ece'nin hitabı (Baba/Anne), Deniz'in hitabı (Dede/Nine), yıl |
 
 ## Yayınlama (jam teslimi)
 

@@ -1,4 +1,4 @@
-# Yapılanlar · `kapanan-kapilar` branch'i
+# Yapılanlar
 
 > 30–31 Ekim 2026 · İlk sürümün (`main`) üzerine yapılan değişiklikler ve nedenleri. Kalan işler: [YAPILACAKLAR2.md](YAPILACAKLAR2.md)
 
@@ -147,6 +147,22 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
   - Canlılar, animasyon belli anlarda dondurularak 5–6 kat büyütülmüş karelerde incelendi.
   - Yunusun yörüngesi, 9 anın üst üste çizildiği bir karede kontrol edildi.
   - Her değişiklikten sonra iki modda baştan sona oyun oynatıldı.
+
+## 7. Eda'nın seçimleri: Gelecekten Mektup'a dönüş · branch `secimler`
+**Neden:** Eda arkadaşının sürümünü oynadı ve her şeyi tutmak yerine seçerek ilerlemek istedi. Kararlar:
+- **Deniz yine torun.** Suların sesi fikri özgündü ama oyuncunun duygusal bağı torunla daha güçlü. Dede/Nine hitabı, Ece'li aile kartları ve torunun ağzından mektuplar geri geldi. Metinler 4. bölümdeki (commit `9d39942`) torun sürümünden alındı; sonradan eklenen `betonset` ve `otoyol` anıları torunun ağzından yazıldı. Oyunun adı yine **Gelecekten Mektup**.
+- **Şişeler yerine Başkan'ın masası.** Konsey başkanına sorunların denizden şişeyle gelmesi mantıklı gelmedi. Mekanik aynı kaldı (birini seç, diğeri bekler, son günü geçerse fırsat kaçar), görünüm ve dil değişti: her yıl masaya manila dosyalar gelir. Yoğun günlerde (yaklaşık %22) üç dosya gelir; yalnız birine vakit vardır.
+- **Gelecekten not.** Deniz ara sıra (en erken 2028, en sık dört turda bir, %35 olasılıkla) masadaki dosyalardan biri hakkında kısa bir not sıkıştırır. Notlar `data.js` → `HINTS` (28 dosya).
+- **Kapanan kapılar artık seçim ekranında görünmüyor.** Kapıyı kapatan karardan hemen sonra yumuşak bir bildirim çıkar ("Bu kararın bir bedeli olabilir"; `data.js` → `DOORS`, 14 kapı). Yıllar sonra o dosya geldiğinde kilitli seçenek gizlenir; yalnızca açık kalan yol ve "Bu konuda elin bağlı · yıl" notu görünür. Silik yazı ve "KAPANDI" damgası kaldırıldı.
+- **Hızlı oyun kaldırıldı, yerine demo modu.** Açılış ekranının köşesinde küçük bir "Demo modu" bağlantısı var: video çekimi için her tur 2 yıl ve daha hızlı yazılan mektuplar. Motor tarafında eski `hizli` modu kullanılıyor, böylece `tools/sim.js` değişmeden çalışır.
+- **Final: Deniz'in gözünden, sonra çemberin kapanışı.** 2075'te oyuncu Deniz'in hayatındaki fırsatlarla yüzleşir (torun sürümündeki `EPI` kartları). Ardından:
+  - "Bu kadarını başardık" ekranı: 2075 karnesi, açık kalan kapılar, "Peki, daha iyisi olabilir miydi?" ve olabilecekler.
+  - Animasyonlu son sahne: 2075 gecesinde Antalya penceresi, Deniz 2026'daki büyüğüne mektup yazar. Bu oyunun açılış mektubudur, böylece çember kapanır. İyi sonlarda (Mavi Akdeniz, Yeşil Miras, Sonsuz Mektup) bir teşekkür mektubu olur. Mektup katlanır, zarfa girer, damgalanır ve uçar; yıl 2075'ten 2026'ya geri sayar.
+- **Yeni palet.** Akdeniz paleti yerine gece mavisi bir çalışma masası, krem kâğıt, manila dosyalar ve amber lamba ışığı vurgusu. Testiler yerine sade çubuk göstergeler (iki uçtaki tehlike bölgesi görünür).
+- **Dünya raporu (eski adıyla Dosya) oyuncu dostu hâle geldi.** "Dosya" artık masadaki dosyalar olduğu için panelin adı **Rapor** (`R` tuşu). Rakam tablosu yerine: 2075 ısınma tahmini bir renk ölçeğinde, bu yılın dengelere etkisi, beş sistem için durum çubukları ("İyi / Orta / Zayıf" ve yön), en zayıf noktaya göre bir **danışman notu**; rakamlar "Ayrıntılar" altında.
+- **Sahne:** Deniz 2049'da doğar ve kumsalda büyür, çocukken uçurtma uçurur; doğduğu yıl sahnede "Deniz doğdu" notu çıkar. Onu kıyıya götürdüysen (`denizkiyi`) büyüğüyle kumdan kale yapar.
+- **Düzeltilenler:** Açık dosyada karakter pulu metnin üstüne biniyordu; fotoğraf artık ataşla başlığın yanında. Rapordaki "−0" gösterimi düzeldi.
+- **Arkadaşın sürümünden aynen kalanlar:** Küresel İklim Konseyi ve kartları, iklim modeli ve olaylar, yeni sonlar ve enerji düzeltmesi (Ekleme Tuzağı), kilit sistemi, süreli dosyalar ve `idle`, canlı sahnenin tamamı, kaynaklar.
 
 ## Bugünkü durum
 | | |

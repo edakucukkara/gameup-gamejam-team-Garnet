@@ -1,4 +1,4 @@
-/* Arayüz: portreler, 2075 sahnesi, testiler, şişeler ve mektup, ses, kayıt ve oyun akışı. data.js ve engine.js'ten sonra yüklenir. */
+/* Arayüz: portreler, 2075 sahnesi, göstergeler, masa ve dosyalar, mektuplar, final, ses, kayıt ve oyun akışı. data.js ve engine.js'ten sonra yüklenir. */
 
 /* ---------- Portre çizimi ---------- */
 function portrait(p,old){
@@ -68,6 +68,7 @@ const DEC={
  dTrain:F=>F("tren"),dCars:F=>F("otoyol"),
  dPlane:F=>F("aerosol"),
  dTower:F=>F("uyari"),
+ dCastle:F=>F("denizkiyi"),
  dHouses:F=>!F("tasindi")&&!F("ev_afet"),dRuins:F=>!F("tasindi")&&F("ev_afet"),dSunken:F=>F("tasindi"),
  dIsland:F=>!F("adared"),dIslandWall:F=>F("adafon")&&!F("adared"),dIslet:F=>F("adared"),
  dFish:F=>F("avyasak"),dPlastic:(F,s)=>!F("plastik")&&s.ok<48,
@@ -85,7 +86,7 @@ const CAP={
  madencilik:"Derin deniz madeni: su bulanıyor",tren:"Kıyıdan hızlı tren geçiyor",otoyol:"Otoyollar arabayla doldu",
  aerosol:"Gökyüzüne aerosol püskürtülüyor",uyari:"Kıyıya erken uyarı kulesi kuruldu",tasindi:"Kıyı mahallesi taşındı, eski evler su altında",
  adafon:"Ada, uyum fonuyla korunuyor",adared:"Ada sulara gömülüyor",avyasak:"Balıklar geri döndü",plastik:"Denizde plastik azalıyor",
- ev_sicak:"48 derecelik sıcak dalgası",ev_afet:"Büyük afet: kıyıdaki evler yıkıldı",ev_amazon:"Ormanın bir kısmı kurudu",ev_goc:"Göç dalgası: denizde tekneler",
+ ev_sicak:"48 derecelik sıcak dalgası",ev_afet:"Büyük afet: kıyıdaki evler yıkıldı",ev_amazon:"Ormanın bir kısmı kurudu",denizkiyi:"Deniz’le kumsalda kumdan kale",ev_goc:"Göç dalgası: denizde tekneler",
 };
 function buildWorld(){
  const g=(id,body)=>`<g id="${id}" class="dc">${body}</g>`;
@@ -175,7 +176,7 @@ function buildWorld(){
   ${g("dBuoy",`<circle cx="114" cy="146" r="2.2" fill="#F2B544"/><circle cx="126" cy="143" r="2.2" fill="#F2B544"/><circle cx="138" cy="146" r="2.2" fill="#F2B544"/>`)}
   ${g("dOffshore",`${[[70,0],[90,3],[110,1]].map(([x,d])=>`<rect x="${x-1.5}" y="${142+d}" width="3" height="10" fill="#8E949A"/><rect x="${x-1.9}" y="${138.5+d}" width="3.8" height="3.8" fill="#F2B544"/><rect x="${x-.7}" y="${125+d}" width="1.4" height="14" fill="#EAF2EF"/><rect x="${x-1.2}" y="${124+d}" width="3" height="1.8" rx=".7" fill="#EAF2EF"/>${blade(x,125+d,7)}<path d="M${x-4} ${142.5+d} q4 -1.6 8 0" stroke="#BFEDE6" stroke-width=".6" fill="none"/>`).join("")}`)}
   ${g("dGas",`<path d="M333 128 v18 M349 128 v18 M333 136 l16 6 M349 136 l-16 6" stroke="#8A8A8A" stroke-width="1"/><rect x="330" y="125.5" width="22" height="3" fill="#6E6E6E"/><path d="M336 125.5 l3 -11 l3 11" stroke="#8A8A8A" stroke-width=".9" fill="none"/><path d="M350 125.5 l5 -6" stroke="#8A8A8A" stroke-width=".9"/><path class="flame" d="M355 119.5 q-2 -3 0 -6 q2 3 0 6z" fill="#F2A33A"/>`)}
-  <g id="wBottles"></g></g>
+  </g>
  ${g("dWall",`<rect x="0" y="114.5" width="360" height="6" fill="#8E949A"/><rect x="0" y="114.5" width="360" height="1.4" fill="#C9CED3"/><path d="${Array.from({length:30},(_,i)=>`M${i*12+6} 116 v4.5`).join(" ")} M0 118.2 H360" stroke="#6E7378" stroke-width=".45"/>${[30,96,170,250,342].map((x,i)=>`<path class="splash" style="animation-delay:${i*.7}s" d="M${x-3} 120 q1 -4 3 -5 q2 1 3 5" stroke="#EAF2EF" stroke-width=".9" fill="none"/>`).join("")}`)}
  ${g("dHotel",`<rect x="284" y="84" width="40" height="30" fill="#EDE6D6"/><rect x="284" y="84" width="40" height="3" fill="#C9693C"/>${Array.from({length:12},(_,i)=>`<rect x="${287+(i%6)*6}" y="${90+Math.floor(i/6)*8}" width="3.6" height="4" fill="#5FA8D3"/>`).join("")}<rect x="300" y="106" width="8" height="8" fill="#9C8B70"/><path d="M290 116 l3 -4 l3 4 M313 116 l3 -4 l3 4" stroke="#E5654E" stroke-width="1" fill="none"/>`)}
  ${g("dHouses",`<rect x="196" y="106" width="9" height="7" fill="#F4EFE6"/><path d="M195 106.4 L200.5 102.4 L206 106.4Z" fill="#C9693C"/><path d="M195 106.4 L200.5 102.4" stroke="#9E4E2C" stroke-width=".5"/><rect x="199.4" y="109.4" width="2.2" height="3.6" rx=".8" fill="#2F6E9E"/><rect x="202.6" y="107.6" width="1.9" height="1.9" fill="#FFD98A"/><path d="M202.3 107.6 v1.9 M204.8 107.6 v1.9" stroke="#2F6E9E" stroke-width=".5"/>${[[196.4,107.4],[197.6,108.4],[196.2,109.8],[197.4,111],[198.4,107.2]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".8" fill="#D9478A"/>`).join("")}
@@ -186,6 +187,8 @@ function buildWorld(){
  ${g("dRuins",`${[198,208,218,228].map((x,i)=>`<path d="M${x} 113 v-${3+i%2*2} l2 1 l2 -2 l2 2 l2 -1 v${3+i%2*2}z" fill="#BDB4A2"/><path d="M${x-1} ${108+i%2} l6 -2.5 l3 2" stroke="#6E4B3A" stroke-width="1" fill="none"/>`).join("")}<circle cx="205" cy="113.4" r=".9" fill="#8A7F6E"/><circle cx="224" cy="113" r=".8" fill="#8A7F6E"/>`)}
  ${g("dTurtles",`${[[82,117.6,0],[102,117.4,-5]].map(([x,y,d])=>`<path d="M${x-14} ${y-.3} h10" stroke="#B49A6A" stroke-width=".6" stroke-dasharray="1 .9"/><g transform="translate(${x} ${y})"><g class="tcrawl" style="animation-delay:${d}s">${turtle(1)}</g></g>`).join("")}${[[116,116.4,0],[121,117,-1.3],[126,116.2,-2.6]].map(([x,y,d])=>`<g transform="translate(${x} ${y})"><g class="hatch" style="animation-delay:${d}s">${turtle(.34)}</g></g>`).join("")}`)}
  <g id="wPpl">${people.join("")}</g>
+ ${g("dCastle",`<path d="M48 118 v-3.4 h1.2 v1 h1.2 v-1 h1.2 v1 h1.2 v-1 h1.2 v3.4z" fill="#E3C98F"/><rect x="50.4" y="112.2" width="2" height="2.4" fill="#E3C98F"/><path d="M51.4 112.2 v-2.2 l1.6 .7 l-1.6 .7" stroke="#8C7A4A" stroke-width=".3" fill="#EF6461"/><g transform="translate(57 118)">${person("#7FD1C7","#D0D0D0","chat")}</g>`)}
+ <g id="wDeniz" class="w-t" style="opacity:0"><g id="wDenizS" transform="translate(64 118)">${person("#F2A65A","#3B2416","chat")}<g id="wKite"><path d="M1.6 -6.4 L13 -27" stroke="#EAF2EF" stroke-width=".3"/><g class="kite"><path d="M13 -31 l3 4 l-3 4 l-3 -4z" fill="#F2A65A"/><path d="M13 -31 v8 M10 -27 h6" stroke="#B8473A" stroke-width=".3"/><path d="M13 -23 q-1.4 2 .6 3.6 q-2 1.2 0 3" stroke="#EF6461" stroke-width=".45" fill="none"/></g></g></g></g>
  <g id="wGull" class="w-t"><g class="g1"><g transform="scale(-1 1)"><g class="g1glide">${gullFly("glide")}</g><g class="g1stand"><g class="peck">${gullStand}</g></g><g class="g1flap">${gullFly("flap")}</g></g></g></g>
  ${g("dTrain",`<path d="M0 110 H151" stroke="#6E5F4E" stroke-width=".9"/><g class="ride"><rect x="0" y="105.8" width="10" height="3.6" rx="1.6" fill="#EAF2EF"/><rect x="11" y="105.8" width="9" height="3.6" rx=".8" fill="#EAF2EF"/><rect x="21" y="105.8" width="9" height="3.6" rx=".8" fill="#EAF2EF"/><path d="M1 107.6 H29" stroke="#3CC8B4" stroke-width=".8"/></g>`)}
  ${g("dCars",`<rect x="0" y="108" width="151" height="3.6" fill="#55595C"/><path d="M0 109.8 H151" stroke="#E9E4D4" stroke-width=".35" stroke-dasharray="2 2"/><g clip-path="url(#roadClip)"><g class="traffic">${Array.from({length:11},(_,i)=>{const x=-16+i*16,c=["#E5654E","#F2B544","#EAF2EF","#5FA8D3","#9B7FD1"][i%5];return `<g transform="translate(${x} 110.9)"><rect x="0" y="-1.9" width="6.6" height="1.7" rx=".6" fill="${c}"/><path d="M1.3 -1.9 l.9 -1.3 h2.2 l1 1.3z" fill="${c}"/><path d="M1.8 -1.95 l.6 -.9 h.8 v.9z M3.6 -1.95 v-.9 h.7 l.7 .9z" fill="#BFE3F2"/><circle cx="1.4" cy="-.2" r=".6" fill="#1E1E1E"/><circle cx="5.2" cy="-.2" r=".6" fill="#1E1E1E"/><circle cx="1.4" cy="-.2" r=".22" fill="#9A9A9A"/><circle cx="5.2" cy="-.2" r=".22" fill="#9A9A9A"/></g>`}).join("")}</g></g>`)}
@@ -209,7 +212,7 @@ function buildWorld(){
  W.wins=[...document.querySelectorAll("#wBld .win")];
  W.ppl=[...document.querySelectorAll("#wPpl .ppl")];
  W.turbs=[...document.querySelectorAll("#wTurb > g")];W.sol=[...document.querySelectorAll("#wSolar .sol")];
- ["wSmog","wHeat","wHaze","wSun","wBirds","wGull","wTurb","wSea","wBottles","wDim"].concat(Object.keys(DEC)).forEach(id=>W[id]=document.getElementById(id));
+ ["wSmog","wHeat","wHaze","wSun","wBirds","wGull","wTurb","wSea","wDim","wDeniz","wDenizS","wKite"].concat(Object.keys(DEC)).forEach(id=>W[id]=document.getElementById(id));
 }
 // Bir izin üç hâli: açık (on), önizlemede belirecek (gin), önizlemede kaybolacak (gout); yeni açılan iz "pop" ile canlanır
 function mark(el,now,pre,live){
@@ -249,18 +252,17 @@ function updateWorld(pf){
  W.sol.forEach((el,i)=>{const base=share>=.25+i*.07;mark(el,base||sun(has),base||sun(F),live)});
  // Kararların izleri
  for(const [id,on] of Object.entries(DEC))if(W[id])mark(W[id],!!on(has,s),!!on(F,s),live);
- // Denizdeki şişeler: ne olduklarını söylemez, yalnızca ne zaman kıyıya döneceklerini
- W.wBottles.innerHTML=(S.queue||[]).filter(q=>q.at<2076).sort((a,b)=>a.at-b.at).slice(0,9).map((q,i)=>{
-  const x=(18+Math.min(1,Math.max(0,(q.at-S.year)/24))*320).toFixed(0),y=140+(i%2)*6;
-  return `<g transform="translate(${x} ${y})"><g class="sbob" style="animation-delay:${i*.4}s"><title>${q.at} yılında kıyıya dönecek</title>`+
-   `<rect x="-1.6" y="-9" width="3.2" height="2.6" rx=".8" fill="#B5835A"/><path d="M-1.4 -6.4h2.8v1.4q2.4 1.2 2.4 3.4v5.2q0 1.6-1.6 1.6h-4.4q-1.6 0-1.6-1.6v-5.2q0-2.2 2.4-3.4z" fill="#BFEDE6" fill-opacity=".55" stroke="#EAF2EF" stroke-width=".5"/>`+
-   `<rect x="-1.5" y="-2.6" width="3" height="4.4" rx=".6" fill="#F6EEDC"/><text y="-11" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="5.5" fill="#EAF2EF" opacity=".85">${q.at}</text></g></g>`}).join("");
+ // Torun Deniz 2049'da doğar ve kumsalda büyür; çocukken uçurtma uçurur
+ const age=S.year-2049;W.wDeniz.style.opacity=age>=2?1:0;
+ W.wDenizS.setAttribute("transform",`translate(64 118) scale(${(age<3?.55:Math.min(1,.55+(age-3)*.035)).toFixed(2)})`);
+ W.wKite.style.display=age>=4&&age<=16?"":"none";
  document.getElementById("wstat").textContent=`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C${has("aerosol")?"*":""} · deniz +${w.sl} cm`;
  // Not: önizlemede "Seçersen: …"; kararla ya da olayla yeni beliren izde birkaç saniye
  if(pf){showCap(CAP[pf],true);return;}
  if(document.getElementById("wcap").classList.contains("pre"))showCap(null);
  const fresh=S.flags.filter(f=>CAP[f]&&!W.seen.has(f));fresh.forEach(f=>W.seen.add(f));
  if(fresh.length&&W.live)showCap(CAP[fresh[fresh.length-1]]);
+ else if(age>=0&&!W.seen.has("@deniz")){W.seen.add("@deniz");if(W.live)showCap("Deniz doğdu");}
  W.live=true;
 }
 let capT=null;
@@ -278,32 +280,24 @@ const ICON={
  e:`<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5 V9.5 Q4 12.5 12 12.5 Q20 12.5 20 9.5 V5.5 Q20 8.5 12 8.5 Q4 8.5 4 5.5Z"/><path d="M4 12 V16 Q4 19 12 19 Q20 19 20 16 V12 Q20 15 12 15 Q4 15 4 12Z"/><path d="M4 18.5 V20 Q4 23 12 23 Q20 23 20 20 V18.5 Q20 21.5 12 21.5 Q4 21.5 4 18.5Z"/>`,
  n:`<path d="M14 1 L4 14 H11 L9.5 23 L20 9.5 H13 Z"/>`
 };
-// Dört denge dört testi: kurursa (0) ya da taşarsa (100) oyun biter
-const AMPH=`<path d="M8 1H16V2.6H14.6V5.2C14.6 6.4 16 7.2 17.6 8.2C20.8 10.2 22 13 22 16.4C22 22.2 17.8 26.6 12 28.6C6.2 26.6 2 22.2 2 16.4C2 13 3.2 10.2 6.4 8.2C8 7.2 9.4 6.4 9.4 5.2V2.6H8Z"/>`;
+// Dört denge: 0'a inerse ya da 100'e çıkarsa oyun biter; iki uçtaki kırmızımsı bölge tehlike alanı
 function buildMeters(){
- document.getElementById("meters").innerHTML=MK.map(k=>`<div class="meter" id="m_${k}">
-  <svg viewBox="0 0 24 30"><defs><clipPath id="c_${k}"><rect class="lvl" id="r_${k}" x="-4" y="15" width="32" height="34" style="transition:y .6s cubic-bezier(.3,.7,.3,1)"/></clipPath></defs>
-  <path class="handle" d="M9.4 4C6.2 4 4.6 5.6 5 9.4M14.6 4C17.8 4 19.4 5.6 19 9.4"/>
-  <g class="base">${AMPH}</g><g class="fill" clip-path="url(#c_${k})">${AMPH}</g>
-  <g class="ic" transform="translate(7.2 12) scale(.4)">${ICON[k]}</g></svg>
-  <span class="lbl">${MN[k]}<i class="pr" id="pr_${k}"></i></span><span class="dot" id="dot_${k}"></span></div>`).join("");
+ $("meters").innerHTML=MK.map(k=>`<div class="meter" id="m_${k}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>
+  <span class="lbl">${MN[k]}<i class="pr" id="pr_${k}"></i></span><span class="bar" role="img" aria-label="${MN[k]}"><i id="b_${k}"></i></span><span class="dot" id="dot_${k}"></span></div>`).join("");
 }
 function renderMeters(prev){
  MK.forEach(k=>{
-  const v=S.m[k];document.getElementById("r_"+k).setAttribute("y",(28.6-27.6*v/100).toFixed(2));
-  const el=document.getElementById("m_"+k);
+  const v=S.m[k],el=$("m_"+k);$("b_"+k).style.width=v+"%";
   el.classList.toggle("danger",v<=15||v>=85);
   // Arka plandaki sistemlerin yıllık itişi
-  const d=S.last?S.last[k]:0,pr=document.getElementById("pr_"+k);
+  const d=S.last?S.last[k]:0,pr=$("pr_"+k);
   pr.textContent=d>=1.5?"▲▲":d>=.5?"▲":d<=-1.5?"▼▼":d<=-.5?"▼":"";pr.className="pr"+(d<0?" neg":"");
   pr.title=pr.textContent?`Arka plan etkisi: ${d>0?"+":""}${d.toFixed(1)} / yıl`:"";
   if(prev&&prev[k]!==v){const c=v>prev[k]?"up":"down";el.classList.remove("up","down");void el.offsetWidth;el.classList.add(c);setTimeout(()=>el.classList.remove(c),700);}
  });
 }
-// Önizleme: hangi testinin ne kadar çalkalanacağı (yönü söylenmez)
-function showDots(o){MK.forEach(k=>{const v=o?Math.abs(o[k]||0):0,m=document.getElementById("m_"+k);
- document.getElementById("dot_"+k).className="dot"+(v>=12?" lg":v>0?" sm":"");
- m.classList.toggle("pv-sm",v>0&&v<12);m.classList.toggle("pv-lg",v>=12);});}
+// Önizleme: hangi dengenin ne kadar değişeceği (yönü söylenmez)
+function showDots(o){MK.forEach(k=>{const v=o?Math.abs(o[k]||0):0;$("dot_"+k).className="dot"+(v>=12?" lg":v>0?" sm":"");});}
 
 /* ---------- Ses ---------- */
 let AC=null,muted=false;
@@ -315,110 +309,114 @@ function loadEnds(){try{return JSON.parse(localStorage.getItem("gm_endings")||"[
 function saveEnd(id){try{const a=loadEnds();if(!a.includes(id)){a.push(id);localStorage.setItem("gm_endings",JSON.stringify(a))}}catch(e){}}
 
 /* ---------- Oyun ---------- */
-let S=null,busy=false,cur=null;   // cur: açık mektubun geldiği şişe (sonuç mu, geri mi döndü)
+let S=null,busy=false,cur=null,demo=false;   // cur: açık dosyanın geldiği yer (kararın sonucu mu, bekleyen mi)
 const $=id=>document.getElementById(id);
+const fmt=v=>(Math.round(v*10)/10).toString().replace(".",",");
+const GOOD=["mavi","yesil","sonsuz"];
+// Sahnenin ortası tek seferde tek görünüm: masa, açık dosya ya da kapı bildirimi
+function view(id){["deskView","cardView","doorView"].forEach(v=>$(v).hidden=v!==id);}
 
-function newGame(mode){
- S=Engine.newState(mode);cur=null;document.body.classList.remove("epi");W.seen=new Set();W.pf=null;
- renderMeters();updateWorld();renderYear();$("sunk").hidden=true;$("tideView").hidden=true;$("letterView").hidden=true;
- showLetter(Engine.introLetter(S),nextTurn,"Deniz’den · 2026");
+function newGame(mode,hitap){
+ S=Engine.newState(mode,hitap);cur=null;document.body.classList.remove("epi");W.seen=new Set();W.pf=null;W.live=false;
+ renderMeters();updateWorld();renderYear();$("lapsed").hidden=true;view(null);
+ showLetter(Engine.introLetter(S),nextTurn,"2026 · Masanda bir mektup duruyor",2075);
 }
 function renderYear(){
  $("year").textContent=Math.min(S.year,2075);
- const l=2075-S.year;$("left").textContent=S.epi?"Artık Deniz’sin":l>0?`2075’e ${l} yıl`+(S.step===2?" · hızlı":""):"2075";
+ const l=2075-S.year;$("left").textContent=S.epi?"Deniz’in gözünden":l>0?`2075’e ${l} yıl`+(S.step===2?" · demo":""):"2075";
 }
-function setHint(t){$("hint").textContent=t==="tide"?"Bir şişe seç · 1 2 ya da ← → · D: dünyanın raporu":"Cevabını seç · 1 2 ya da ← → · Çalkalanan testiler değişecek dengeleri gösterir";}
-// Yeni tur: gelgit şişeleri getirir; tek şişe (zorunlu kart, olay) beklemeden açılır
+function setHint(t){$("hint").textContent=t==="desk"?"Bir dosya aç · 1 2 3 · R: dünya raporu":t==="card"?"Kararını ver · 1 2 ya da ← → · Noktalar değişecek dengeleri gösterir":"";}
+// Yeni yıl: dosyalar masaya gelir; tek dosya (zorunlu kart, olay) beklemeden açılır
 function nextTurn(){
- if(S.epi){Engine.epiDraw(S);cur=null;showLetterCard(true);busy=false;return;}
- showSunk(Engine.tide(S));updateWorld();
- if(S.offer.length===1){cur=S.offer[0];Engine.open(S,cur.id);showLetterCard(true);}
- else showTide();
+ if(S.epi){Engine.epiDraw(S);cur=null;showCard(true);busy=false;return;}
+ showLapsed(Engine.tide(S));updateWorld();
+ if(S.offer.length===1){cur=S.offer[0];Engine.open(S,cur.id);showCard(true);}
+ else showDesk();
  busy=false;
 }
-function showSunk(list){
- const el=$("sunk");el.hidden=!list.length;
- if(list.length)el.textContent=`🫧 ${list.map(x=>CH[byId[x.id].c].n).join(", ")}: şişe açılmadan battı. Senin yerine zaman karar verdi.`;
+function showLapsed(list){
+ const el=$("lapsed");el.hidden=!list.length;
+ if(list.length)el.textContent=list.map(x=>`${CH[byId[x.id].c].n}: dosyanın vakti doldu.${x.x?` Karar senin yerine verildi: “${x.x}”.`:""}`).join(" ");
 }
 // İlk cümle, en fazla ~90 harf
 function tease(t){const f=t.split(/(?<=[.?!])\s/)[0];return"“"+(f.length>90?f.slice(0,87).replace(/\s\S*$/,"")+"…":f)+"”"}
-const BOTTLE=`<svg viewBox="0 0 24 48"><rect x="9" y="1" width="6" height="5" rx="1.5" fill="#B5835A"/><path d="M9.5 6h5v6q0 2 3 4q2.5 2 2.5 6v20q0 4-4 4h-8q-4 0-4-4v-20q0-4 2.5-6q3-2 3-4z" fill="#BFEDE6" fill-opacity=".22" stroke="#BFEDE6" stroke-width="1.2"/><g transform="rotate(-8 12 30)"><rect x="8" y="22" width="8" height="16" rx="2" fill="#F6EEDC"/><path d="M9.5 25.5h5M9.5 28.5h5M9.5 31.5h4" stroke="#22474D" stroke-width=".8"/></g></svg>`;
-function showTide(){
- $("letterView").hidden=true;$("tideView").hidden=false;
- $("tlead").innerHTML=`Kıyıya iki şişe vurdu.<small>Yalnız birini açabilirsin. Diğeri denize döner.</small>`;
- $("bottles").innerHTML=S.offer.map((o,i)=>{
+function showDesk(){
+ view("deskView");$("deskView").classList.toggle("full",S.offer.length>2);
+ $("dlead").innerHTML=`Masanda ${S.offer.length} dosya var.${S.busy?'<span class="busy">YOĞUN GÜN</span>':""}<small>Bugün yalnız birine vaktin var.</small>`;
+ // Gelecekten not: ara sıra Deniz, masadaki dosyalardan biri hakkında 2075'ten bir şey söyler
+ const N=S.note;$("fnote").hidden=!N;
+ if(N)$("fnote").innerHTML=`<div class="fnote"><div><b>Gelecekten not · ${CH[byId[N.id].c].n} dosyası hakkında</b><p>${S.hitap},<br>${N.t}<span>Deniz</span></p></div></div>`;
+ $("folders").innerHTML=S.offer.map((o,i)=>{
   const c=byId[o.id],ch=CH[c.c],tags=[];
-  if(c.max)tags.push(`<i class="urg">⏳ son yıl ${c.max}</i>`);
-  if(o.from)tags.push(`<i>↩ kararının sonucu · ${o.from}</i>`);else if(o.back)tags.push(`<i>🌊 geri döndü</i>`);
-  return `<button class="bottle" style="--cbg:${ch.bg};--d:${i*110}ms"><span class="glass" aria-hidden="true">${BOTTLE}</span>`+
-   `<span class="bm"><span class="bw"><span class="bface">${portrait(ch.p,c.old)}</span><b>${ch.n}</b><small>${ch.r}</small></span>`+
-   `<span class="bt">${tease(Engine.fill(S,c.t))}</span>${tags.length?`<span class="btags">${tags.join("")}</span>`:""}</span><span class="k">${i+1}</span></button>`;}).join("");
- [...$("bottles").children].forEach((b,i)=>b.addEventListener("click",()=>pickBottle(i)));
- setHint("tide");
+  if(c.max)tags.push(`<i class="due">Son gün ${c.max}</i>`);
+  if(o.from)tags.push(`<i>↩ ${o.from} kararının sonucu</i>`);else if(o.back)tags.push(`<i>Bekleyen dosya</i>`);
+  if(N&&N.id===o.id)tags.push(`<i class="note">✉ Deniz’in notu</i>`);
+  return `<button class="folder" data-tab="${ch.r}" style="--cbg:${ch.bg};--d:${i*110}ms"><span class="face" aria-hidden="true">${portrait(ch.p,c.old)}</span>`+
+   `<span class="fm"><span class="fw">${ch.n}</span><span class="ft">${tease(Engine.fill(S,c.t))}</span>${tags.length?`<span class="ftags">${tags.join("")}</span>`:""}</span><span class="k">${i+1}</span></button>`;}).join("");
+ [...$("folders").children].forEach((b,i)=>b.addEventListener("click",()=>pickFolder(i)));
+ setHint("desk");
 }
-function pickBottle(i){
+function pickFolder(i){
  if(busy||!S.offer||!S.offer[i])return;busy=true;sfx.pick();
- [...$("bottles").children].forEach((b,j)=>b.classList.add(j===i?"pick":"go"));
- setTimeout(()=>{cur=S.offer[i];Engine.open(S,cur.id);updateWorld();showLetterCard(true);busy=false;},430);
+ [...$("folders").children].forEach((b,j)=>b.classList.add(j===i?"pick":"go"));
+ setTimeout(()=>{cur=S.offer[i];Engine.open(S,cur.id);updateWorld();showCard(true);busy=false;},430);
 }
-function showLetterCard(anim){
- $("tideView").hidden=true;$("letterView").hidden=false;
- const c=byId[S.card],ch=CH[c.c],L=Engine.locks(S,c),lp=$("lp");
- lp.className="lp";lp.style.setProperty("--cbg",ch.bg);
- $("lstamp").innerHTML=portrait(ch.p,c.old);
- $("who").innerHTML=`${ch.n} <small>${ch.r}</small>`;
- const tag=S.epi?"2075 · Deniz’e yazılan mektup":c.ev?"Olay · bu şişe beklemez":c.at?"Bu şişe beklemez":cur&&cur.from?`Kararının sonucu · ${cur.from}`:cur&&cur.back?"Geri dönen şişe":"";
- $("ltag").textContent=tag;$("ltag").hidden=!tag;
+function showCard(anim){
+ view("cardView");
+ const c=byId[S.card],ch=CH[c.c],L=Engine.locks(S,c),sh=$("sheet");
+ if(L.l&&L.r)L.r=null;   // iki yol birden kapanmaz; olursa en azından biri açık kalsın
+ sh.className="sheet";$("photo").style.setProperty("--cbg",ch.bg);$("photo").innerHTML=portrait(ch.p,c.old);
+ $("whoN").textContent=ch.n;$("whoR").textContent=ch.r;
+ const tag=S.epi?"2075 · Deniz’in hayatından":c.ev?"Olay · bekleyemez":c.at?"Bekleyemez":cur&&cur.from?`${cur.from} kararının sonucu`:cur&&cur.back?"Bekleyen dosya":c.max?`Son gün ${c.max}`:"";
+ $("stag").textContent=tag;$("stag").hidden=!tag;
  $("qt").textContent=Engine.fill(S,c.t);
- ["l","r"].forEach(s=>{const o=c[s],k=L[s],b=$(s==="l"?"btnL":"btnR");
-  // Kapanan kapı muğlak görünür: yazısı silik ve okunmaz; ne olduğu bitiş ekranında açılır
-  $(s==="l"?"btnLt":"btnRt").innerHTML=k?`🔒 <span class="smear" aria-hidden="true">${smear(o.x)}</span>`:o.x;
-  b.classList.toggle("locked",!!k);b.setAttribute("aria-disabled",k?"true":"false");
-  k?b.setAttribute("aria-label","Kapalı kapı"):b.removeAttribute("aria-label");});
- // Damga yalnızca yılı söyler; sebebi mektuplarda ve bitiş ekranında
- const k=L.l||L.r,ll=$("lockline");ll.hidden=!k;
- if(k)ll.innerHTML=`<b>KAPANDI · ${k.y}</b>`;
- showSide(null);setHint("letter");
- if(anim){void lp.offsetWidth;lp.classList.add("in");}
-}
-// Kapanan seçeneğin yazısı: aynı uzunlukta, harfleri karışık; hep aynı görünsün diye metinden türetilir
-function smear(t){
- let h=0;for(const ch of t)h=(h*31+ch.charCodeAt(0))>>>0;
- const a="aeıioöuüklmnrstyzçğş";
- return [...t].map(ch=>ch===" "?" ":a[(h=(h*1103515245+12345)>>>0)%a.length]).join("");
+ // Kapanan kapı kartta seçenek olarak görünmez: yalnızca açık kalan yol ve neden elinin bağlı olduğu
+ ["l","r"].forEach(s=>{$(s==="l"?"btnL":"btnR").hidden=!!L[s];$(s==="l"?"btnLt":"btnRt").textContent=c[s].x;});
+ $("kR").textContent=L.l?"1":"2";
+ const k=L.l||L.r;$("bound").hidden=!k;
+ if(k)$("bound").innerHTML=`<b>${S.epi?"Bu kapı kapalı":"Bu konuda elin bağlı"} · ${k.y}</b>${k.why}.`;
+ showSide(null);setHint("card");
+ if(anim){void sh.offsetWidth;sh.classList.add("in");}
 }
 function showSide(side){
- const o=side&&!S.epi&&S.card?byId[S.card][side]:null,ok=o&&!Engine.lockOf(S,o);
- showDots(ok?o:null);
- const pf=ok&&o.f&&CAP[o.f]&&!S.flags.includes(o.f)?o.f:null;
+ const o=side&&!S.epi&&S.card?byId[S.card][side]:null;
+ showDots(o);
+ const pf=o&&o.f&&CAP[o.f]&&!S.flags.includes(o.f)?o.f:null;
  if(pf!==W.pf){W.pf=pf;updateWorld(pf);}
 }
-function refuse(){
- sfx.thud();const lp=$("lp"),ll=$("lockline");
- lp.classList.remove("shake","in");void lp.offsetWidth;lp.classList.add("shake");
- ll.classList.remove("stamp");void ll.offsetWidth;ll.classList.add("stamp");
-}
-// Cevap yazılır, mektup şişeye girer ve denize atılır
+// Karar verilir, dosya kapanıp arşive gider
 function commit(side){
- if(busy||!S||!S.card||$("letterView").hidden)return;
- if(Engine.lockOf(S,byId[S.card][side])){refuse();return;}
+ if(busy||!S||!S.card||$("cardView").hidden||$(side==="l"?"btnL":"btnR").hidden)return;
  busy=true;sfx.swipe();showSide(null);
- const lp=$("lp");lp.classList.remove("in","shake");void lp.offsetWidth;lp.classList.add("out");
+ const sh=$("sheet");sh.classList.remove("in");void sh.offsetWidth;sh.classList.add("out");
  setTimeout(()=>choose(side),380);
 }
 function choose(side){
- if(S.epi){Engine.epiApply(S,side)?setTimeout(()=>endGame(Engine.finalType(S)),300):nextTurn();return;}
+ if(S.epi){Engine.epiApply(S,side)?setTimeout(showReflect,300):nextTurn();return;}
  const prev={...S.m},dead=Engine.apply(S,side);cur=null;
- renderMeters(prev);updateWorld();renderYear();$("sunk").hidden=true;
+ renderMeters(prev);updateWorld();renderYear();$("lapsed").hidden=true;
  if(dead){setTimeout(()=>endGame(dead),650);return;}
- if(S.year>=2075){setTimeout(startEpilogue,650);return;}
- if(LETTER_YEARS.includes(S.year)){setTimeout(()=>showLetter(Engine.midLetter(S),nextTurn,`Deniz’den · ${S.year}`),450);return;}
- nextTurn();
+ const go=()=>{
+  if(S.year>=2075){setTimeout(startEpilogue,450);return;}
+  const li=LETTER_YEARS.indexOf(S.year);
+  // Her ara mektup Deniz'in farklı bir yaşından gelir (7, 9, … 19); damga yazıldığı yılı gösterir
+  if(li>=0){setTimeout(()=>showLetter(Engine.midLetter(S),nextTurn,`${S.year} · Masana bir mektup bırakılmış`,2056+li*2),300);return;}
+  nextTurn();
+ };
+ const doors=Engine.freshDoors(S);
+ doors.length?setTimeout(()=>showDoors(doors,go),350):go();
 }
-// 2075: görev biter, oyuncu Deniz olur; insanlar ondan bir şey ister (koltuk miras kalmaz)
+// Kapı bildirimi: bu karar ileride bazı yolları kapatacak; seçenek o gün kartta görünmeyecek
+function showDoors(list,then){
+ view("doorView");busy=false;sfx.thud();setHint("");
+ $("doorText").innerHTML=list.map(t=>`<p>${t}</p>`).join("");
+ $("doorOk").onclick=()=>{$("doorView").hidden=true;busy=true;then();};
+ $("doorOk").focus({preventScroll:true});
+}
+// 2075: görev biter, Konsey yeni başkanını seçer; oyuncu bir süre Deniz'in yerine geçer
 function startEpilogue(){
- Engine.startEpi(S);document.body.classList.add("epi");renderYear();
- showLetter(Engine.epiLetter(S),nextTurn,"Deniz’den · 2075");
+ Engine.startEpi(S);document.body.classList.add("epi");renderYear();view(null);
+ showLetter(Engine.epiLetter(S),nextTurn,"2075 · Deniz’den",2075);
 }
 
 /* Mektup gösterimi: daktilo efekti, dokununca tamamlanır */
@@ -427,29 +425,83 @@ function typeInto(el,text,done){
  clearInterval(typer);el.textContent="";
  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
  if(reduce){el.textContent=text;done&&done();return;}
- let i=0;typer=setInterval(()=>{i+=2;el.textContent=text.slice(0,i);if(i>=text.length){clearInterval(typer);typer=null;done&&done();}},18);
+ let i=0;typer=setInterval(()=>{i+=demo?4:2;el.textContent=text.slice(0,i);if(i>=text.length){clearInterval(typer);typer=null;done&&done();}},18);
  el.onclick=()=>{if(typer){clearInterval(typer);typer=null;el.textContent=text;done&&done();}};
 }
-function showLetter(text,then,from){
- busy=true;sfx.letter();
- const ov=$("letterScreen");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");
- $("lfrom").textContent=from||`Deniz’den · ${S.year}`;
- $("lpm").innerHTML=`AKDENİZ<br>·<br>${Math.min(S.year,2075)}`;
+function overlay(id){const ov=$(id);ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");return ov;}
+function showLetter(text,then,from,pm){
+ busy=true;sfx.letter();overlay("letterScreen");
+ $("lfrom").textContent=from;
+ $("lpm").innerHTML=`ANTALYA<br>·<br>${pm||2075}`;
  typeInto($("ltext"),text);
- $("lnext").onclick=()=>{clearInterval(typer);ov.hidden=true;then();};
+ $("lnext").onclick=()=>{clearInterval(typer);$("letterScreen").hidden=true;then();};
  $("lnext").focus({preventScroll:true});
 }
+
+/* ---------- Final: Bu kadarını başardık · çemberin kapanışı ---------- */
+function showReflect(){
+ busy=true;view(null);
+ const w=Engine.world(S),doors=S.doors,shut=doors.filter(d=>d.lock),open=doors.filter(d=>!d.lock);
+ $("rfTitle").textContent=!doors.length||shut.length?"Bu kadarını başardık":"Bütün kapılar açık kaldı";
+ $("rfKarne").innerHTML=[["Isınma",`+${fmt(w.t0)}°C`],["Deniz seviyesi",`+${w.sl} cm`],["Temiz enerji",`%${w.tem}`],["Açık kapı",`${open.length}/${doors.length}`]]
+  .map(([a,b])=>`<span><b>${b}</b>${a}</span>`).join("");
+ $("rfDoors").innerHTML=open.length?`<p class="dh">Deniz’in önünde açık kalanlar</p>`+open.map(d=>`<div class="door"><b>✓ ${d.x}</b></div>`).join(""):"";
+ const lapsed=S.sunk.length;
+ $("rfQ").textContent=shut.length||lapsed?"Peki, daha iyisi olabilir miydi?":"Daha iyisi olabilir miydi? Belki. Ama bu kadarı bile kolay değildi.";
+ $("rfMiss").innerHTML=(shut.length?`<p class="dh">Olabilirdi</p>`+shut.map(d=>`<div class="door shut"><b>🔒 ${d.x}</b><span>${d.lock.y}: ${d.lock.why}</span></div>`).join(""):"")+
+  (lapsed?`<div class="door shut"><b>${lapsed} dosyanın vakti doldu</b><span>Kararı senin yerine zaman verdi.</span></div>`:"");
+ overlay("reflectScreen");
+ $("rfNext").onclick=()=>{$("reflectScreen").hidden=true;showLoop(Engine.finalType(S));};
+ $("rfNext").focus({preventScroll:true});
+}
+// Deniz, 2026'daki büyüğüne ilk mektubu yazar: oyun açılışındaki mektup budur. İyi sonlarda bir teşekkür mektubu olur
+function drawLoopSky(){
+ const stars=Array.from({length:24},(_,i)=>`<circle cx="${(i*47+13)%220}" cy="${(i*29)%46+4}" r="${i%3?.45:.8}" fill="#fff" opacity="${(.35+(i%4)*.15).toFixed(2)}"/>`).join("");
+ $("loopsky").innerHTML=`<defs><linearGradient id="lsk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141B3A"/><stop offset="1" stop-color="#3B3F6E"/></linearGradient></defs>
+  <rect width="220" height="100" fill="url(#lsk)"/>${stars}<circle cx="168" cy="24" r="9" fill="#F7F1E3"/><circle cx="172" cy="21" r="8" fill="#2A3160" opacity=".35"/>
+  <path d="M0 62 L30 46 L58 57 L86 38 L118 55 L150 44 L182 59 L220 49 V70 H0Z" fill="#232A52"/>
+  <g fill="#F2A65A">${[[34,64],[46,62],[58,65],[72,63],[98,60],[110,63],[122,61],[134,64],[146,62]].map(([x,y])=>`<rect x="${x}" y="${y}" width="1.6" height="1.6"/>`).join("")}</g>
+  <rect y="68" width="220" height="32" fill="#1B3A5A"/><path d="M160 71 h16 M155 77 h26 M161 83 h14 M157 89 h22 M162 95 h12" stroke="#F7F1E3" stroke-width=".8" opacity=".45"/>
+  <path d="M110 0 V100 M0 50 H220" stroke="#0B1020" stroke-width="3"/><rect width="220" height="100" fill="none" stroke="#0B1020" stroke-width="6"/>
+  <g>${[[110,48],[96,40],[124,38],[104,28],[118,58],[90,56]].map(([x,y],i)=>`<circle class="spark" cx="${x}" cy="${y}" r="${1.4+i%2}" style="transform-box:fill-box;transform-origin:center;animation-delay:${i*.12}s"/>`).join("")}</g>`;
+}
+function rollYear(from,to,ms){
+ const t0=performance.now(),el=$("lyear");
+ const f=t=>{const u=Math.min(1,(t-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;el.textContent=Math.round(from+(to-from)*e);if(u<1)requestAnimationFrame(f);};
+ requestAnimationFrame(f);
+}
+function showLoop(id){
+ busy=true;drawLoopSky();sfx.letter();
+ const good=GOOD.includes(id),text=Engine.loopLetter(S,id);
+ $("lyear").textContent="2075";$("lpaper").className="lpaper";$("lpaper").hidden=false;
+ $("lenv").hidden=true;$("lenv").className="lenv";$("lline").hidden=true;$("lgo").hidden=true;$("lgo").textContent="Mektubu gönder";
+ overlay("loopScreen");
+ typeInto($("ltext2"),text,()=>{$("lgo").hidden=false;$("lgo").focus({preventScroll:true});});
+ $("lgo").onclick=()=>{
+  $("lgo").hidden=true;clearInterval(typer);$("ltext2").textContent=text;
+  $("lpaper").classList.add("fold");sfx.pick();
+  setTimeout(()=>{$("lpaper").hidden=true;$("lenvTo").innerHTML=`${S.hitap}’ye<br>Antalya, 2026`;$("lenv").hidden=false;$("lenv").classList.add("show");},950);
+  setTimeout(()=>{$("lenv").classList.add("fly");document.querySelectorAll("#loopsky .spark").forEach(s=>s.classList.add("go"));rollYear(2075,2026,1700);tone(988,.9,"sine",.03);},2500);
+  setTimeout(()=>{
+   $("lenv").hidden=true;const l=$("lline");l.hidden=false;l.classList.remove("in");void l.offsetWidth;l.classList.add("in");
+   l.textContent=good?"2026, Antalya. Masanda bir mektup duruyor. Birinin sana teşekkür etmek için zamanın öbür ucundan yazdığını bilmiyorsun henüz."
+    :"2026, Antalya. Masanda bir mektup duruyor. Açtığında her şey yeniden başlıyor: belki bu kez başka kapılar açık kalır.";
+   $("lgo").textContent="Devam";$("lgo").hidden=false;$("lgo").focus({preventScroll:true});
+   $("lgo").onclick=()=>{$("loopScreen").hidden=true;endGame(id);};
+  },4400);
+ };
+}
 function endGame(id){
- busy=true;sfx.end();saveEnd(id);
+ busy=true;sfx.end();saveEnd(id);view(null);
  const E=ENDINGS[id],{t,death}=Engine.endText(S,id),w=Engine.world(S),got=loadEnds();
  // Final oynandıysa Deniz'in kapıları, oynanmadıysa bu zaman çizgisinde kapanan kapılar
  const doors=S.doors.length?S.doors:[...new Map(S.hits.map(h=>[h.id+h.x,{x:h.x,lock:h}])).values()],shut=doors.filter(d=>d.lock);
  $("epm").className="postmark"+(death?" red":"");
- $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"AKDENİZ<br>·<br>2075";
+ $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"ANTALYA<br>·<br>2075";
  $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Görevin bitti · Deniz’den son mektup";
  $("ename").textContent=E.n;
  // Sonun altında bir sonraki oyun için ipucu; Kırılgan Umut neyin eksik kaldığını söyler
- const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),t0=(Math.round(w.t0*10)/10).toString().replace(".",",");
+ const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),t0=fmt(w.t0);
  const hint=id==="kirilgan"?(bal?`İpucu: Dengeyi korudun ama 2075 ısınması +${t0}°C. Mavi Akdeniz için 2,2°C’nin altında kalmalı.`
   :"İpucu: Dört denge de 30–70 arasında kalır ve ısınma 2,2°C’nin altında olursa Mavi Akdeniz’e ulaşırsın."):E.h||"";
  $("ehint").textContent=hint;$("ehint").hidden=!hint;
@@ -457,46 +509,57 @@ function endGame(id){
   (S.doors.length?`<span><b>${shut.length}/${S.doors.length}</b>kapı kapalı</span>`:`<span><b>${shut.length}</b>kapanan kapı</span>`)+`<span><b>${got.length}/12</b>son keşfedildi</span>`;
  $("edoors").hidden=!doors.length;
  $("edoors").innerHTML=doors.length?`<p class="dh">${S.doors.length?"Deniz’e bıraktığın kapılar":"Bu zaman çizgisinde kapanan kapılar"}</p>`+doors.map(d=>d.lock
-  ?`<div class="door shut"><b>🔒 ${d.x}</b><span>KAPANDI · ${d.lock.y} — ${d.lock.why}</span></div>`
+  ?`<div class="door shut"><b>🔒 ${d.x}</b><span>Kapandı · ${d.lock.y}: ${d.lock.why}</span></div>`
   :`<div class="door"><b>✓ ${d.x}</b><span>Açık kaldı</span></div>`).join(""):"";
- // Açılmadan batan şişeler: kimin mektubuydu, zaman yerine neye karar verdi
- const sk=S.sunk||[];$("esunk").hidden=!sk.length;
- $("esunk").innerHTML=sk.length?`<p class="dh">Açılmadan batan şişeler</p>`+sk.map(x=>`<div class="door shut"><b>🫧 ${CH[byId[x.id].c].n} · ${x.y}</b><span>${x.x?`Kendiliğinden oldu: “${x.x}”`:"Kimse cevap vermedi"}</span></div>`).join(""):"";
+ // Vakti dolan dosyalar: kimin dosyasıydı, zaman yerine neye karar verdi
+ const sk=S.sunk||[];$("elapsed").hidden=!sk.length;
+ $("elapsed").innerHTML=sk.length?`<p class="dh">Vakti dolan dosyalar</p>`+sk.map(x=>`<div class="door shut"><b>${CH[byId[x.id].c].n} · ${x.y}</b><span>${x.x?`Kendiliğinden oldu: “${x.x}”`:"Kimse cevap vermedi"}</span></div>`).join(""):"";
  const s=S.s,r=v=>String(Math.round(v));
- $("ekarne").innerHTML=`<p class="dh">${death?"Bu gidişle 2075":"2075 karnesi"}</p>`+[["Isınma",`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C`],["Deniz seviyesi",`+${w.sl} cm`],
+ $("ekarne").innerHTML=`<p class="dh">${death?"Bu gidişle 2075":"2075 karnesi"}</p>`+[["Isınma",`+${t0}°C`],["Deniz seviyesi",`+${w.sl} cm`],
   ["Temiz enerji",`%${w.tem}`],["Ormanlar",r(s.or)],["Okyanuslar",r(s.ok)],["Uyum",r(s.uy)],["Güven",r(s.gv)]].map(([a,b])=>`<span><b>${b}</b>${a}</span>`).join("");
  $("egrid").innerHTML=END_ORDER.map(k=>`<div class="chip${got.includes(k)?" got":""}${k===id?" now":""}">${got.includes(k)?ENDINGS[k].n:"? ? ?"}</div>`).join("");
  $("esrc").innerHTML=SOURCES.map(s=>`<li>${s}</li>`).join("");
- const ov=$("endScreen");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");
+ overlay("endScreen");
  typeInto($("etext"),t);
  S.card=null;
 }
 
-/* ---------- Dosya: arka plandaki dünya sistemleri ---------- */
-function openDossier(){
- if(!S)return;const s=S.s,p=S.ps||s,w=Engine.world(S),f=(v,dg=0)=>v.toFixed(dg).replace(".",",");
- // good: değerin artması iyi mi; ok yönü ve rengi buna göre
- const tr=(k,good)=>{const d=s[k]-p[k];if(Math.abs(d)<.002*Math.max(1,Math.abs(s[k])))return"";return`<i class="${(d>0)===good?"":"bad"}">${d>0?"▲":"▼"}</i>`};
- const rows=[
-  // Aerosol ısınmayı yalnızca maskeler: rakam maskesiz ısınmayı gösterir, hissedilen ayrıca yazılır
-  ["🌡️","Isınma",`+${f(s.T0,2)}°C`+tr("T0",false),(s.aer?`aerosolle hissedilen +${f(s.T,2)}°C · `:"")+`2075 tahmini: +${f(w.t0,1)}°C`],
-  ["💨","Yıllık CO₂",`${f(s.em)} milyar ton`+tr("em",false),"Isınma birikimli CO₂ ile artar"],
-  ["🌊","Deniz seviyesi",`+${f(s.sl)} cm`+tr("sl",false),`2075 tahmini: +${w.sl} cm · emisyon dursa da yükselir`],
-  ["⚡","Temiz enerji payı",`%${Math.round(100*Math.min(1,s.tk/s.tal))}`+tr("tk",true),`yıllık büyüme hızı %${f(100*s.r,1)}`],
-  ["🏭","Fosil altyapı",f(s.fk)+tr("fk",false),"santraller onlarca yıl yanar"],
-  ["🔌","Enerji talebi",f(s.tal)+tr("tal",false),"2026 = 100 · ısındıkça klima talebi artar"],
-  ["🌳","Ormanlar",`${f(s.or)}/100`+tr("or",true),""],
-  ["🐠","Okyanuslar",`${f(s.ok)}/100`+tr("ok",true),""],
-  ["🛡️","Uyum kapasitesi",`${f(s.uy)}/100`+tr("uy",true),`yıllık afet zararı: ${f(s.D,1)}`],
-  ["🤝","Güven ve adalet",`${f(s.gv)}/100`+tr("gv",true),""],
- ];
- $("dtitle").textContent=`Dünya raporu · ${Math.min(S.year,2075)}`;
- $("drows").innerHTML=rows.map(([ic,n,v,sm])=>`<div class="drow"><span class="ic">${ic}</span><b>${n}</b><span class="v">${v}</span>${sm?`<small>${sm}</small>`:""}</div>`).join("");
- const L=S.last;$("dpush").textContent=L?"Bu yıl göstergelere etkisi: "+MK.map(k=>`${MN[k]} ${L[k]>=0?"+":"−"}${f(Math.abs(L[k]),1)}`).join(" · "):"Henüz bir yıl geçmedi.";
- const ov=$("dossier");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");$("dclose").focus({preventScroll:true});
+/* ---------- Dünya raporu: arka plandaki sistemler, oyuncunun dilinde ---------- */
+function advice(S){
+ const s=S.s,share=s.tk/s.tal,gap=s.tk+s.fk-s.tal;
+ if(s.uy<30)return"Afetlere hazırlık zayıf: her sel ve fırtına Fon’u eritiyor. Erken uyarı, mangrov ve kıyı kararları bunu azaltır.";
+ if(s.gv<42)return"Güven azalıyor: Uluslar her yıl biraz geriliyor. Bedeli yoksullara yüklenen kararlardan kaçın, adaleti gözet.";
+ if(gap>6)return"Enerji arzı talepten fazla: ucuzluk tüketimi şişiriyor. Temiz enerji eklerken eski santralleri de kapat.";
+ if(gap<-3)return"Enerji yetmiyor: yaz zirvesinde kesinti riski var. Yeni temiz kapasite ve verimlilik kararları işe yarar.";
+ if(s.or<50)return"Ormanlar küçülüyor ve Doğa her yıl biraz geriliyor. Orman koruma kararları yıllarca geri öder.";
+ if(s.ok<45)return"Okyanuslar zorlanıyor. Av kotası, plastik antlaşması ve deniz koruma alanları yardımcı olur.";
+ if(S.year>=2034&&share<.4)return"Temiz enerji yavaş büyüyor. 2075 ısınmasını en çok güneş, rüzgâr ve şebeke kararları belirler.";
+ return"Dünya şimdilik dengede. Böyle devam: dosyaların arasında uzun vadeli olanları kaçırma.";
 }
-$("dosyaBtn").addEventListener("click",openDossier);
-$("dclose").addEventListener("click",()=>{$("dossier").hidden=true;});
+function openReport(){
+ if(!S)return;
+ const s=S.s,p=S.ps||s,w=Engine.world(S),t=w.t0,share=Math.min(1,s.tk/s.tal);
+ const st=t<2?["Hedefe yakın","ok"]:t<2.5?["Sınırda","mid"]:["Tehlikeli","bad"];
+ const pos=v=>(cap((v-1.4)/(3.2-1.4),0,1)*100).toFixed(1);
+ const row=(name,v,k,tip)=>{const d=s[k]-p[k],lv=v>=60?["İyi","ok"]:v>=40?["Orta","mid"]:["Zayıf","bad"],
+  ar=Math.abs(d)<.05?"":d>0?" ▲":" ▼";
+  return `<div class="rrow"><b>${name}</b><em class="${lv[1]}">${lv[0]}${ar}</em><span class="rbar"><i style="width:${cap(v,0,100).toFixed(0)}%"></i></span>${tip?`<small>${tip}</small>`:""}</div>`;};
+ const L=S.last;
+ $("rtitle").textContent=`Dünya raporu · ${Math.min(S.year,2075)}`;
+ $("rbody").innerHTML=`<div class="fc"><span class="big2">+${fmt(t)}°C</span><span class="fl"><b>2075 tahmini: ${st[0]}</b>Hiç yeni karar alınmasa 2075’te dünya bu kadar ısınmış olur. Deniz +${w.sl} cm yükselir.</span>
+   <div class="scale"><i style="left:${pos(t)}%"></i>${[1.5,2,2.5,3].map(v=>`<span style="left:${pos(v)}%">${fmt(v)}°</span>`).join("")}</div></div>`+
+  (L?`<div class="push">${MK.map(k=>{const v=Math.round(L[k]*10)/10;return `<span class="${v>=.5?"g":v<=-.5?"b":""}">${MN[k]} ${v>0?"+":v<0?"−":"±"}${fmt(Math.abs(v))}</span>`}).join("")}</div>`:"")+
+  row("Temiz enerji payı",share*100,"tk",`Elektriğin %${Math.round(share*100)}’i temiz kaynaklardan.`)+
+  row("Ormanlar",s.or,"or","Ormanlar her yıl Doğa’yı besler.")+
+  row("Okyanuslar",s.ok,"ok","")+
+  row("Afetlere hazırlık",s.uy,"uy",`Afetlerin yıllık zararı Fon’dan çıkar (şu an ${fmt(s.D)}).`)+
+  row("Güven ve adalet",s.gv,"gv","Güven Uluslar’ı her yıl iter.")+
+  `<p class="advice"><b>Danışman notu</b>${advice(S)}</p>`+
+  `<details class="more"><summary>Ayrıntılar</summary><p>Bugünkü ısınma +${fmt(s.T0)}°C${s.aer?` (aerosolle hissedilen +${fmt(s.T)}°C)`:""}<br>Yıllık CO₂ ${Math.round(s.em)} milyar ton<br>Deniz seviyesi bugün +${Math.round(s.sl)} cm<br>Fosil altyapı ${Math.round(s.fk)} · enerji talebi ${Math.round(s.tal)} (2026 = 100)<br>Isınma birikimli CO₂’den hesaplanır: her 1000 milyar ton ≈ +0,45°C.</p></details>`;
+ overlay("report");$("rclose").focus({preventScroll:true});
+}
+$("raporBtn").addEventListener("click",openReport);
+$("rclose").addEventListener("click",()=>{$("report").hidden=true;});
 
 /* ---------- Cevaplar ve tuşlar ---------- */
 ["l","r"].forEach(s=>{const b=$(s==="l"?"btnL":"btnR");
@@ -506,24 +569,31 @@ $("dclose").addEventListener("click",()=>{$("dossier").hidden=true;});
  b.addEventListener("blur",()=>showSide(null));
  b.addEventListener("click",()=>commit(s));});
 document.addEventListener("keydown",e=>{
- if(!$("dossier").hidden){if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();$("dossier").hidden=true;}return;}
- if((e.key==="d"||e.key==="D")&&!busy){openDossier();return;}
- if(!$("letterScreen").hidden&&(e.key==="Enter"||e.key===" ")){e.preventDefault();$("lnext").click();return;}
+ const enter=e.key==="Enter"||e.key===" ";
+ if(!$("report").hidden){if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();$("report").hidden=true;}return;}
+ if(!$("letterScreen").hidden){if(enter){e.preventDefault();$("lnext").click();}return;}
+ if(!$("startScreen").hidden||!$("reflectScreen").hidden||!$("loopScreen").hidden||!$("endScreen").hidden)return;
+ if(!$("doorView").hidden&&enter){e.preventDefault();$("doorOk").click();return;}
+ if("rRdD".includes(e.key)&&e.key.length===1&&!busy){openReport();return;}
  if(busy||!S)return;
- const i=e.key==="1"||e.key==="ArrowLeft"?0:e.key==="2"||e.key==="ArrowRight"?1:-1;if(i<0)return;
- if(!$("tideView").hidden)pickBottle(i);else commit(i?"r":"l");});
+ const i=e.key==="1"||e.key==="ArrowLeft"?0:e.key==="2"||e.key==="ArrowRight"?1:e.key==="3"?2:-1;if(i<0)return;
+ if(!$("deskView").hidden)pickFolder(i);
+ else if(!$("cardView").hidden){const vis=["l","r"].filter(s=>!$(s==="l"?"btnL":"btnR").hidden);if(vis[i])commit(vis[i]);}
+});
 
 $("mute").addEventListener("click",()=>{muted=!muted;$("mute").textContent=muted?"SES KAPALI":"SES AÇIK";$("mute").setAttribute("aria-pressed",muted);});
-document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{$("startScreen").hidden=true;newGame(b.dataset.mode);}));
+// Demo modu: video çekimi için her tur 2 yıl, mektuplar daha hızlı yazılır
+$("demoBtn").addEventListener("click",()=>{demo=!demo;$("demoBtn").textContent=demo?"Demo modu açık · her tur 2 yıl":"Demo modu";$("demoBtn").setAttribute("aria-pressed",demo);});
+document.querySelectorAll("[data-h]").forEach(b=>b.addEventListener("click",()=>{$("startScreen").hidden=true;newGame(demo?"hizli":"tam",b.dataset.h);}));
 $("again").addEventListener("click",()=>{$("endScreen").hidden=true;showStart();});
-function showStart(){const g=loadEnds().length;$("found").textContent=g?`Keşfedilen sonlar: ${g}/12`:"12 farklı son seni bekliyor.";document.body.classList.remove("epi");const ov=$("startScreen");ov.hidden=false;}
+function showStart(){const g=loadEnds().length;$("found").textContent=g?`Keşfedilen sonlar: ${g}/12`:"12 farklı son seni bekliyor.";document.body.classList.remove("epi");view(null);$("startScreen").hidden=false;}
 
 /* ---------- Başlat ---------- */
 buildMeters();buildWorld();
 function boot(data){
- if(data&&data.S&&data.S.step){S=data.S;W.seen=new Set(S.flags);W.live=false;$("startScreen").hidden=true;document.body.classList.toggle("epi",!!S.epi);renderMeters();updateWorld();renderYear();
-  busy=false;if(S.card)showLetterCard(false);else if(S.offer)showTide();else nextTurn();return;}
- S=Engine.newState("tam");
+ if(data&&data.S&&data.S.step&&data.S.hitap){S=data.S;demo=S.step===2;W.seen=new Set(S.flags.concat(S.year>=2049?["@deniz"]:[]));W.live=false;$("startScreen").hidden=true;document.body.classList.toggle("epi",!!S.epi);renderMeters();updateWorld();renderYear();
+  busy=false;if(S.card)showCard(false);else if(S.offer)showDesk();else nextTurn();return;}
+ S=Engine.newState("tam","Dede");
  renderMeters();updateWorld();renderYear();busy=true;showStart();
 }
 const hot=window.claude&&window.claude.hot;

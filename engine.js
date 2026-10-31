@@ -44,12 +44,13 @@ const TRIG={
 };
 
 const Engine={
- // "tam": her tur 1 yıl · "hizli": her tur 2 yıl, kararların arka plan etkisi de iki yıllık sayılır
- newState(mode="tam"){
-  return{m:{d:50,h:50,e:50,n:50},s:{...SYS0},year:2026,mode,step:mode==="hizli"?2:1,flags:[],fy:{},fired:[],used:[],queue:[],offer:null,sunk:[],said:[],hits:[],told:0,card:null,count:0,epi:null,ei:0,doors:[],last:null,ps:null};
+ // "tam": her tur 1 yıl · "hizli": demo çekimi için her tur 2 yıl, kararların arka plan etkisi de iki yıllık sayılır
+ // hitap: torun Deniz oyuncuya "Dede" ya da "Nine" der
+ newState(mode="tam",hitap="Dede"){
+  return{m:{d:50,h:50,e:50,n:50},s:{...SYS0},year:2026,mode,hitap,step:mode==="hizli"?2:1,flags:[],fy:{},fired:[],used:[],queue:[],offer:null,busy:false,note:null,hinted:[],lastNote:0,noted:[],sunk:[],said:[],hits:[],told:0,card:null,count:0,epi:null,ei:0,doors:[],last:null,ps:null};
  },
  has(S,f){return S.flags.includes(f)},
- fill(S,s){return s.replace(/\{Y\}/g,S.year)},
+ fill(S,s){return s.replace(/\{E\}/g,S.hitap==="Nine"?"Anne":"Baba").replace(/\{H\}/g,S.hitap).replace(/\{Y\}/g,S.year)},
 
  // 2075 tahmini: bugünkü dünya yeni karar alınmadan 2075'e nasıl varır (her kararda bir kez hesaplanır)
  world(S){
@@ -71,7 +72,7 @@ const Engine={
  },
  locks(S,c){return{l:this.lockOf(S,c.l),r:this.lockOf(S,c.r)}},
 
- // Denizde olan (ertelenmiş ya da sonucu beklenen) şişe havuzdan tekrar çıkmaz
+ // Bekleyen (ertelenmiş ya da sonucu beklenen) dosya havuzdan tekrar çıkmaz
  okCard(S,c){
   if(c.at||c.chain||c.ev||S.used.includes(c.id)||S.queue.some(q=>q.id===c.id))return false;
   if(c.min&&S.year<c.min)return false; if(c.max&&S.year>c.max)return false;
@@ -84,9 +85,11 @@ const Engine={
   if(!pool.length){S.used=S.used.filter(id=>byId[id].at||byId[id].chain||byId[id].ev);pool=CARDS.filter(ok);}
   return pool.length?pool[Math.floor(rnd()*pool.length)]:null;
  },
- /* Gelgit: bu turun şişeleri kıyıya vurur (S.offer). Zorunlu kart ve eşik olayı tek gelir, bekletilemez.
-  Yoksa iki şişe gelir: önce vakti gelenler (kararlarının sonuçları, geri dönen mektuplar), sonra havuzdan.
-  Önce süresi dolan şişeler batar; batanları döndürür. */
+ /* Gündem: bu yılın dosyaları Başkan'ın masasına gelir (S.offer); yalnız birine vakit vardır.
+  Zorunlu kart ve eşik olayı tek gelir, bekletilemez. Yoksa iki dosya gelir, yoğun günlerde üç (S.busy):
+  önce vakti gelenler (kararlarının sonuçları, bekleyen dosyalar), sonra havuzdan.
+  Önce süresi dolan dosyalar düşer (fırsat kaçar); onları döndürür. Ara sıra Deniz'den bir not gelir (S.note).
+  (Fonksiyon adı tide eski şişe mekaniğinden kaldı; tools/sim.js de bu adı kullanır.) */
  tide(S,rnd=Math.random){
   const sunk=this.expire(S);let ids;
   const forced=CARDS.find(c=>c.at&&c.at<=S.year&&!S.used.includes(c.id));
@@ -94,16 +97,28 @@ const Engine={
   if(forced)ids=[forced.id];
   else if(ev){const c=byId[ev];S.fired.push(ev);S.flags.push(ev);S.fy[ev]=S.year;HK.forEach(k=>{if(c.fire&&c.fire[k])S.s[k]+=c.fire[k]});S._wc=-1;ids=[ev];}
   else{
+   const n=S.year>=2029&&rnd()<.22?3:2;S.busy=n===3;
    ids=[];S.queue=S.queue.filter(q=>!S.used.includes(q.id));   // açılmış kartın sonucu ikinci kez gelmez
    S.queue.filter(q=>q.at<=S.year&&!(byId[q.id].min>S.year)).sort((a,b)=>a.at-b.at)
-    .forEach(q=>{if(ids.length<2&&!ids.includes(q.id))ids.push(q.id)});
-   while(ids.length<2){const c=this.poolCard(S,rnd,ids);if(!c)break;ids.push(c.id);}
+    .forEach(q=>{if(ids.length<n&&!ids.includes(q.id))ids.push(q.id)});
+   while(ids.length<n){const c=this.poolCard(S,rnd,ids);if(!c)break;ids.push(c.id);}
   }
+  if(forced||ev)S.busy=false;
   S.offer=ids.map(id=>{const q=S.queue.find(q=>q.id===id);return{id,from:q?q.from:null,back:!!(q&&q.p)}});
   S.queue=S.queue.filter(q=>!ids.includes(q.id));
+  S.note=null;
+  if(ids.length>1&&S.year>=2028&&S.count-S.lastNote>=4&&rnd()<.35){
+   const h=ids.filter(id=>HINTS[id]&&!S.hinted.includes(id));
+   if(h.length){const id=h[Math.floor(rnd()*h.length)];S.note={id,t:HINTS[id]};S.hinted.push(id);S.lastNote=S.count;}
+  }
   return sunk;
  },
- // Seçilen şişe açılır; açılmayan denize döner ve birkaç yıl sonra yine gelir. Görülen kilitler mektuplar için kaydedilir
+ // Bu kararla kapanmaya başlayan kapılar: seçimden hemen sonra bir kez bildirilir
+ freshDoors(S){
+  const f=S.flags.filter(k=>DOORS[k]&&!S.noted.includes(k));S.noted.push(...f);
+  return f.map(k=>DOORS[k]);
+ },
+ // Seçilen dosya açılır; açılmayanlar bekler ve birkaç yıl sonra yine gelir. Görülen kilitler mektuplar için kaydedilir
  open(S,id){
   S.offer.forEach(o=>{if(o.id!==id)S.queue.push({id:o.id,at:S.year+(S.step===2?4:3),p:1,from:o.from})});
   S.offer=null;S.card=id;
@@ -111,7 +126,7 @@ const Engine={
   ["l","r"].forEach(s=>{if(L[s])S.hits.push({id:c.id,x:c[s].x,seen:S.year,...L[s]})});
   return L;
  },
- // Süresi dolan ertelenmiş şişe açılmadan batar ve hiçbir şey yapmamanın sonucu (idle) işler; batış kimseyi öldürmez
+ // Süresi dolan bekleyen dosya düşer (fırsat kaçar) ve hiçbir şey yapmamanın sonucu (idle) işler; bu kimseyi öldürmez
  expire(S){
   const sunk=[];
   S.queue=S.queue.filter(q=>{
@@ -181,15 +196,16 @@ const Engine={
   if(!free.length)return null;
   const j=free[Math.floor(rnd()*free.length)];S.said.push(key+j);return arr[j];
  },
- // Mektupları Deniz yazar: dünyadaki bütün suların sesi
+ // Mektupları torun Deniz 2075'ten yazar
  introLetter(S){
-  return "Sevgili insan,\nBen Deniz: okyanusların, nehirlerin, yağmurun, buzulların ve toprağın altındaki suyun sesi.\n"+
-   "Siz insanlar beni yıllarca kötü kullandınız: kıyılarımı betona gömdünüz, kuyularımı kuruttunuz, havayı ısıtıp beni de ısıttınız.\n"+
-   "Bu yıl dünya liderleri benim kıyımda, Antalya’da buluşuyor ve sen Küresel İklim Konseyi’nin başındasın. Vereceğin kararlar dünyayı çok değiştirecek. Birlikte değiştirebiliriz.\n"+
-   "Kıyına şişeler göndereceğim; hepsini açamayacaksın. Bazı kararlar da kapıları kalıcı olarak kapatır, onları ben bile açamam.";
+  return `Sevgili ${S.hitap},\nBu mektubu sana nasıl gönderdiğimi sorma, uzun hikâye. Ben Deniz, torununum. Senin zamanında daha doğmadım bile.\n`+
+   "Annem hep 2026’yı anlatır: dünya liderlerinin Antalya’da buluştuğu, senin de Küresel İklim Konseyi’nin başına seçildiğin yıl.\n"+
+   "Masana her gün dosyalar gelecek ve hepsine yetişemeyeceksin. Bekleyen bir dosyanın vakti dolarsa karar senin yerine verilir. Arada bir ben de dosyaların arasına küçük bir not sıkıştıracağım.\n"+
+   "Bir şey daha: Bazı kararlar kapıları kalıcı olarak kapatıyor. 2075’te o kapıların önünde ben duracağım.";
  },
  midLetter(S,rnd){
-  const lines=["Sevgili insan,"];
+  const lines=[`Sevgili ${S.hitap},`];
+  if(S.year===2050)lines.push("Annem doğduğum günü anlattı. Beni ilk kucağına aldığında ağlamışsın.");
   let worst=null,dist=0;MK.forEach(k=>{const dd=Math.abs(S.m[k]-50);if(dd>dist){dist=dd;worst=k}});
   const wl=dist>=25?this.line(S,`w.${worst}.${S.m[worst]<50?"lo":"hi"}.`,WORLD_LINES[worst][S.m[worst]<50?"lo":"hi"],rnd):null;
   lines.push(wl||this.line(S,"calm.",CALM,rnd));
@@ -197,19 +213,25 @@ const Engine={
   const hit=S.hits.slice(S.told).pop(),tpl=hit&&this.line(S,"lock.",LOCKLINES,rnd);S.told=S.hits.length;
   if(tpl)lines.push(tpl.replace("{Y}",hit.y).replace("{W}",hit.why));
   else{const fresh=S.flags.filter(f=>FL[f]&&!S.said.includes(f));if(fresh.length){const f=fresh[fresh.length-1];S.said.push(f);lines.push(FL[f]);}}
-  lines.push(S.year>=2062?"2075’e az kaldı. Kıyıda bekliyorum.":"Yeni şişelerde görüşürüz.");
+  lines.push(S.year>=2062?"2075’e az kaldı. Seni bekliyorum.":"Bir sonraki mektupta görüşürüz.");
   return lines.filter(Boolean).join("\n");
  },
- // 2075: görev biter, oyuncu Deniz olur; insanlar ondan bir şey ister, kapanan kapılar verilemez
+ // 2075: görev biter, Konsey yeni başkanını seçer; oyuncu bir süre Deniz'in yerine geçer
  epiLetter(S){
   const n=S.epi.filter(id=>{const L=this.locks(S,byId[id]);return L.l||L.r}).length;
-  return "Sevgili insan,\nGörev süren doldu; Konsey yeni başkanını seçti.\nŞimdi senden son bir şey isteyeceğim: bir süre benim yerimde ol. 2075’te insanlar benden bir şeyler istiyor. "+
-   (n?`Bazılarını artık veremem; ${n>1?n+" kapıyı":"bir kapıyı"} sen kapattın.`:"Kapıları açık bırakmışsın, hepsini verebilirim. Teşekkür ederim.")+
-   "\nArtık Deniz sensin.";
+  return `Sevgili ${S.hitap},\nBugün görev süren doldu. Konsey yeni başkanını seçti; ben de kendi hayatımın kararlarını vermeye başlıyorum.\n`+
+   (n?`Önümdeki kapılardan ${n>1?n+" tanesini":"birini"} sen çoktan kapatmışsın.`:"Önümdeki kapıları açık bırakmışsın. Teşekkür ederim.")+
+   "\nŞimdi bir süre benim yerimde ol: kararları sen ver, kapıları benim gözümden gör.";
+ },
+ // Çemberin kapanışı: 2075'te Deniz, 2026'daki büyüğüne ilk mektubu yazar. İyi sonlarda bu bir teşekkür mektubudur
+ loopLetter(S,id){
+  if(["mavi","yesil","sonsuz"].includes(id))return `Sevgili ${S.hitap},\nBu mektubu sana nasıl gönderdiğimi sorma. Yalnızca teşekkür etmek istedim.\nAçık bıraktığın kapılar, zor günlerde verdiğin kararlar, masanda bekleyen o dosyalar için.\nBenim dünyam senin ellerinde başladı.`;
+  return this.introLetter(S);
  },
  endText(S,id){
   const E=ENDINGS[id],death=!["mavi","yesil","kirilgan","sonsuz"].includes(id);
-  let t="Sevgili insan,\n"+this.fill(S,E.t);
+  let t=`Sevgili ${S.hitap},\n`+this.fill(S,E.t);
+  if(death&&S.year<2049)t+="\nAnnem bu dünyaya çocuk getirmemeye karar vermiş. Yani ben belki de hiç doğmadım. Bu mektubu kim yazıyor, bilmiyorum.";
   if(!death){const f=S.flags.filter(x=>FL[x]).slice(-2);if(f.length)t+="\n"+f.map(x=>FL[x]).join(" ");}
   return{t,death};
  },
