@@ -1,141 +1,123 @@
-# Gelecekten Mektup
+<p align="center"><img src="icons/icon-512.png" width="128" alt="Gelecekten Mektup simgesi: gün batımında Antalya denizinin üstünde uçak postası zarfı"></p>
 
-> 2075'teki torunun Deniz sana mektup yazıyor. Masana her yıl dosyalar geliyor ve yalnız birine vaktin var. Verdiğin her karar Deniz'in dünyasını değiştiriyor; bazıları kapıları sonsuza dek kapatıyor.
+<h1 align="center">Gelecekten Mektup</h1>
 
-**GameUp Game Jam · Takım Garnet**
-**Tema:** İklim · COP31 Türkiye (Antalya)
+<p align="center"><b>2075'teki torunun Deniz sana mektup yazıyor.<br>Masana gelen dosyaların hepsine yetişemeden verdiğin her karar onun dünyasını değiştiriyor.</b></p>
 
-Hikâye odaklı bir karar oyunu. Oyuncu 2026'da kurgusal **Küresel İklim Konseyi**'nin başına seçiliyor ve 2075'e kadar dünyanın iklim kararlarını veriyor. Mektupları torunu **Deniz** yazıyor; ona "Dede" ya da "Nine" diye sesleniyor.
+<p align="center">
+  <a href="https://edakucukkara.github.io/gameup-gamejam-team-Garnet/"><b>▶ Tarayıcıda oyna</b></a> ·
+  <a href="docs/TASARIM.md">Tasarım</a> ·
+  <a href="docs/TESLIM.md">Teslim</a>
+</p>
 
-## Oyunu farklı kılan şeyler
-
-- **Başkan'ın masası.** Her yıl masana dünyanın dört bir yanından dosyalar gelir: teklifler, krizler, eski kararlarının sonuçları. Genelde iki, yoğun günlerde üç dosya olur ve **yalnız birine vaktin olur**.
-  - Açmadığın dosya bekler, birkaç yıl sonra yine gelir.
-  - Dosyanın son günü geçerse fırsat kaçar ve hiçbir şey yapmamanın sonucu kendiliğinden işler: kuyular izinsiz açılır, adaya fon gitmez. Karar vermemek de bir karardır.
-- **Gelecekten not.** Ara sıra, her turda değil, Deniz masadaki dosyalardan biri hakkında 2075'ten kısa bir not sıkıştırır. Not ne yapacağını söylemez; o kararın ileride nasıl hatırlandığını ima eder.
-- **Kapanan Kapılar.** Bazı kararlar ileride bazı seçenekleri kalıcı olarak kapatır.
-  - Kapıyı kapatan kararı verdiğin anda kısa bir not çıkar: "Bu kararın bir bedeli olabilir…"
-  - Yıllar sonra o konu masana geldiğinde kapalı seçenek görünmez; yalnızca açık kalan yol ve "Bu konuda elin bağlı" notu görünür.
-- **Final ve çemberin kapanışı.** 2075'te görevin biter, Konsey yeni başkanını seçer ve sen bir süre Deniz'in gözünden onun hayatındaki fırsatlarla yüzleşirsin. Kapattığın kapılar onun önünde de kapalıdır.
-  - Ardından "Bu kadarını başardık" ekranı açık kalanları ve olabilecekleri listeler: *Peki, daha iyisi olabilir miydi?*
-  - Son sahnede Deniz 2026'daki büyüğüne ilk mektubu yazar. Bu, oyunun başında okuduğun mektuptur. İyi bir sona ulaştıysan bunun yerine bir teşekkür mektubu yazar. Mektup katlanır, zarfa girer ve 2075'ten 2026'ya uçar.
+<p align="center">GameUp Game Jam 2026 · Takım Garnet · Tema: İklim · COP31 Türkiye (Antalya)</p>
 
 ---
 
-## Hızlı başlangıç
+## Oyun
 
-Kurulum ya da build adımı yok. `index.html`, `data.js`, `engine.js` ve `ui.js` aynı klasörde durmalı.
+Yıl 2026. Kurgusal **Küresel İklim Konseyi**'nin başına seçildin. Masanda bir mektup duruyor: 2075'ten, torunun **Deniz**'den. 2075'e kadar dünyanın iklim kararlarını sen vereceksin.
 
-**Tarayıcıda açmak:** `index.html` dosyasına çift tıklayın.
+- **Başkan'ın masası.** Her yıl masana dünyanın dört bir yanından dosyalar gelir: Pasifik'te batan bir ada, Konya'da kuruyan kuyular, Belek'te caretta yuvaları, Amazon'dan geçecek bir otoyol. Genelde iki, yoğun günlerde üç dosya olur ve **yalnız birine vaktin olur**. Bekleyen dosyanın son günü geçerse fırsat kaçar ve karar senin yerine verilir: karar vermemek de bir karardır.
+- **Dört denge.** 🌳 Doğa, 👥 Uluslar, 🪙 Fon, ⚡ Enerji. Biri sıfırlanır ya da taşarsa zaman çizgisi kopar. Yalnızca "yeşil" seçmek de kaybettirir.
+- **Kapanan kapılar.** Bazı kararlar ileride bazı seçenekleri sonsuza dek kapatır. Kararı verdiğin anda "Bu kararın bir bedeli olabilir" notu çıkar; yıllar sonra o konu masana geldiğinde elin bağlıdır.
+- **Gelecekten not.** Arada bir Deniz, masadaki dosyalardan biri hakkında 2075'ten küçük bir not sıkıştırır.
+- **Yaşayan bir dünya.** Arkada gerçek verilere dayanan basit bir iklim modeli çalışır: birikimli CO₂, deniz seviyesi, enerji sistemi, ormanlar, okyanuslar, afetlere hazırlık, güven. Eşikler aşılınca olaylar gelir. Üstteki "Deniz'in dünyası" penceresi kararlarınla canlı olarak değişir; Deniz 2049'da doğar ve kumsalda büyür.
+- **Final ve çember.** 2075'e ulaşırsan bir süre Deniz'in gözünden bakarsın. Sonra "Bu kadarını başardık… Peki, daha iyisi olabilir miydi?" ve son sahne: Deniz 2026'daki büyüğüne, oyunun başında okuduğun o ilk mektubu yazar. İyi bir sona ulaştıysan bunun yerine bir teşekkür mektubu yazar.
 
-**Yerel sunucuyla açmak** (önerilir; fontlar ve kayıt sistemi daha sorunsuz çalışır):
+**12 son** · yaklaşık 10 dakika · telefon ve bilgisayar · Türkçe · telefona uygulama gibi kurulabilir, internetsiz çalışır.
 
-```bash
-python -m http.server 8765
-```
-
-Sonra tarayıcıda `http://localhost:8765` adresini açın. Telefon görünümünü denemek için tarayıcının geliştirici araçlarında mobil görünümü açın (Ctrl+Shift+M).
-
-**Demo modu:** Açılış ekranının sağ altındaki "Demo modu" bağlantısına basıp sonra Dede ya da Nine'yi seçin. Her tur 2 yıl ilerler ve mektuplar daha hızlı yazılır. Oynanış videosu çekmek için.
-
-**Uygulama olarak kurulum (PWA):** Oyun bir web oyunu ama telefona uygulama gibi kurulabilir: kendi simgesiyle ana ekrana gelir, adres çubuğu olmadan tam ekran açılır ve internet olmadan da çalışır. Bunun için oyunun HTTPS üzerinden açılması gerekir (GitHub Pages yeterli; `localhost` da sayılır).
-- **Bilgisayarda (Chrome/Edge):** `http://localhost:8765`'i açın → adres çubuğunun sağındaki "Yükle" simgesine basın. F12 → *Application* sekmesinde *Manifest* (simge ve ad) ve *Service workers* (durum: activated) görünmeli. Çevrimdışı denemek için *Network* sekmesinde "Offline" seçip sayfayı yenileyin.
-- **Android (Chrome):** GitHub Pages adresini açın → menü (⋮) → "Ana ekrana ekle" ya da "Uygulamayı yükle".
-- **iPhone (Safari):** GitHub Pages adresini açın → Paylaş → "Ana Ekrana Ekle".
-- **Güncelleme:** Kurulu oyun önce önbellekteki sürümü açar, arkada yenisini indirir; yeni sürüm bir sonraki açılışta görünür. Geliştirirken eski sürüm görürseniz sayfayı iki kez yenileyin ya da F12 → *Application* → *Service workers* → "Update on reload" kutusunu işaretleyin. Önbelleğe giren dosya listesi `sw.js` içinde; yeni bir dosya eklerseniz oraya da yazın ve `CACHE` adını artırın.
-- **Simge:** `icons/icon.svg` asıl çizim; PNG'ler (192, 512, 180 ve maskable 512) ondan üretildi.
-
-**Denge simülasyonu ve içerik kontrolü** (Node gerekir):
-
-```bash
-node tools/sim.js 3000            # tam oyun ve demo modu
-node tools/sim.js 3000 --mod tam --detay
-```
-
-Sekiz oyuncu tipiyle binlerce oyun oynar. Her tip önce hangi dosyayı açacağını, sonra kararını seçer. Çıktıda sonların dağılımı, 2075 ısınması, kapanan kapılar ve vakti dolan dosyalar var. Kartlardaki hatalı kilit, eksik zincir kartı, eksik mektup satırı ya da `idle`'ı olmayan süreli kart varsa da söyler. İçerik değiştirdikten sonra çalıştırın.
-
-## Nasıl oynanır
-
-| Kontrol | Ne yapar |
+### Kontroller
+| | |
 |---|---|
 | Dosyaya dokun ya da `1` `2` `3` | O dosyayı açar; diğerleri bekler |
 | Karara dokun ya da `1` `2`, `←` `→` | Kararı verir |
-| Kararın üzerine gel | Hangi dengelerin değişeceğini gösterir: göstergenin altında küçük ya da büyük bir nokta belirir. Yönünü göstermez. Sahnede de kararın izi soluk bir önizleme olarak görünür. |
-| `R` ya da RAPOR | Dünya raporu: arka plandaki dünyanın durumu ve danışman notu |
+| Kararın üzerine gel | Değişecek dengelerin altında nokta çıkar (küçük az, büyük çok; yön gösterilmez). Sahnede kararın izi soluk bir önizleme olarak görünür. |
+| `R` ya da RAPOR | Dünya raporu: 2075 ısınma tahmini, sistemlerin durumu, danışman notu |
 
-**Amaç:** Dört dengeyi korumak: 🌳 **Doğa**, 👥 **Uluslar**, 🪙 **Fon**, ⚡ **Enerji**. Biri sıfırlanırsa (0) ya da taşarsa (100) zaman çizgisi kopar.
+### COP31 ile bağlantı
+COP31'in odak alanlarının hepsi dosyalara dağıtıldı: yenilenebilir enerji, karbon ayak izi, iklime dirençli şehirler, gıda güvenliği, okyanuslar, iklim eğitimi ve sıfır atık. Kapanan kapılar fikri Almanya Anayasa Mahkemesi'nin Neubauer kararına (2021) dayanır: bugün ertelenen her karar gelecek kuşakların seçeneklerini daraltır. Ayrıntılı paragraf: [docs/TESLIM.md](docs/TESLIM.md).
 
-## Arka plandaki dünya
+---
 
-Dört denge kararlarla anında değişir. Arkada ise her yıl ilerleyen bir dünya modeli çalışır ve dengeleri yavaşça iter (etiketlerin yanındaki ▲▼). **RAPOR** düğmesi bu dünyayı oyuncunun dilinde gösterir: 2075 ısınma tahmini bir ölçek üzerinde, bu yılın dengelere etkisi, temiz enerji payı, ormanlar, okyanuslar, afetlere hazırlık, güven ve adalet çubukları ve en zayıf noktaya göre bir danışman notu.
+## Geliştirme
 
-| Sistem | Nasıl çalışır | Neyi iter |
-|---|---|---|
-| Isınma | Birikimli CO₂’den: her 1000 milyar ton ≈ +0,45°C (IPCC AR6). Metan kesintisi düşürür, aerosol yalnızca maskeler | Ekosistemler, talep, afetler |
-| Deniz seviyesi | Isınmayla hızlanır, emisyon dursa da yükselir | Afet zararı |
-| Temiz enerji / fosil / talep | Temiz enerji S-eğrisiyle büyür; fosil yavaş emekliye ayrılır; arz yetmezse piyasa gaz kurar; fazla arz talebi şişirir | Enerji, emisyon |
-| Ormanlar, okyanuslar | Kararlar ve ısınma | Doğa, karbon tutumu |
-| Uyum kapasitesi | Yatırımla artar, bakımsız kalınca azalır; afet zararını belirler | Fon, Uluslar |
-| Güven ve adalet | Bedeli kime yüklediğine göre | Uluslar |
+Kurulum ya da build adımı yok: düz HTML, CSS ve JavaScript.
 
-Dünya bir eşiği geçince bir **olay dosyası** gelir; bekletilemez. Yedi olay var: mercanların kaybı (1,7°C), Amazon’un kuruması, şebeke çöküşü, büyük afet, 48 derecelik sıcak dalgası, göç dalgası ve olumlu eşik olarak temiz enerjinin fosilden ucuzlaması.
+### Oyunu çalıştırmak
+Oyun yerel bir sunucuyla açılmalı (dosyaya çift tıklayınca da açılır ama fontlar, kayıt ve uygulama kurulumu sunucuyla düzgün çalışır).
 
-Üstteki pencere, bugünkü dünyanın yeni karar alınmazsa 2075’e nasıl varacağının tahminidir. Mavi Akdeniz sonu için dört denge 30–70 arasında olmalı ve 2075 ısınması 2,2°C’yi geçmemeli.
+- **Windows:** `oyna.bat` dosyasına çift tıklayın. Tarayıcıda oyun açılır; kapatmak için siyah pencereyi kapatın.
+- **Elle (Windows):**
+  ```bash
+  py -m http.server 8765
+  ```
+- **Mac / Linux:**
+  ```bash
+  python3 -m http.server 8765
+  ```
 
-## Özellikler
+Sonra `http://localhost:8765` adresini açın. Telefon görünümü için F12 → Ctrl+Shift+M.
 
-- **71 karar kartı ve 7 olay kartı, 26 karakter.** Pasifik'ten Tala, Batı Afrika'dan Ama, Pencaplı çiftçi Ravi, Amazon'dan Maria, Konyalı Ayşe Teyze, Antalyalı balıkçı Hasan, oyuncunun kızı Ece, simit hırsızı martı…
-- **Süreli dosyalar:** 26 kartın son günü var. Vakti dolan dosya, hiçbir şey yapmamanın sonucunu (`idle`) kendiliğinden işletir; bu tek başına oyunu bitirmez.
-- **Kapanan Kapılar:** 12 karar kilidi, 2 eşik olayı kilidi (Amazon, mercanlar) ve 2 iklim kilidi. 14 kapı için karar anında yumuşak bir bildirim yazıldı (`DOORS`).
-- **Gelecekten notlar:** 28 dosya için Deniz'in ipucu notları (`HINTS`). En erken 2028'de, en sık dört turda bir ve yalnızca bazen gelir.
-- **Deniz'in mektupları:** 2032'den 2068'e kadar altı yılda bir gelir; her biri Deniz'in farklı bir yaşından (7, 9 … 19), damgada yazıldığı yıl. Mektuplarda en kritik denge, ısınma düzeyi, kapanan kapılar ve verdiğin kararlar geçer. Aynı cümle tekrar etmez. 2049'dan önce kaybedersen Deniz belki hiç doğmamıştır.
-- **Kararlarla değişen 2075 sahnesi:** Önemli her karar sahneye kalıcı bir iz bırakır (santral, otoyol, obruk, otel, carettalar, mangrov, beton set, türbinler, tren, ada…). Martılar, insanlar, jaguar, carettalar, yunus, trafik ve yelkenliyle canlı bir sahne.
-  - Deniz 2049'da doğar ve kumsalda büyür; çocukken uçurtma uçurur. Onu kıyıya götürdüysen yanında büyüğüyle kumdan kale yapar.
-- **12 son:** 8 kaybetme sonu (Halksız Yeşil, Ekleme Tuzağı, Satılık Konsey…) ve 4 başarı sonu (biri gizli). Bulunan sonlar tarayıcıda kaydedilir.
-- **Kaynaklar:** Bitiş ekranında oyundaki gerçek bilgilerin kaynakları listelenir.
-- **Erişim:** Telefonda ve bilgisayarda çalışır, ses açılıp kapatılabilir, `prefers-reduced-motion` ayarına uyar.
+**Sorun çıkarsa:**
+- **`python` bulunamadı ya da Microsoft Store açılıyor:** Windows'ta `python` yerine `py` yazın.
+- **"Address already in use" ya da sayfa eski oyunu gösteriyor:** 8765'i başka bir sunucu kullanıyordur. Başka bir port deneyin (`py -m http.server 8770` → `http://localhost:8770`) ya da eski pencereyi kapatın.
+- **PowerShell açılırken conda hata raporu yazıyor:** Bu oyunla ilgili değil, Anaconda'nın başlangıç betiğinden geliyor. Komutlar yine çalışır.
 
-## Repo yapısı
+**Demo modu:** Açılış ekranının sağ altındaki "Demo modu" → sonra Dede ya da Nine. Her tur 2 yıl ilerler, mektuplar hızlı yazılır. Oynanış videosu çekmek için.
 
+### Test
+Kart, mektup ya da kilit değiştirdikten sonra çalıştırın. Oyunu farklı oyuncu tipleriyle binlerce kez oynar ve içerikteki hataları arar (eksik zincir kartı, tanımsız kilit, eksik mektup satırı, `idle`'ı olmayan süreli dosya, iki seçeneği birden kilitli dosya).
+
+- **Tarayıcıda (Node gerekmez):** oyunu açıkken `http://localhost:8765/tools/test.html` → "Testi çalıştır". Sonuç yeşilse tamam.
+- **Node ile:**
+  ```bash
+  node tools/sim.js 3000 --detay
+  ```
+
+Son sonuçlar [docs/YAPILACAKLAR.md](docs/YAPILACAKLAR.md)'de.
+
+### Uygulama olarak kurulum (PWA)
+Oyun telefona kendi simgesiyle kurulabilir, adres çubuğu olmadan tam ekran açılır ve internet olmadan da çalışır. HTTPS gerekir (GitHub Pages yeterli; `localhost` da sayılır).
+
+- **Bilgisayar (Chrome/Edge):** Oyunu açın → adres çubuğundaki "Yükle" simgesi. F12 → *Application* → *Manifest* (simge ve ad) ve *Service workers* (activated). Çevrimdışı denemek için *Network* → "Offline" seçip sayfayı yenileyin.
+- **Android (Chrome):** GitHub Pages adresi → menü (⋮) → "Ana ekrana ekle" ya da "Uygulamayı yükle".
+- **iPhone (Safari):** GitHub Pages adresi → Paylaş → "Ana Ekrana Ekle".
+- **Güncelleme:** Kurulu oyun önce önbellekteki sürümü açar, yenisini arkada indirir; yeni sürüm bir sonraki açılışta görünür. Geliştirirken eski sürüm görürseniz iki kez yenileyin ya da F12 → *Application* → *Service workers* → "Update on reload". Yeni bir dosya eklerseniz `sw.js` → `SHELL` listesine ekleyip `CACHE` adını artırın.
+- Bazı editörlerin içindeki önizleme tarayıcıları service worker'a izin vermez; konsolda bir kayıt hatası görünür ama oyun çalışır.
+
+### Yayınlama
+- **GitHub Pages:** Repo → Settings → Pages → *Deploy from a branch* → `main` / `/ (root)` → Save. Birkaç dakika sonra oyun `https://edakucukkara.github.io/gameup-gamejam-team-Garnet/` adresinde açılır.
+- **itch.io paketi:**
+  ```bash
+  py tools/paket.py
+  ```
+  `dist/gelecekten-mektup.zip` oluşur (Mac/Linux: `python3 tools/paket.py`). itch.io'da *Kind of project: HTML* → zip'i yükle → "This file will be played in the browser" → pencere 440 × 820, "Mobile friendly" ve "Fullscreen button" açık. Sayfa metni ve etiketler [docs/TESLIM.md](docs/TESLIM.md)'de.
+
+### Repo yapısı
 ```
 index.html              Sayfa iskeleti ve stiller (retro poster paleti)
-data.js                 İçerik: karakterler, kartlar, kilit sebepleri, kapı bildirimleri, gelecekten notlar, final, mektuplar, sonlar, kaynaklar
-engine.js               Oyun kuralları (DOM'a dokunmaz): gündem ve dosyalar, kilitler, iklim modeli, mektup metinleri
-ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, açık dosya, final ve çember sahnesi, rapor
-manifest.webmanifest    Uygulama tanımı (ad, simge, renk); telefona kurulum için
-sw.js                   Service worker: çevrimdışı çalışma ve önbellek
-icons/                  Uygulama simgesi (SVG asıl çizim, PNG kopyaları)
-tools/sim.js            Denge simülasyonu ve içerik kontrolü
-docs/                   Yapılanlar ve yapılacaklar; TASARIM ve İÇERİK-REHBERİ ilk sürüme göre (güncellenecek)
+data.js                 İçerik: karakterler, dosyalar, kilitler, kapı bildirimleri, gelecekten notlar, final, mektuplar, sonlar, kaynaklar
+engine.js               Kurallar (DOM'a dokunmaz): masa ve dosyalar, kilitler, iklim modeli, mektup metinleri
+ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, final ve çember sahnesi, rapor
+manifest.webmanifest    Uygulama tanımı (ad, simge, renk)
+sw.js                   Service worker: çevrimdışı çalışma
+icons/                  Simge (icon.svg asıl çizim; PNG'ler ondan üretildi)
+oyna.bat                Windows'ta tek tıkla çalıştırma
+tools/sim.js            Denge simülasyonu ve içerik kontrolü (Node ve tarayıcı)
+tools/test.html         Simülasyonun tarayıcı sayfası
+tools/paket.py          itch.io zip'ini hazırlar
+docs/TASARIM.md         Oyun tasarım dokümanı: mekanik, sistemler, sonlar, karakterler, görsel kimlik
+docs/ICERIK-REHBERI.md  Kod bilmeden dosya, kilit, not, mektup ve son ekleme
+docs/YAPILACAKLAR.md    Açık işler, son test sonuçları, bilinen sorunlar
+docs/YAPILANLAR.md      Değişikliklerin tarihçesi ve gerekçeleri
+docs/TESLIM.md          Jam teslimi: kontrol listesi, itch.io metni, COP31 paragrafı, sunum notları
 ```
 
-## İçerik alanları (data.js)
+İçerik eklemek için kod bilmek gerekmiyor: [docs/ICERIK-REHBERI.md](docs/ICERIK-REHBERI.md).
 
-| Alan | Anlamı |
-|---|---|
-| `d` `h` `e` `n` | Doğa, Uluslar, Fon, Enerji üzerindeki etki |
-| `tk` `fk` `tal` `r` `tg` | Arka plan: temiz kapasite, fosil kapasite, talep, temiz büyüme hızı, talep artışı |
-| `or` `ok` `uy` `gv` `mt` `rm` | Arka plan: orman, okyanus, uyum, güven ve adalet, metan programı, karbon çekme |
-| `ev:1`, `fire` | Olay kartı (koşulu engine.js `TRIG` içinde); `fire` gelirken dünyaya etkisi |
-| `f` | Seçim bir bayrak bırakır (mektuplar, sahne ve kilitler bunu kullanır) |
-| `lock:["bayrak"]` | Bu bayrak varsa seçenek kapanır; sebebi `LOCKS`, karar anındaki bildirim `DOORS` içinde |
-| `nx:["kart",yıl]` | Zincirleme kart ve kaç yıl sonra geleceği |
-| `idle:"l"` / `"r"` | Dosya son gününe (`max`) kadar açılmazsa vakti dolar ve bu seçenek kendiliğinden işler |
-| `at` / `min` / `max` / `req` / `chain` / `old` | Zorunlu yıl / yıl aralığı / gerekli bayrak / yalnız zincirle gelir / saçlar ağarır |
-| `HINTS` | Kart id'sine göre Deniz'in gelecekten notu |
-| `EPI` | Finaldeki kartlar; `need` bayraklarından biri varsa gelir |
-| `{E}` `{H}` `{Y}` | Metinde Ece'nin hitabı (Baba/Anne), Deniz'in hitabı (Dede/Nine), yıl |
-
-## Yayınlama (jam teslimi)
-
-**itch.io:**
-1. `index.html`, `data.js`, `engine.js`, `ui.js`, `manifest.webmanifest`, `sw.js` ve `icons/` klasörünü birlikte zip'leyin.
-2. itch.io'da yeni proje açın; *Kind of project* olarak *HTML* seçin.
-3. Zip'i yükleyin ve *This file will be played in the browser* seçeneğini işaretleyin.
-4. Pencere boyutunu 440 × 820 yapın ve "Mobile friendly" seçeneğini açın.
-
-**GitHub Pages:** Repo → Settings → Pages → *Deploy from a branch* → `main` / `root`. Oyun birkaç dakika içinde `https://edakucukkara.github.io/gameup-gamejam-team-Garnet/` adresinde açılır.
+### Kaynaklar
+Oyundaki gerçek bilgilerin kaynakları (IPCC AR6, UNEP/CCAC, MedECC, FAO, MGM, WMO, Neubauer kararı…) oyunun bitiş ekranında ve `data.js` → `SOURCES` içinde. İklim modeli öğretici bir basitleştirmedir. Küresel İklim Konseyi, karakterler ve şirketler kurgudur.
 
 ## Takım
-
 Takım Garnet · GameUp Game Jam 2026

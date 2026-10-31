@@ -1,8 +1,14 @@
-// Denge simülasyonu ve içerik kontrolü. Kullanım: node tools/sim.js [oyun sayısı] [--detay] [--mod tam|hizli]
-// data.js ve engine.js'i tarayıcıdaki gibi aynı ortamda yükler, farklı oyuncu tipleriyle binlerce oyun oynar.
-const fs=require("fs"),path=require("path"),vm=require("vm");
-const ctx=vm.createContext({});
-for(const f of ["data.js","engine.js"])vm.runInContext(fs.readFileSync(path.join(__dirname,"..",f),"utf8"),ctx,{filename:f});
+// Denge simülasyonu ve içerik kontrolü.
+// Node:      node tools/sim.js [oyun sayısı] [--detay] [--mod tam|hizli]
+// Tarayıcı:  oyunu yerel sunucuyla açıp http://localhost:8765/tools/test.html adresine gidin (Node gerekmez)
+// data.js ve engine.js'i oyundaki gibi aynı ortamda yükler, farklı oyuncu tipleriyle binlerce oyun oynar.
+const IN_NODE=typeof process!=="undefined"&&!!(process.versions&&process.versions.node);
+let ctx=null;
+if(IN_NODE){
+ const fs=require("fs"),path=require("path"),vm=require("vm");
+ ctx=vm.createContext({});
+ for(const f of ["data.js","engine.js"])vm.runInContext(fs.readFileSync(path.join(__dirname,"..",f),"utf8"),ctx,{filename:f});
+}
 
 function harness(N,modes){
  const errs=[],warn=[],all=CARDS.concat(EPI);
@@ -28,9 +34,9 @@ function harness(N,modes){
   (c.req||[]).concat(c.need||[]).forEach(f=>{if(!setFlags.has(f))errs.push(`${c.id}: koşul bayrağı hiç konmuyor (${f})`)});
  });
  /* ---------- Oyuncu tipleri ----------
-  Her tur iki adım: hangi şişe açılacak (bottle), hangi cevap verilecek (side).
+  Her tur iki adım: masadaki hangi dosya açılacak (bottle, adı eski şişe mekaniğinden), hangi karar verilecek (side).
   Kahin tipler (yesil, kahverengi, dengeli) etkileri tam bilir. "insan" tipleri yalnızca bir insanın görebileceğine
-  yakın davranır: kırmızıya yaklaşan göstergeyi kurtarmaya çalışır, son tarihi yaklaşan şişeyi öne alır, bazen yanılır. */
+  yakın davranır: kırmızıya yaklaşan göstergeyi kurtarmaya çalışır, son günü yaklaşan dosyayı öne alır, bazen yanılır. */
  const coin=(r)=>r()<.5?"l":"r";
  const rescue=(S,c)=>{const k=MK.find(k=>S.m[k]<=20||S.m[k]>=80);if(!k)return null;const d=o=>Math.abs(S.m[k]+(o[k]||0)-50);return d(c.l)<=d(c.r)?"l":"r"};
  // İklime iyilik puanı: arka plan etkilerinden (temiz kapasite, büyüme, fosil, talep, orman, okyanus, metan, uyum)
@@ -86,20 +92,27 @@ function harness(N,modes){
  return{errs,warn,res,drift};
 }
 
-const N=+process.argv[2]||3000, detail=process.argv.includes("--detay");
-const mi=process.argv.indexOf("--mod"),modes=mi>0?[process.argv[mi+1]]:["tam","hizli"];
-const {errs,warn,res,drift}=vm.runInContext(`(${harness})(${N},${JSON.stringify(modes)})`,ctx);
-const pct=(a,b)=>(b?100*a/b:0).toFixed(0)+"%";
-console.log(`İçerik: ${errs.length} hata, ${warn.length} uyarı · kart başı kayma: `+Object.entries(drift).map(([k,v])=>`${k} ${v>=0?"+":""}${v.toFixed(2)}`).join(", "));
-errs.forEach(e=>console.log("  HATA  "+e));if(detail)warn.forEach(w=>console.log("  uyarı "+w));
-for(const [k,r] of Object.entries(res)){
- const top=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
- const fl=r.firstLock.length?(r.firstLock.reduce((a,b)=>a+b,0)/r.firstLock.length).toFixed(0):"-";
- console.log(`\n${k.padEnd(22)} 2075'e varan ${pct(r.full,r.n).padStart(4)} · ort. yıl ${(r.year/r.n).toFixed(0)} · tur ${(r.turns/r.n).toFixed(0)} · batan şişe ${(r.sunk/r.n).toFixed(1)} (hiç batmayan ${pct(r.n-r.sunkAny,r.n)}) · görülen kilit ${(r.hits/r.n).toFixed(1)} (2029 dışında hiç görmeyen ${pct(r.noLock,r.n)}, ilk yenisi ort. ${fl})`+
-  (r.full?` · 2075 +${(r.t/r.full).toFixed(2)}°C, temiz %${(100*r.tem/r.full).toFixed(0)}, uyum ${(r.uy/r.full).toFixed(0)} (${["lo","mid","hi"].map(b=>b+" "+pct(r.band[b],r.full)).join(" ")}) · Deniz'e kapanan ${(r.shut/r.full).toFixed(1)}/${(r.doors/r.full).toFixed(1)} · final kart sayısı ${top(r.epi,4).map(([n,c])=>n+":"+pct(c,r.full)).join(" ")}`:"")+
-  ` · tekrar kart/oyun ${(r.rep/r.n).toFixed(2)} · tekrar mektup satırı/oyun ${(r.lrep/r.n).toFixed(2)}`+(r.both?` · İKİ SEÇENEĞİ DE KİLİTLİ: ${r.both}`:""));
- console.log("                       sonlar: "+top(r.ends,12).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
- if(detail)console.log("                       öldüren kartlar: "+top(r.kill,6).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
- if(detail)console.log("                       olaylar: "+top(r.ev,8).map(([e,n])=>`${e.slice(3)} ${pct(n,r.n)}`).join(" · "));
+// Sonuçları okunur satırlara çevirir; ok=false ise içerikte hata ya da iki seçeneği de kilitli kart var
+function report({errs,warn,res,drift},detail,log){
+ const pct=(a,b)=>(b?100*a/b:0).toFixed(0)+"%";
+ log(`İçerik: ${errs.length} hata, ${warn.length} uyarı · kart başı kayma: `+Object.entries(drift).map(([k,v])=>`${k} ${v>=0?"+":""}${v.toFixed(2)}`).join(", "));
+ errs.forEach(e=>log("  HATA  "+e));if(detail)warn.forEach(w=>log("  uyarı "+w));
+ for(const [k,r] of Object.entries(res)){
+  const top=(o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
+  const fl=r.firstLock.length?(r.firstLock.reduce((a,b)=>a+b,0)/r.firstLock.length).toFixed(0):"-";
+  log(`\n${k.padEnd(22)} 2075'e varan ${pct(r.full,r.n).padStart(4)} · ort. yıl ${(r.year/r.n).toFixed(0)} · tur ${(r.turns/r.n).toFixed(0)} · vakti dolan dosya ${(r.sunk/r.n).toFixed(1)} (hiç dolmayan ${pct(r.n-r.sunkAny,r.n)}) · görülen kilit ${(r.hits/r.n).toFixed(1)} (2029 dışında hiç görmeyen ${pct(r.noLock,r.n)}, ilk yenisi ort. ${fl})`+
+   (r.full?` · 2075 +${(r.t/r.full).toFixed(2)}°C, temiz %${(100*r.tem/r.full).toFixed(0)}, uyum ${(r.uy/r.full).toFixed(0)} (${["lo","mid","hi"].map(b=>b+" "+pct(r.band[b],r.full)).join(" ")}) · Deniz'e kapanan ${(r.shut/r.full).toFixed(1)}/${(r.doors/r.full).toFixed(1)} · final kart sayısı ${top(r.epi,4).map(([n,c])=>n+":"+pct(c,r.full)).join(" ")}`:"")+
+   ` · tekrar kart/oyun ${(r.rep/r.n).toFixed(2)} · tekrar mektup satırı/oyun ${(r.lrep/r.n).toFixed(2)}`+(r.both?` · İKİ SEÇENEĞİ DE KİLİTLİ: ${r.both}`:""));
+  log("                       sonlar: "+top(r.ends,12).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
+  if(detail)log("                       öldüren kartlar: "+top(r.kill,6).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
+  if(detail)log("                       olaylar: "+top(r.ev,8).map(([e,n])=>`${e.slice(3)} ${pct(n,r.n)}`).join(" · "));
+ }
+ return !errs.length&&!Object.values(res).some(r=>r.both);
 }
-if(errs.length||Object.values(res).some(r=>r.both))process.exitCode=1;
+
+if(IN_NODE){
+ const N=+process.argv[2]||3000, detail=process.argv.includes("--detay");
+ const mi=process.argv.indexOf("--mod"),modes=mi>0?[process.argv[mi+1]]:["tam","hizli"];
+ const out=require("vm").runInContext(`(${harness})(${N},${JSON.stringify(modes)})`,ctx);
+ if(!report(out,detail,console.log))process.exitCode=1;
+}

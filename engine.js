@@ -135,7 +135,7 @@ const Engine={
    S.used.push(c.id);sunk.push({id:c.id,y:S.year,x:o?o.x:null});return false;});
   S.sunk.push(...sunk);return sunk;
  },
- // Seçeneğin etkileri: görünen dengeler, arka plan (hızlı oyunda iki yıllık), bayrak, sıradaki kartlar
+ // Seçeneğin etkileri: görünen dengeler, arka plan (demo modunda iki yıllık), bayrak, sıradaki kartlar
  effects(S,o,soft){
   MK.forEach(k=>{const v=S.m[k]+(o[k]||0);S.m[k]=soft?cap(v,1,99):clamp(v)});
   HK.forEach(k=>{if(o[k])S.s[k]+=o[k]*S.step});

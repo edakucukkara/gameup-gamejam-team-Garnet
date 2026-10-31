@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="tr">
+<title>Gelecekten Mektup · Denge testi</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* Takım için test sayfası: Node kurmadan içerik kontrolü ve denge simülasyonu. Oyunun retro poster paletiyle. */
+:root{--sand:#F1E2C4;--paper:#FBF4E6;--ink:#3A2618;--muted:#7A5C43;--orange:#D35F2A;--teal:#1E6E73;--red:#B83A2B}
+body{margin:0;background:var(--sand);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font-size:24px}
+p{margin:0;color:var(--muted);max-width:70ch}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+input,select{font:inherit;padding:6px 8px;border:1.5px solid #3A261844;border-radius:8px;background:var(--paper);color:var(--ink)}
+button{font:inherit;font-weight:700;border:0;border-radius:99px;padding:9px 18px;background:var(--ink);color:var(--paper);cursor:pointer}
+button.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+button:disabled{opacity:.5;cursor:wait}
+#verdict{font-weight:700;padding:8px 12px;border-radius:8px;align-self:flex-start}
+#verdict.ok{background:#1E6E7322;color:var(--teal)}#verdict.bad{background:#B83A2B22;color:var(--red)}
+pre{margin:0;background:var(--paper);border:1.5px solid #3A261822;border-radius:10px;padding:14px;overflow-x:auto;font:12.5px/1.55 Consolas,ui-monospace,monospace;white-space:pre-wrap;min-height:6em}
+</style>
+<main>
+  <h1>Denge testi</h1>
+  <p>Oyunu farklı oyuncu tipleriyle binlerce kez oynar ve içerikteki hataları arar. Kart, mektup ya da kilit değiştirdikten sonra çalıştırın. Sonuç yeşilse oyun teslime hazırdır.</p>
+  <div class="row">
+    <label for="n">Oyun sayısı (tip başına) <input id="n" type="number" min="50" max="5000" step="50" value="500"></label>
+    <label for="mode">Mod <select id="mode"><option value="tam,hizli">Tam oyun ve demo</option><option value="tam">Tam oyun</option><option value="hizli">Demo</option></select></label>
+    <label for="det"><input id="det" type="checkbox" checked> Ayrıntılı</label>
+    <button id="run">Testi çalıştır</button>
+    <button id="quick" class="alt">Yalnız içerik kontrolü</button>
+  </div>
+  <div id="verdict" hidden></div>
+  <pre id="out">Henüz çalıştırılmadı.</pre>
+</main>
+<script src="../data.js"></script>
+<script src="../engine.js"></script>
+<script src="sim.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+function run(n){
+ $("run").disabled=$("quick").disabled=true;$("out").textContent="Çalışıyor…";$("verdict").hidden=true;
+ setTimeout(()=>{
+  const t0=performance.now(),lines=[];
+  const ok=report(harness(n,$("mode").value.split(",")),$("det").checked,l=>lines.push(l));
+  lines.push(`\n${((performance.now()-t0)/1000).toFixed(1)} sn`);
+  $("out").textContent=lines.join("\n");
+  const v=$("verdict");v.hidden=false;v.className=ok?"ok":"bad";
+  v.textContent=ok?"Geçti: içerikte hata yok, iki seçeneği birden kilitli kart yok.":"Kaldı: aşağıdaki HATA satırlarına bakın.";
+  window.__result={ok,text:$("out").textContent};
+  $("run").disabled=$("quick").disabled=false;
+ },30);
+}
+$("run").onclick=()=>run(Math.max(50,+$("n").value||500));
+$("quick").onclick=()=>run(1);
+</script>

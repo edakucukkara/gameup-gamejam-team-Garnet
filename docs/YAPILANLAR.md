@@ -1,6 +1,6 @@
 # Yapılanlar
 
-> 30–31 Ekim 2026 · İlk sürümün (`main`) üzerine yapılan değişiklikler ve nedenleri. Kalan işler: [YAPILACAKLAR2.md](YAPILACAKLAR2.md)
+> 30–31 Ekim 2026 · İlk sürümün (`main`) üzerine yapılan değişiklikler ve nedenleri. Kalan işler: [YAPILACAKLAR.md](YAPILACAKLAR.md)
 
 ## Neden değiştirdik
 - **Özgünlük:** Binlerce takım AI ile oyun yapıyor; Reigns/Lapse türü ve "gelecekten mektup" fikri tek başına öne çıkmıyordu. Türe kendi mekaniğimizi ekledik: **Kapanan Kapılar**.
@@ -164,15 +164,18 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **Düzeltilenler:** Açık dosyada karakter pulu metnin üstüne biniyordu; fotoğraf artık ataşla başlığın yanında. Rapordaki "−0" gösterimi düzeldi.
 - **Arkadaşın sürümünden aynen kalanlar:** Küresel İklim Konseyi ve kartları, iklim modeli ve olaylar, yeni sonlar ve enerji düzeltmesi (Ekleme Tuzağı), kilit sistemi, süreli dosyalar ve `idle`, canlı sahnenin tamamı, kaynaklar.
 
-## Bugünkü durum
+- **Uygulama olarak kurulum (PWA) ve simge:** `manifest.webmanifest`, `sw.js` (çevrimdışı çalışma) ve `icons/` (gün batımında Antalya denizinin üstünde uçak postası zarfı). Telefonda "Ana ekrana ekle" ile uygulama gibi açılır.
+- **Test ve teslim araçları:** `tools/sim.js` artık tarayıcıda da çalışıyor (`tools/test.html`, Node gerekmez). `tools/paket.py` itch.io zip'ini hazırlıyor ve eksik dosyayı yakalıyor. `oyna.bat` Windows'ta çift tıklayınca oyunu açıyor. Dokümanlar (TASARIM, İÇERİK-REHBERİ, YAPILACAKLAR, yeni TESLIM) güncel oyuna göre yeniden yazıldı; YAPILACAKLAR2 YAPILACAKLAR'a birleştirildi.
+
+## Bugünkü durum (31 Ekim, `secimler`)
 | | |
 |---|---|
-| İçerik | 71 kart + 7 olay, 11 final kartı, 26 karakter, 16 kilit sebebi, 26 süreli mektup, 12 son |
-| İçerik kontrolü | 0 hata, 0 uyarı (`node tools/sim.js 3000 --detay`) |
+| İçerik | 71 dosya + 7 olay, 11 final kartı, 26 karakter, 16 kilit sebebi, 14 kapı bildirimi, 28 gelecekten not, 26 süreli dosya, 67 anı satırı, 12 son |
+| İçerik kontrolü | 0 hata, 0 uyarı, iki seçeneği birden kilitli dosya yok (`tools/test.html`, tip başına 1000 oyun) |
 | Hiç karar almadan 2075 | ≈ +2,5°C (bugünkü politikalara yakın) |
-| İnsan gibi dengeli oynayan | Tam oyunda %75'i, hızlı oyunda %83'ü 2075'e varıyor; ≈ +2,1–2,2°C |
-| İnsan gibi yalnızca yeşil oynayan | Tam %39, hızlı %48; siyaseti ve enerjiyi ihmal edince kaybediyor |
-| Rastgele oynayan | Tam %8, hızlı %23 |
-| Batan şişe | İnsan gibi oynayanda oyun başına ~0,5; erteleyen oyuncuda finaldeki kapıların hepsi kapanabiliyor |
-| Tarayıcı | Hızlı oyun 440×820 ve 390×844, tam oyun 375×667 (erteleyen oyuncuyla): baştan sona hatasız |
-| Sahne | 30'dan fazla kararın ve olayın izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli |
+| İnsan gibi dengeli oynayan | Tam oyunda %79'u, demo modunda %83'ü 2075'e varıyor; ≈ +2,1–2,2°C |
+| İnsan gibi yalnızca yeşil oynayan | Tam %36, demo %52; siyaseti ve enerjiyi ihmal edince kaybediyor |
+| Rastgele oynayan | Tam %8, demo %25 |
+| Vakti dolan dosya | İnsan gibi oynayanda oyun başına ~0,7 |
+| Tarayıcı | Telefon boyutunda (375×812) açılıştan çember sahnesine kadar bütün ekranlar, kaybetme sonu ve demo modu: konsolda hata yok. Teslim zip'i boş bir klasörden açılıp oynatıldı. |
+| Sahne | 37 karar ve olay izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli; büyüyen Deniz |
