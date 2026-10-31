@@ -49,6 +49,8 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **Düzeltilen hata:** İlk denge ayarında bir betik değerleri zincirleme değiştirmiş, bütün Fon maliyetlerini −5'e indirmişti. Tasarlanan değerlere geri alındı.
 
 ## 4. Final: koltuk değil, dünya miras kalır
+*(Aynı gün 5. bölümle yeniden değişti: Deniz artık torun değil, deniz. "Deniz olursun" finali korundu.)*
+
 **Sorun:** Torunun 2075'te dedesinin ya da ninesinin koltuğuna oturması padişahlık, yani babadan oğula geçen iktidar gibi okunuyordu. Bu, iklim adaletinin tersi bir mesajdı. Reigns'in kral hanedanına da fazla benziyordu.
 
 - **Yeni final:** 2075'te görev süren dolar ve Konsey yeni başkanını seçer. Oyuncu **Deniz olur**: 26 yaşında, Antalya'da yaşayan sıradan bir genç.
@@ -71,13 +73,35 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
   - Zaman kapsülü satırı her yaşta tutarlı.
   - Final etiketleri 24 harfin altında; içerik kontrolü 0 uyarı veriyor.
 
+## 5. Denizden Mektup: yeni oynanış
+**Neden:** Takım geri bildirimi üç noktada toplandı:
+- **Lapse'a benzerlik:** Oyun Lapse'a fazla benziyordu (tek kart, sağa sola kaydırma, üstte dört gösterge). Farklı bir arayüz ve mekanik istendi.
+- **Kilitlerin muğlaklığı:** Kapanan seçenekler muğlak görünmeliydi.
+- **Mektubun sebebi:** Mektubu yazanın neden yazdığı da farklı olabilirdi. Takımın önerisi: *"Ben dünyadaki suların lideriyim. Siz insanlar geçmişte beni kötü kullandınız; şimdi değiştirebiliriz."*
+
+- **Deniz artık torun değil, deniz:** Okyanusların, nehirlerin, yağmurun, buzulların ve toprağın altındaki suyun sesi. Oyunun adı **Denizden Mektup** oldu.
+  - Giriş mektubu, Deniz'in mektupları, anı satırları (`FL`) ve 12 son Deniz'in ağzından yeniden yazıldı.
+  - Aile kartlarında torunun adı geçmiyor.
+- **Kıyıya vuran şişeler:** Kaydırma kaldırıldı. Her tur kıyıya iki şişe vurur ve yalnız biri açılır. Açılmayan denize döner, birkaç yıl sonra yine gelir.
+  - 26 kartın son yılı var. Süresi dolan şişe açılmadan batar ve hiçbir şey yapmamanın sonucu kendiliğinden işler (`idle`). Örneğin kuyulara izin verilmiş, otel yapılmış, kızın İstanbul'a taşınmış olur. Mesaj: karar vermemek de bir karardır.
+  - Batış oyunu tek başına bitirmez.
+  - Zorunlu kartlar ve olaylar tek şişe olarak gelir, bekletilemez.
+- **Mektup ve cevap:** Açılan mektup kâğıt üzerinde, karakterin portresi posta pulu gibi. Cevaplar el yazısıyla iki satır; tıklanarak ya da `1` `2` tuşlarıyla seçilir.
+- **Muğlak kapılar:** Kapanan cevap silik ve okunmaz görünür, damgada yalnızca "KAPANDI · yıl" yazar. Ne olduğu ve neden kapandığı Deniz'in mektuplarında ve bitiş ekranında açılır.
+- **Dört denge dört testi oldu:** Testi kurursa ya da taşarsa oyun biter. Cevabın üzerine gelince değişecek testiler çalkalanır; yönü söylenmez.
+- **Denizde şişeler:** Sonucu yıllar sonra dönecek kararlar ve ertelenen mektuplar, 2075 penceresindeki denizde yalnızca dönecekleri yılla görünür.
+- **Final, Deniz olursun:** 2075'te insanlar denizden bir şey ister: adaya dönmek, caretta yavrularını karşılamak, Konya'ya suyunu geri vermek, Amazon'a yağmur taşımak… Kapattığın kapıları veremezsin. Son kartta Elif, Deniz'e insanlara son sözünü sorar.
+- **İki mod:** Hızlı oyun (her tur 2 yıl, ~25 karar, ~5 dk) ve tam oyun (her tur 1 yıl, ~49 karar). Hızlı oyunda kararların arka plan etkisi iki yıllık sayılır.
+- **Simülasyon:** `tools/sim.js` artık iki adımı (şişe seçimi, cevap) ve iki modu ölçüyor; süreli kartta `idle` eksikse uyarıyor.
+
 ## Bugünkü durum
 | | |
 |---|---|
-| İçerik | 71 kart + 7 olay, 11 final kartı, 26 karakter, 16 kilit sebebi, 12 son |
-| İçerik kontrolü | 0 hata (`node tools/sim.js 3000 --detay`) |
+| İçerik | 71 kart + 7 olay, 11 final kartı, 26 karakter, 16 kilit sebebi, 26 süreli mektup, 12 son |
+| İçerik kontrolü | 0 hata, 0 uyarı (`node tools/sim.js 3000 --detay`) |
 | Hiç karar almadan 2075 | ≈ +2,5°C (bugünkü politikalara yakın) |
-| İnsan gibi dengeli oynayan | %78'i 2075'e varıyor, ≈ +2,1°C, %55 temiz enerji |
-| İnsan gibi yalnızca yeşil oynayan | %36'sı varıyor; siyaseti ve enerjiyi ihmal edince kaybediyor |
-| Rastgele oynayan | %8'i varıyor, ortalama 2052'de bitiyor |
-| Tarayıcı | 375×667, 390×844, 440×820, 1280×800 ekranlarda baştan sona hatasız |
+| İnsan gibi dengeli oynayan | Tam oyunda %75'i, hızlı oyunda %83'ü 2075'e varıyor; ≈ +2,1–2,2°C |
+| İnsan gibi yalnızca yeşil oynayan | Tam %39, hızlı %48; siyaseti ve enerjiyi ihmal edince kaybediyor |
+| Rastgele oynayan | Tam %8, hızlı %23 |
+| Batan şişe | İnsan gibi oynayanda oyun başına ~0,5; erteleyen oyuncuda finaldeki kapıların hepsi kapanabiliyor |
+| Tarayıcı | Hızlı oyun 440×820, tam oyun 375×667 (erteleyen oyuncuyla): baştan sona hatasız |

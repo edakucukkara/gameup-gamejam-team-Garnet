@@ -1,4 +1,4 @@
-/* Arayüz: portreler, 2075 sahnesi, göstergeler, ses, kayıt ve oyun akışı. data.js ve engine.js'ten sonra yüklenir. */
+/* Arayüz: portreler, 2075 sahnesi, testiler, şişeler ve mektup, ses, kayıt ve oyun akışı. data.js ve engine.js'ten sonra yüklenir. */
 
 /* ---------- Portre çizimi ---------- */
 function portrait(p,old){
@@ -78,14 +78,15 @@ function buildWorld(){
  <g id="wPpl">${people.join("")}</g>
  <g id="wSea" class="w-t"><rect x="0" y="117" width="360" height="60" fill="url(#seaG)"/>
   <path class="wave" d="M0 118 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0" stroke="#BFEDE6" stroke-width="1.2" fill="none" opacity=".8"/>
-  <g id="wBuoy" class="w-t"><circle cx="300" cy="124" r="2.2" fill="#F2B544"/><circle cx="322" cy="128" r="2.2" fill="#F2B544"/><circle cx="342" cy="123" r="2.2" fill="#F2B544"/></g></g>
+  <g id="wBuoy" class="w-t"><circle cx="300" cy="124" r="2.2" fill="#F2B544"/><circle cx="322" cy="128" r="2.2" fill="#F2B544"/><circle cx="342" cy="123" r="2.2" fill="#F2B544"/></g>
+  <g id="wBottles"></g></g>
  <rect id="wDim" class="w-t" width="360" height="150" fill="#06141A" opacity="0"/>`;
  W.trees=[...document.querySelectorAll("#wTrees .tree")];
  W.blds=[...document.querySelectorAll("#wBld .bld")];
  W.wins=[...document.querySelectorAll("#wBld .win")];
  W.ppl=[...document.querySelectorAll("#wPpl .ppl")];
  W.turbs=[...document.querySelectorAll("#wTurb > g")];W.panels=[...document.querySelectorAll("#wPanels path")];
- ["wSmog","wHeat","wHaze","wSun","wBirds","wTurb","wPanels","wChimney","wSea","wBuoy","wDim"].forEach(id=>W[id]=document.getElementById(id));
+ ["wSmog","wHeat","wHaze","wSun","wBirds","wTurb","wPanels","wChimney","wSea","wBuoy","wBottles","wDim"].forEach(id=>W[id]=document.getElementById(id));
 }
 function updateWorld(){
  const {d,h,e,n}=S.m, F=f=>S.flags.includes(f), w=Engine.world(S), s=S.s, share=Math.min(1,s.tk/s.tal);
@@ -107,6 +108,12 @@ function updateWorld(){
  W.panels.forEach((g,i)=>g.style.opacity=share>=.2+i*.1?1:0);
  W.wChimney.style.opacity=s.fk>55?1:0;
  W.wBuoy.style.opacity=F("dalga")?1:0;
+ // Denizdeki şişeler: ne olduklarını söylemez, yalnızca ne zaman kıyıya döneceklerini
+ W.wBottles.innerHTML=(S.queue||[]).filter(q=>q.at<2076).sort((a,b)=>a.at-b.at).slice(0,9).map((q,i)=>{
+  const x=(18+Math.min(1,Math.max(0,(q.at-S.year)/24))*320).toFixed(0),y=126+(i%2)*9;
+  return `<g transform="translate(${x} ${y})"><g class="sbob" style="animation-delay:${i*.4}s"><title>${q.at} yılında kıyıya dönecek</title>`+
+   `<rect x="-1.6" y="-9" width="3.2" height="2.6" rx=".8" fill="#B5835A"/><path d="M-1.4 -6.4h2.8v1.4q2.4 1.2 2.4 3.4v5.2q0 1.6-1.6 1.6h-4.4q-1.6 0-1.6-1.6v-5.2q0-2.2 2.4-3.4z" fill="#BFEDE6" fill-opacity=".55" stroke="#EAF2EF" stroke-width=".5"/>`+
+   `<rect x="-1.5" y="-2.6" width="3" height="4.4" rx=".6" fill="#F6EEDC"/><text y="-11" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="5.5" fill="#EAF2EF" opacity=".85">${q.at}</text></g></g>`}).join("");
  document.getElementById("wstat").textContent=`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C${F("aerosol")?"*":""} · deniz +${w.sl} cm`;
 }
 
@@ -117,60 +124,99 @@ const ICON={
  e:`<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5 V9.5 Q4 12.5 12 12.5 Q20 12.5 20 9.5 V5.5 Q20 8.5 12 8.5 Q4 8.5 4 5.5Z"/><path d="M4 12 V16 Q4 19 12 19 Q20 19 20 16 V12 Q20 15 12 15 Q4 15 4 12Z"/><path d="M4 18.5 V20 Q4 23 12 23 Q20 23 20 20 V18.5 Q20 21.5 12 21.5 Q4 21.5 4 18.5Z"/>`,
  n:`<path d="M14 1 L4 14 H11 L9.5 23 L20 9.5 H13 Z"/>`
 };
+// Dört denge dört testi: kurursa (0) ya da taşarsa (100) oyun biter
+const AMPH=`<path d="M8 1H16V2.6H14.6V5.2C14.6 6.4 16 7.2 17.6 8.2C20.8 10.2 22 13 22 16.4C22 22.2 17.8 26.6 12 28.6C6.2 26.6 2 22.2 2 16.4C2 13 3.2 10.2 6.4 8.2C8 7.2 9.4 6.4 9.4 5.2V2.6H8Z"/>`;
 function buildMeters(){
  document.getElementById("meters").innerHTML=MK.map(k=>`<div class="meter" id="m_${k}">
-  <svg viewBox="0 0 24 24"><defs><clipPath id="c_${k}"><rect id="r_${k}" x="0" y="12" width="24" height="24" style="transition:y .6s cubic-bezier(.3,.7,.3,1)"/></clipPath></defs>
-  <g class="base">${ICON[k]}</g><g class="fill" clip-path="url(#c_${k})">${ICON[k]}</g></svg>
+  <svg viewBox="0 0 24 30"><defs><clipPath id="c_${k}"><rect class="lvl" id="r_${k}" x="-4" y="15" width="32" height="34" style="transition:y .6s cubic-bezier(.3,.7,.3,1)"/></clipPath></defs>
+  <path class="handle" d="M9.4 4C6.2 4 4.6 5.6 5 9.4M14.6 4C17.8 4 19.4 5.6 19 9.4"/>
+  <g class="base">${AMPH}</g><g class="fill" clip-path="url(#c_${k})">${AMPH}</g>
+  <g class="ic" transform="translate(7.2 12) scale(.4)">${ICON[k]}</g></svg>
   <span class="lbl">${MN[k]}<i class="pr" id="pr_${k}"></i></span><span class="dot" id="dot_${k}"></span></div>`).join("");
 }
 function renderMeters(prev){
  MK.forEach(k=>{
-  const v=S.m[k];document.getElementById("r_"+k).setAttribute("y",(24-24*v/100).toFixed(2));
+  const v=S.m[k];document.getElementById("r_"+k).setAttribute("y",(28.6-27.6*v/100).toFixed(2));
   const el=document.getElementById("m_"+k);
   el.classList.toggle("danger",v<=15||v>=85);
-  // Arka plandaki sistemlerin bu yılki itişi
+  // Arka plandaki sistemlerin yıllık itişi
   const d=S.last?S.last[k]:0,pr=document.getElementById("pr_"+k);
   pr.textContent=d>=1.5?"▲▲":d>=.5?"▲":d<=-1.5?"▼▼":d<=-.5?"▼":"";pr.className="pr"+(d<0?" neg":"");
   pr.title=pr.textContent?`Arka plan etkisi: ${d>0?"+":""}${d.toFixed(1)} / yıl`:"";
   if(prev&&prev[k]!==v){const c=v>prev[k]?"up":"down";el.classList.remove("up","down");void el.offsetWidth;el.classList.add(c);setTimeout(()=>el.classList.remove(c),700);}
  });
 }
-function showDots(o){MK.forEach(k=>{const d=document.getElementById("dot_"+k),v=o?Math.abs(o[k]||0):0;d.className="dot"+(v>=12?" lg":v>0?" sm":"");});}
+// Önizleme: hangi testinin ne kadar çalkalanacağı (yönü söylenmez)
+function showDots(o){MK.forEach(k=>{const v=o?Math.abs(o[k]||0):0,m=document.getElementById("m_"+k);
+ document.getElementById("dot_"+k).className="dot"+(v>=12?" lg":v>0?" sm":"");
+ m.classList.toggle("pv-sm",v>0&&v<12);m.classList.toggle("pv-lg",v>=12);});}
 
 /* ---------- Ses ---------- */
 let AC=null,muted=false;
 function tone(f,dur,type="sine",vol=.05){if(muted)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.value=vol;g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+dur);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+dur);}catch(e){}}
-const sfx={thud:()=>tone(140,.22,"square",.05),swipe:()=>tone(320,.12,"triangle",.04),letter:()=>{tone(660,.5);setTimeout(()=>tone(880,.6),120)},end:()=>{tone(392,.7);setTimeout(()=>tone(523,.8),180);setTimeout(()=>tone(659,1),360)}};
+const sfx={thud:()=>tone(140,.22,"square",.05),swipe:()=>tone(320,.12,"triangle",.04),pick:()=>tone(520,.16,"sine",.04),letter:()=>{tone(660,.5);setTimeout(()=>tone(880,.6),120)},end:()=>{tone(392,.7);setTimeout(()=>tone(523,.8),180);setTimeout(()=>tone(659,1),360)}};
 
 /* ---------- Kayıt ---------- */
 function loadEnds(){try{return JSON.parse(localStorage.getItem("gm_endings")||"[]")}catch(e){return[]}}
 function saveEnd(id){try{const a=loadEnds();if(!a.includes(id)){a.push(id);localStorage.setItem("gm_endings",JSON.stringify(a))}}catch(e){}}
 
 /* ---------- Oyun ---------- */
-let S=null,busy=false;
+let S=null,busy=false,cur=null;   // cur: açık mektubun geldiği şişe (sonuç mu, geri mi döndü)
 const $=id=>document.getElementById(id);
 
-function newGame(hitap){
- S=Engine.newState(hitap);document.body.classList.remove("epi");
- renderMeters();updateWorld();renderYear();
- showLetter(Engine.introLetter(S),nextCard);
+function newGame(mode){
+ S=Engine.newState(mode);cur=null;document.body.classList.remove("epi");
+ renderMeters();updateWorld();renderYear();$("sunk").hidden=true;$("tideView").hidden=true;$("letterView").hidden=true;
+ showLetter(Engine.introLetter(S),nextTurn,"Deniz’den · 2026");
 }
 function renderYear(){
  $("year").textContent=Math.min(S.year,2075);
- const l=2075-S.year;$("left").textContent=S.epi?"Artık Deniz’sin":l>0?`2075’e ${l} yıl`:"2075";
+ const l=2075-S.year;$("left").textContent=S.epi?"Artık Deniz’sin":l>0?`2075’e ${l} yıl`+(S.step===2?" · hızlı":""):"2075";
 }
-function nextCard(){
- if(S.epi)Engine.epiDraw(S);else Engine.draw(S);
- showCard(true);busy=false;
+function setHint(t){$("hint").textContent=t==="tide"?"Bir şişe seç · 1 2 ya da ← → · D: dünyanın raporu":"Cevabını seç · 1 2 ya da ← → · Çalkalanan testiler değişecek dengeleri gösterir";}
+// Yeni tur: gelgit şişeleri getirir; tek şişe (zorunlu kart, olay) beklemeden açılır
+function nextTurn(){
+ if(S.epi){Engine.epiDraw(S);cur=null;showLetterCard(true);busy=false;return;}
+ showSunk(Engine.tide(S));updateWorld();
+ if(S.offer.length===1){cur=S.offer[0];Engine.open(S,cur.id);showLetterCard(true);}
+ else showTide();
+ busy=false;
 }
-function showCard(anim){
- const c=byId[S.card],ch=CH[c.c],card=$("card"),L=Engine.locks(S,c);
- card.className="card";card.style.transform="";card.style.setProperty("--cbg",ch.bg);
- $("portrait").innerHTML=portrait(ch.p,c.old);
+function showSunk(list){
+ const el=$("sunk");el.hidden=!list.length;
+ if(list.length)el.textContent=`🫧 ${list.map(x=>CH[byId[x.id].c].n).join(", ")}: şişe açılmadan battı. Senin yerine zaman karar verdi.`;
+}
+// İlk cümle, en fazla ~90 harf
+function tease(t){const f=t.split(/(?<=[.?!])\s/)[0];return"“"+(f.length>90?f.slice(0,87).replace(/\s\S*$/,"")+"…":f)+"”"}
+const BOTTLE=`<svg viewBox="0 0 24 48"><rect x="9" y="1" width="6" height="5" rx="1.5" fill="#B5835A"/><path d="M9.5 6h5v6q0 2 3 4q2.5 2 2.5 6v20q0 4-4 4h-8q-4 0-4-4v-20q0-4 2.5-6q3-2 3-4z" fill="#BFEDE6" fill-opacity=".22" stroke="#BFEDE6" stroke-width="1.2"/><g transform="rotate(-8 12 30)"><rect x="8" y="22" width="8" height="16" rx="2" fill="#F6EEDC"/><path d="M9.5 25.5h5M9.5 28.5h5M9.5 31.5h4" stroke="#22474D" stroke-width=".8"/></g></svg>`;
+function showTide(){
+ $("letterView").hidden=true;$("tideView").hidden=false;
+ $("tlead").innerHTML=`Kıyıya iki şişe vurdu.<small>Yalnız birini açabilirsin. Diğeri denize döner.</small>`;
+ $("bottles").innerHTML=S.offer.map((o,i)=>{
+  const c=byId[o.id],ch=CH[c.c],tags=[];
+  if(c.max)tags.push(`<i class="urg">⏳ son yıl ${c.max}</i>`);
+  if(o.from)tags.push(`<i>↩ kararının sonucu · ${o.from}</i>`);else if(o.back)tags.push(`<i>🌊 geri döndü</i>`);
+  return `<button class="bottle" style="--cbg:${ch.bg};--d:${i*110}ms"><span class="glass" aria-hidden="true">${BOTTLE}</span>`+
+   `<span class="bm"><span class="bw"><span class="bface">${portrait(ch.p,c.old)}</span><b>${ch.n}</b><small>${ch.r}</small></span>`+
+   `<span class="bt">${tease(Engine.fill(S,c.t))}</span>${tags.length?`<span class="btags">${tags.join("")}</span>`:""}</span><span class="k">${i+1}</span></button>`;}).join("");
+ [...$("bottles").children].forEach((b,i)=>b.addEventListener("click",()=>pickBottle(i)));
+ setHint("tide");
+}
+function pickBottle(i){
+ if(busy||!S.offer||!S.offer[i])return;busy=true;sfx.pick();
+ [...$("bottles").children].forEach((b,j)=>b.classList.add(j===i?"pick":"go"));
+ setTimeout(()=>{cur=S.offer[i];Engine.open(S,cur.id);updateWorld();showLetterCard(true);busy=false;},430);
+}
+function showLetterCard(anim){
+ $("tideView").hidden=true;$("letterView").hidden=false;
+ const c=byId[S.card],ch=CH[c.c],L=Engine.locks(S,c),lp=$("lp");
+ lp.className="lp";lp.style.setProperty("--cbg",ch.bg);
+ $("lstamp").innerHTML=portrait(ch.p,c.old);
  $("who").innerHTML=`${ch.n} <small>${ch.r}</small>`;
+ const tag=S.epi?"2075 · Deniz’e yazılan mektup":c.ev?"Olay · bu şişe beklemez":c.at?"Bu şişe beklemez":cur&&cur.from?`Kararının sonucu · ${cur.from}`:cur&&cur.back?"Geri dönen şişe":"";
+ $("ltag").textContent=tag;$("ltag").hidden=!tag;
  $("qt").textContent=Engine.fill(S,c.t);
  ["l","r"].forEach(s=>{const o=c[s],k=L[s],b=$(s==="l"?"btnL":"btnR");
-  $(s==="l"?"optL":"optR").textContent=k?"KAPANDI":o.x;
   // Kapanan kapı muğlak görünür: yazısı silik ve okunmaz; ne olduğu bitiş ekranında açılır
   $(s==="l"?"btnLt":"btnRt").innerHTML=k?`🔒 <span class="smear" aria-hidden="true">${smear(o.x)}</span>`:o.x;
   b.classList.toggle("locked",!!k);b.setAttribute("aria-disabled",k?"true":"false");
@@ -178,8 +224,8 @@ function showCard(anim){
  // Damga yalnızca yılı söyler; sebebi mektuplarda ve bitiş ekranında
  const k=L.l||L.r,ll=$("lockline");ll.hidden=!k;
  if(k)ll.innerHTML=`<b>KAPANDI · ${k.y}</b>`;
- showSide(null,0);
- if(anim){void card.offsetWidth;card.classList.add("enter");}
+ showSide(null);setHint("letter");
+ if(anim){void lp.offsetWidth;lp.classList.add("in");}
 }
 // Kapanan seçeneğin yazısı: aynı uzunlukta, harfleri karışık; hep aynı görünsün diye metinden türetilir
 function smear(t){
@@ -187,39 +233,36 @@ function smear(t){
  const a="aeıioöuüklmnrstyzçğş";
  return [...t].map(ch=>ch===" "?" ":a[(h=(h*1103515245+12345)>>>0)%a.length]).join("");
 }
-function showSide(side,a){
- $("optL").style.opacity=side==="l"?a:0;$("optR").style.opacity=side==="r"?a:0;
- const o=side&&!S.epi?byId[S.card][side]:null;
+function showSide(side){
+ const o=side&&!S.epi&&S.card?byId[S.card][side]:null;
  showDots(o&&!Engine.lockOf(S,o)?o:null);
 }
 function refuse(){
- sfx.thud();const card=$("card"),ll=$("lockline");card.style.transform="";
- card.classList.remove("shake","dragging");void card.offsetWidth;card.classList.add("shake");
+ sfx.thud();const lp=$("lp"),ll=$("lockline");
+ lp.classList.remove("shake","in");void lp.offsetWidth;lp.classList.add("shake");
  ll.classList.remove("stamp");void ll.offsetWidth;ll.classList.add("stamp");
 }
+// Cevap yazılır, mektup şişeye girer ve denize atılır
 function commit(side){
- if(busy||!S||!S.card)return;
- if(Engine.lockOf(S,byId[S.card][side])){refuse();showSide(null,0);return;}
- busy=true;sfx.swipe();
- const card=$("card");card.classList.remove("dragging","enter","shake");card.classList.add("fly");
- card.style.transform=`translateX(${side==="l"?-150:150}%) rotate(${side==="l"?-24:24}deg)`;
- showSide(null,0);
- setTimeout(()=>choose(side),300);
+ if(busy||!S||!S.card||$("letterView").hidden)return;
+ if(Engine.lockOf(S,byId[S.card][side])){refuse();return;}
+ busy=true;sfx.swipe();showSide(null);
+ const lp=$("lp");lp.classList.remove("in","shake");void lp.offsetWidth;lp.classList.add("out");
+ setTimeout(()=>choose(side),380);
 }
 function choose(side){
- if(S.epi){Engine.epiApply(S,side)?setTimeout(()=>endGame(Engine.finalType(S)),450):nextCard();return;}
- const prev={...S.m},dead=Engine.apply(S,side);
- renderMeters(prev);updateWorld();renderYear();
+ if(S.epi){Engine.epiApply(S,side)?setTimeout(()=>endGame(Engine.finalType(S)),300):nextTurn();return;}
+ const prev={...S.m},dead=Engine.apply(S,side);cur=null;
+ renderMeters(prev);updateWorld();renderYear();$("sunk").hidden=true;
  if(dead){setTimeout(()=>endGame(dead),650);return;}
  if(S.year>=2075){setTimeout(startEpilogue,650);return;}
- if(LETTER_YEARS.includes(S.year)){const age=7+2*LETTER_YEARS.indexOf(S.year);
-  setTimeout(()=>showLetter(Engine.midLetter(S),nextCard,`Deniz’den · ${age} yaşında yazdı · ${S.year} yılına ulaştı`),450);return;}
- nextCard();
+ if(LETTER_YEARS.includes(S.year)){setTimeout(()=>showLetter(Engine.midLetter(S),nextTurn,`Deniz’den · ${S.year}`),450);return;}
+ nextTurn();
 }
-// 2075: görev biter, oyuncu Deniz olur ve kendi hayatındaki kapılarla karar verir (koltuk miras kalmaz)
+// 2075: görev biter, oyuncu Deniz olur; insanlar ondan bir şey ister (koltuk miras kalmaz)
 function startEpilogue(){
  Engine.startEpi(S);document.body.classList.add("epi");renderYear();
- showLetter(Engine.epiLetter(S),nextCard,"Deniz’den · 2075 · 26 yaşında");
+ showLetter(Engine.epiLetter(S),nextTurn,"Deniz’den · 2075");
 }
 
 /* Mektup gösterimi: daktilo efekti, dokununca tamamlanır */
@@ -234,7 +277,8 @@ function typeInto(el,text,done){
 function showLetter(text,then,from){
  busy=true;sfx.letter();
  const ov=$("letterScreen");ov.hidden=false;ov.classList.remove("in");void ov.offsetWidth;ov.classList.add("in");
- $("lfrom").textContent=from||`Deniz’den · ${S.year} yılına ulaştı`;
+ $("lfrom").textContent=from||`Deniz’den · ${S.year}`;
+ $("lpm").innerHTML=`AKDENİZ<br>·<br>${Math.min(S.year,2075)}`;
  typeInto($("ltext"),text);
  $("lnext").onclick=()=>{clearInterval(typer);ov.hidden=true;then();};
  $("lnext").focus({preventScroll:true});
@@ -245,8 +289,8 @@ function endGame(id){
  // Final oynandıysa Deniz'in kapıları, oynanmadıysa bu zaman çizgisinde kapanan kapılar
  const doors=S.doors.length?S.doors:[...new Map(S.hits.map(h=>[h.id+h.x,{x:h.x,lock:h}])).values()],shut=doors.filter(d=>d.lock);
  $("epm").className="postmark"+(death?" red":"");
- $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"ANTALYA<br>·<br>2075";
- $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Görevin bitti · Dünya Deniz’e kaldı";
+ $("epm").innerHTML=death?`SON<br>·<br>${S.year}`:"AKDENİZ<br>·<br>2075";
+ $("efrom").textContent=death?`Zaman çizgisi ${S.year} yılında koptu`:"Görevin bitti · Deniz’den son mektup";
  $("ename").textContent=E.n;
  // Sonun altında bir sonraki oyun için ipucu; Kırılgan Umut neyin eksik kaldığını söyler
  const bal=MK.every(k=>S.m[k]>=30&&S.m[k]<=70),t0=(Math.round(w.t0*10)/10).toString().replace(".",",");
@@ -259,6 +303,9 @@ function endGame(id){
  $("edoors").innerHTML=doors.length?`<p class="dh">${S.doors.length?"Deniz’e bıraktığın kapılar":"Bu zaman çizgisinde kapanan kapılar"}</p>`+doors.map(d=>d.lock
   ?`<div class="door shut"><b>🔒 ${d.x}</b><span>KAPANDI · ${d.lock.y} — ${d.lock.why}</span></div>`
   :`<div class="door"><b>✓ ${d.x}</b><span>Açık kaldı</span></div>`).join(""):"";
+ // Açılmadan batan şişeler: kimin mektubuydu, zaman yerine neye karar verdi
+ const sk=S.sunk||[];$("esunk").hidden=!sk.length;
+ $("esunk").innerHTML=sk.length?`<p class="dh">Açılmadan batan şişeler</p>`+sk.map(x=>`<div class="door shut"><b>🫧 ${CH[byId[x.id].c].n} · ${x.y}</b><span>${x.x?`Kendiliğinden oldu: “${x.x}”`:"Kimse cevap vermedi"}</span></div>`).join(""):"";
  const s=S.s,r=v=>String(Math.round(v));
  $("ekarne").innerHTML=`<p class="dh">${death?"Bu gidişle 2075":"2075 karnesi"}</p>`+[["Isınma",`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C`],["Deniz seviyesi",`+${w.sl} cm`],
   ["Temiz enerji",`%${w.tem}`],["Ormanlar",r(s.or)],["Okyanuslar",r(s.ok)],["Uyum",r(s.uy)],["Güven",r(s.gv)]].map(([a,b])=>`<span><b>${b}</b>${a}</span>`).join("");
@@ -295,37 +342,33 @@ function openDossier(){
 $("dosyaBtn").addEventListener("click",openDossier);
 $("dclose").addEventListener("click",()=>{$("dossier").hidden=true;});
 
-/* ---------- Kaydırma ---------- */
-const card=$("card");let drag=null;
-card.addEventListener("pointerdown",e=>{if(busy)return;drag={x:e.clientX,dx:0,id:e.pointerId};card.setPointerCapture(e.pointerId);card.classList.add("dragging");card.classList.remove("enter","shake");});
-card.addEventListener("pointermove",e=>{if(!drag)return;drag.dx=e.clientX-drag.x;const dx=drag.dx;
- card.style.transform=`translateX(${dx}px) rotate(${dx/14}deg)`;
- showSide(dx<-20?"l":dx>20?"r":null,Math.min(1,Math.abs(dx)/80));});
-function release(){if(!drag)return;const dx=drag.dx;drag=null;card.classList.remove("dragging");
- if(Math.abs(dx)>90)commit(dx<0?"l":"r");else{card.style.transform="";showSide(null,0);}}
-card.addEventListener("pointerup",release);card.addEventListener("pointercancel",release);
+/* ---------- Cevaplar ve tuşlar ---------- */
 ["l","r"].forEach(s=>{const b=$(s==="l"?"btnL":"btnR");
- b.addEventListener("mouseenter",()=>{if(!busy){showSide(s,1);card.style.transform=`translateX(${s==="l"?-14:14}px) rotate(${s==="l"?-3:3}deg)`;}});
- b.addEventListener("mouseleave",()=>{if(!busy){showSide(null,0);card.style.transform="";}});
- b.addEventListener("focus",()=>{if(!busy)showSide(s,1)});
+ b.addEventListener("mouseenter",()=>{if(!busy)showSide(s)});
+ b.addEventListener("mouseleave",()=>{if(!busy)showSide(null)});
+ b.addEventListener("focus",()=>{if(!busy)showSide(s)});
+ b.addEventListener("blur",()=>showSide(null));
  b.addEventListener("click",()=>commit(s));});
 document.addEventListener("keydown",e=>{
  if(!$("dossier").hidden){if(e.key==="Escape"||e.key==="Enter"){e.preventDefault();$("dossier").hidden=true;}return;}
  if((e.key==="d"||e.key==="D")&&!busy){openDossier();return;}
  if(!$("letterScreen").hidden&&(e.key==="Enter"||e.key===" ")){e.preventDefault();$("lnext").click();return;}
- if(busy)return;if(e.key==="ArrowLeft")commit("l");if(e.key==="ArrowRight")commit("r");});
+ if(busy||!S)return;
+ const i=e.key==="1"||e.key==="ArrowLeft"?0:e.key==="2"||e.key==="ArrowRight"?1:-1;if(i<0)return;
+ if(!$("tideView").hidden)pickBottle(i);else commit(i?"r":"l");});
 
 $("mute").addEventListener("click",()=>{muted=!muted;$("mute").textContent=muted?"SES KAPALI":"SES AÇIK";$("mute").setAttribute("aria-pressed",muted);});
-document.querySelectorAll("[data-h]").forEach(b=>b.addEventListener("click",()=>{$("startScreen").hidden=true;newGame(b.dataset.h);}));
+document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{$("startScreen").hidden=true;newGame(b.dataset.mode);}));
 $("again").addEventListener("click",()=>{$("endScreen").hidden=true;showStart();});
 function showStart(){const g=loadEnds().length;$("found").textContent=g?`Keşfedilen sonlar: ${g}/12`:"12 farklı son seni bekliyor.";document.body.classList.remove("epi");const ov=$("startScreen");ov.hidden=false;}
 
 /* ---------- Başlat ---------- */
 buildMeters();buildWorld();
 function boot(data){
- if(data&&data.S&&data.S.card){S=data.S;$("startScreen").hidden=true;document.body.classList.toggle("epi",!!S.epi);renderMeters();updateWorld();renderYear();showCard(false);busy=false;return;}
- S=Engine.newState("Dede");S.card="ilk";
- renderMeters();updateWorld();renderYear();showCard(false);busy=true;showStart();
+ if(data&&data.S&&data.S.step){S=data.S;$("startScreen").hidden=true;document.body.classList.toggle("epi",!!S.epi);renderMeters();updateWorld();renderYear();
+  busy=false;if(S.card)showLetterCard(false);else if(S.offer)showTide();else nextTurn();return;}
+ S=Engine.newState("tam");
+ renderMeters();updateWorld();renderYear();busy=true;showStart();
 }
 const hot=window.claude&&window.claude.hot;
 if(hot&&hot.snapshot)hot.snapshot(()=>({S}));
