@@ -6,14 +6,15 @@ Teslimde kopyalanıp yapıştırılacak metinler ve kontrol listesi. Linkleri ya
 |---|---|
 | Oyun (GitHub Pages) | https://edakucukkara.github.io/gameup-gamejam-team-Garnet/ |
 | Kaynak kod | https://github.com/edakucukkara/gameup-gamejam-team-Garnet |
-| itch.io | *(yükledikten sonra yazın)* |
-| Teslim paketi | `py tools/paket.py` → `dist/gelecekten-mektup.zip` |
+| Tek dosya (jüriye gönderilecek) | `py tools/tekdosya.py` → `dist/Gelecekten-Mektup.html` (çift tıklayınca açılır) |
+| itch.io (isteğe bağlı) | `py tools/paket.py` → `dist/gelecekten-mektup.zip` |
 
 ## Kontrol listesi
 - [ ] PR `main`'e birleştirildi.
 - [ ] GitHub Pages açık, oyun telefonda açılıyor, "Ana ekrana ekle" ile kuruluyor.
 - [ ] Denge testi yeşil (`/tools/test.html`).
-- [ ] itch.io sayfası yayında, zip yüklendi, oyun tarayıcıda açılıyor.
+- [ ] Tek dosya hazırlandı ve başka bir bilgisayarda çift tıklayınca açıldığı denendi.
+- [ ] (İsteğe bağlı) Repo herkese açıldıysa GitHub Pages linki forma eklendi; itch.io yalnızca jam formu isterse.
 - [ ] Video ve ekran görüntüleri hazır.
 - [ ] Jam formu dolduruldu, linkler eklendi.
 
