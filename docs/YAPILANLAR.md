@@ -1,6 +1,6 @@
-# Yapılanlar · `kapanan-kapilar` branch'i
+# Yapılanlar
 
-> 30–31 Ekim 2026 · İlk sürümün (`main`) üzerine yapılan değişiklikler ve nedenleri. Kalan işler: [YAPILACAKLAR2.md](YAPILACAKLAR2.md)
+> 30–31 Ekim 2026 · İlk sürümün (`main`) üzerine yapılan değişiklikler ve nedenleri. Kalan işler: [YAPILACAKLAR.md](YAPILACAKLAR.md)
 
 ## Neden değiştirdik
 - **Özgünlük:** Binlerce takım AI ile oyun yapıyor; Reigns/Lapse türü ve "gelecekten mektup" fikri tek başına öne çıkmıyordu. Türe kendi mekaniğimizi ekledik: **Kapanan Kapılar**.
@@ -148,15 +148,34 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
   - Yunusun yörüngesi, 9 anın üst üste çizildiği bir karede kontrol edildi.
   - Her değişiklikten sonra iki modda baştan sona oyun oynatıldı.
 
-## Bugünkü durum
+## 7. Eda'nın seçimleri: Gelecekten Mektup'a dönüş · branch `secimler`
+**Neden:** Eda arkadaşının sürümünü oynadı ve her şeyi tutmak yerine seçerek ilerlemek istedi. Kararlar:
+- **Deniz yine torun.** Suların sesi fikri özgündü ama oyuncunun duygusal bağı torunla daha güçlü. Dede/Nine hitabı, Ece'li aile kartları ve torunun ağzından mektuplar geri geldi. Metinler 4. bölümdeki (commit `9d39942`) torun sürümünden alındı; sonradan eklenen `betonset` ve `otoyol` anıları torunun ağzından yazıldı. Oyunun adı yine **Gelecekten Mektup**.
+- **Şişeler yerine Başkan'ın masası.** Konsey başkanına sorunların denizden şişeyle gelmesi mantıklı gelmedi. Mekanik aynı kaldı (birini seç, diğeri bekler, son günü geçerse fırsat kaçar), görünüm ve dil değişti: her yıl masaya manila dosyalar gelir. Yoğun günlerde (yaklaşık %22) üç dosya gelir; yalnız birine vakit vardır.
+- **Gelecekten not.** Deniz ara sıra (en erken 2028, en sık dört turda bir, %35 olasılıkla) masadaki dosyalardan biri hakkında kısa bir not sıkıştırır. Notlar `data.js` → `HINTS` (28 dosya).
+- **Kapanan kapılar artık seçim ekranında görünmüyor.** Kapıyı kapatan karardan hemen sonra yumuşak bir bildirim çıkar ("Bu kararın bir bedeli olabilir"; `data.js` → `DOORS`, 14 kapı). Yıllar sonra o dosya geldiğinde kilitli seçenek gizlenir; yalnızca açık kalan yol ve "Bu konuda elin bağlı · yıl" notu görünür. Silik yazı ve "KAPANDI" damgası kaldırıldı.
+- **Hızlı oyun kaldırıldı, yerine demo modu.** Açılış ekranının köşesinde küçük bir "Demo modu" bağlantısı var: video çekimi için her tur 2 yıl ve daha hızlı yazılan mektuplar. Motor tarafında eski `hizli` modu kullanılıyor, böylece `tools/sim.js` değişmeden çalışır.
+- **Final: Deniz'in gözünden, sonra çemberin kapanışı.** 2075'te oyuncu Deniz'in hayatındaki fırsatlarla yüzleşir (torun sürümündeki `EPI` kartları). Ardından:
+  - "Bu kadarını başardık" ekranı: 2075 karnesi, açık kalan kapılar, "Peki, daha iyisi olabilir miydi?" ve olabilecekler.
+  - Animasyonlu son sahne: 2075 gecesinde Antalya penceresi, Deniz 2026'daki büyüğüne mektup yazar. Bu oyunun açılış mektubudur, böylece çember kapanır. İyi sonlarda (Mavi Akdeniz, Yeşil Miras, Sonsuz Mektup) bir teşekkür mektubu olur. Mektup katlanır, zarfa girer, damgalanır ve uçar; yıl 2075'ten 2026'ya geri sayar.
+- **Yeni palet: retro poster.** Eda dört seçenek arasından eski bir Antalya turizm afişi havasını seçti: kum zemin, krem kâğıt, kiremit turuncu vurgu, petrol yeşili ikinci renk, koyu kahve metin. Klasör sekmeleri ve uçak postası kenarı turuncu-petrol; son sahne alacakaranlık tonlarında. (Önce denenen gece mavisi palet beğenilmedi.) Testiler yerine sade çubuk göstergeler (iki uçtaki tehlike bölgesi görünür).
+- **Dünya raporu (eski adıyla Dosya) oyuncu dostu hâle geldi.** "Dosya" artık masadaki dosyalar olduğu için panelin adı **Rapor** (`R` tuşu). Rakam tablosu yerine: 2075 ısınma tahmini bir renk ölçeğinde, bu yılın dengelere etkisi, beş sistem için durum çubukları ("İyi / Orta / Zayıf" ve yön), en zayıf noktaya göre bir **danışman notu**; rakamlar "Ayrıntılar" altında.
+- **Sahne:** Deniz 2049'da doğar ve kumsalda büyür, çocukken uçurtma uçurur; doğduğu yıl sahnede "Deniz doğdu" notu çıkar. Onu kıyıya götürdüysen (`denizkiyi`) büyüğüyle kumdan kale yapar.
+- **Düzeltilenler:** Açık dosyada karakter pulu metnin üstüne biniyordu; fotoğraf artık ataşla başlığın yanında. Rapordaki "−0" gösterimi düzeldi.
+- **Arkadaşın sürümünden aynen kalanlar:** Küresel İklim Konseyi ve kartları, iklim modeli ve olaylar, yeni sonlar ve enerji düzeltmesi (Ekleme Tuzağı), kilit sistemi, süreli dosyalar ve `idle`, canlı sahnenin tamamı, kaynaklar.
+
+- **Uygulama olarak kurulum (PWA) ve simge:** `manifest.webmanifest`, `sw.js` (çevrimdışı çalışma) ve `icons/` (gün batımında Antalya denizinin üstünde uçak postası zarfı). Telefonda "Ana ekrana ekle" ile uygulama gibi açılır.
+- **Test ve teslim araçları:** `tools/sim.js` artık tarayıcıda da çalışıyor (`tools/test.html`, Node gerekmez). `tools/paket.py` itch.io zip'ini hazırlıyor ve eksik dosyayı yakalıyor. `oyna.bat` Windows'ta çift tıklayınca oyunu açıyor. Dokümanlar (TASARIM, İÇERİK-REHBERİ, YAPILACAKLAR, yeni TESLIM) güncel oyuna göre yeniden yazıldı; YAPILACAKLAR2 YAPILACAKLAR'a birleştirildi.
+
+## Bugünkü durum (31 Ekim, `secimler`)
 | | |
 |---|---|
-| İçerik | 71 kart + 7 olay, 11 final kartı, 26 karakter, 16 kilit sebebi, 26 süreli mektup, 12 son |
-| İçerik kontrolü | 0 hata, 0 uyarı (`node tools/sim.js 3000 --detay`) |
+| İçerik | 71 dosya + 7 olay, 11 final kartı, 26 karakter, 16 kilit sebebi, 14 kapı bildirimi, 28 gelecekten not, 26 süreli dosya, 67 anı satırı, 12 son |
+| İçerik kontrolü | 0 hata, 0 uyarı, iki seçeneği birden kilitli dosya yok (`tools/test.html`, tip başına 1000 oyun) |
 | Hiç karar almadan 2075 | ≈ +2,5°C (bugünkü politikalara yakın) |
-| İnsan gibi dengeli oynayan | Tam oyunda %75'i, hızlı oyunda %83'ü 2075'e varıyor; ≈ +2,1–2,2°C |
-| İnsan gibi yalnızca yeşil oynayan | Tam %39, hızlı %48; siyaseti ve enerjiyi ihmal edince kaybediyor |
-| Rastgele oynayan | Tam %8, hızlı %23 |
-| Batan şişe | İnsan gibi oynayanda oyun başına ~0,5; erteleyen oyuncuda finaldeki kapıların hepsi kapanabiliyor |
-| Tarayıcı | Hızlı oyun 440×820 ve 390×844, tam oyun 375×667 (erteleyen oyuncuyla): baştan sona hatasız |
-| Sahne | 30'dan fazla kararın ve olayın izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli |
+| İnsan gibi dengeli oynayan | Tam oyunda %79'u, demo modunda %83'ü 2075'e varıyor; ≈ +2,1–2,2°C |
+| İnsan gibi yalnızca yeşil oynayan | Tam %36, demo %52; siyaseti ve enerjiyi ihmal edince kaybediyor |
+| Rastgele oynayan | Tam %8, demo %25 |
+| Vakti dolan dosya | İnsan gibi oynayanda oyun başına ~0,7 |
+| Tarayıcı | Telefon boyutunda (375×812) açılıştan çember sahnesine kadar bütün ekranlar, kaybetme sonu ve demo modu: konsolda hata yok. Teslim zip'i boş bir klasörden açılıp oynatıldı. |
+| Sahne | 37 karar ve olay izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli; büyüyen Deniz |
