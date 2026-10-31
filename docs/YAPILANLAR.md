@@ -167,6 +167,17 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **Uygulama olarak kurulum (PWA) ve simge:** `manifest.webmanifest`, `sw.js` (çevrimdışı çalışma) ve `icons/` (gün batımında Antalya denizinin üstünde uçak postası zarfı). Telefonda "Ana ekrana ekle" ile uygulama gibi açılır.
 - **Test ve teslim araçları:** `tools/sim.js` artık tarayıcıda da çalışıyor (`tools/test.html`, Node gerekmez). `tools/paket.py` itch.io zip'ini hazırlıyor ve eksik dosyayı yakalıyor. `oyna.bat` Windows'ta çift tıklayınca oyunu açıyor. Dokümanlar (TASARIM, İÇERİK-REHBERİ, YAPILACAKLAR, yeni TESLIM) güncel oyuna göre yeniden yazıldı; YAPILACAKLAR2 YAPILACAKLAR'a birleştirildi.
 
+## 8. Adadaki palmiye · branch `ada-palmiye`
+Denizin ortasındaki adada artık kararlara sık ama abartısız tepki veren bir palmiye var.
+- **Zamanla büyür.** 2026'da genç bir palmiye; her yıl biraz uzar, 2060'larda tam boyuna ulaşır.
+- **Dört hâl.** Gür (koyu yeşil, fazladan yaprak ve hindistancevizi, biraz daha iri), sağlıklı, solgun (yapraklar sararır, sarkar, bir kısmı dökülür, cevizler düşer) ve kuruyor (kahverengi, birkaç yaprak kalır, boyu çöker). Geçişler yavaşça renk ve biçim değiştirerek olur. İnsan gibi dengeli oynayanda tam oyunda ortalama ~7 kez hâl değiştirir (her ~7 kararda bir); sınırlarda pay olduğu için her kararda gidip gelmez.
+- **Kırılmak zordur.** Yalnız kururken ve sağlığı üst üste iki kararda çok düşük kalırsa: gövde ortadan kırılır, tepesi denize devrilir, suya çarptığı yerde halka açılır, taç dalgalarda açığa sürüklenip kaybolur; adada kütük kalır. Not: "Palmiye kırıldı, dalgalar onu açığa sürüklüyor".
+- **İyiye dönünce yeniden doğar.** Kırıldıktan sonra arka arkaya üç karar iyi yönde olursa kütüğün yanında kumdaki bir hindistancevizinden filiz çıkar ("Adada yeni bir palmiye filizlendi"), yıllar içinde yeni bir palmiyeye dönüşür; eski kütük hatıra olarak kalır. Filiz de dört hâli gösterir.
+- **Neye bakıyor?** `Engine.palm`: 0–100 arası bir sağlık. Her kararda 2075 ısınma tahminindeki, doğa göstergesindeki ve okyanus sağlığındaki değişimle oynar ve dünyanın o anki hâline göre bir dengeye çekilir; yani **son kararların yönüne** tepki verir. Durum `S.palm`'da, kaydedilen oyunla birlikte geri gelir. Oyun dengesine etkisi yok.
+- **Simülasyon (`tools/sim.js`, tam oyun):** her zaman kötü seçende palmiye hep kırılır; rastgele oynayanda %26; insan gibi dengeli oynayanda %6, yeşil ve dengeli oynayanda ~%1. Kırıldıktan sonra iyi oynamaya dönen oyuncuda %97–98'i yeniden filizlenir (medyan 3 karar; demo modunda %79–85, kalanında oyun daha önce biter). Sim çıktısına palmiye satırı eklendi (kırılan, filizlenen, sonda kırık, oyun başına hâl değişimi).
+- **Not konumu:** Palmiye kırılırken ya da filizlenirken sahnedeki not üste çıkar, böylece ada görünür kalır.
+- **Kontrol:** Dört hâl, filiz hâlleri, büyüme, kütük, sağa ve sola devrilme, sürüklenme kare kare yakından incelendi; kötü (demo) ve dengeli (tam) oynanan iki oyunda konsolda hata yok.
+
 ## Bugünkü durum (31 Ekim, `secimler`)
 | | |
 |---|---|
@@ -178,4 +189,4 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 | Rastgele oynayan | Tam %8, demo %25 |
 | Vakti dolan dosya | İnsan gibi oynayanda oyun başına ~0,7 |
 | Tarayıcı | Telefon boyutunda (375×812) açılıştan çember sahnesine kadar bütün ekranlar, kaybetme sonu ve demo modu: konsolda hata yok. Teslim zip'i boş bir klasörden açılıp oynatıldı. |
-| Sahne | 37 karar ve olay izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli; büyüyen Deniz |
+| Sahne | 37 karar ve olay izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli; büyüyen Deniz; kararlara göre gürleşen, solan, kırılan ve yeniden filizlenen ada palmiyesi |

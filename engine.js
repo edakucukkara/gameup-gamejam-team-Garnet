@@ -59,6 +59,30 @@ const Engine={
   S._wc=S.count;
   return S._w={t:Math.round(s.T*10)/10,t0:s.T0,sl:Math.round(s.sl),tem:Math.round(100*Math.min(1,s.tk/s.tal))};
  },
+ // Adadaki palmiye kararların yönünü gösterir. Sağlığı (0–100) her kararda 2075 ısınma tahmini, doğa ve okyanustaki
+ // değişimle oynar, her yıl dünyanın o anki hâline göre bir dengeye doğru çekilir. Sağlık dört görünüme çevrilir
+ // (v: 0 kuruyor, 1 solgun, 2 sağlıklı, 3 gür); her sınırda ±3 pay vardır ki palmiye her kararda gidip gelmesin.
+ // Kırılmak zordur: kururken sağlık üst üste iki kararda 12'nin altında kalmalı (lo). Kırıldıktan sonra arka arkaya
+ // üç karar iyi yönde olursa (gs) ya da sağlık 60'ı geçerse öbür yanında yenisi filizlenir. n: kırılma, re: filizlenme, vc: görünüm değişimi sayısı;
+ // born: doğduğu yıl (boyu yaşına göre), fa: kırıldığındaki yaşı
+ palm(S){
+  if(S.palm&&S.palm.c===S.count)return S.palm;
+  const w=this.world(S),P=S.palm||(S.palm={h:65,v:2,up:1,born:2014,slot:0,n:0,re:0,vc:0,fa:0,gs:0,c:-1,t0:w.t0,d:S.m.d,ok:S.s.ok});
+  const eq=55+(2.45-w.t0)*150+(S.m.d-50)*.3, g=-(w.t0-P.t0)*400+(S.m.d-P.d)*.5+(S.s.ok-P.ok)*.8;
+  P.h=Math.max(0,Math.min(100,P.h+(eq-P.h)*(1-.7**S.step)+g*2));
+  P.gs=g>.5?P.gs+1:g<0?0:P.gs;
+  Object.assign(P,{t0:w.t0,d:S.m.d,ok:S.s.ok,c:S.count});
+  if(P.up){
+   const B=[35,50,65],v=P.v;
+   while(P.v<3&&P.h>=B[P.v]+3)P.v++;
+   while(P.v>0&&P.h<B[P.v-1]-3)P.v--;
+   if(P.v!==v)P.vc++;
+   P.lo=P.v===0&&P.h<=12?(P.lo||0)+1:0;
+   if(P.lo>=2){P.up=0;P.n++;P.lo=0;P.fa=S.year-P.born;}
+  }
+  else if(P.h>=60||P.gs>=3){P.up=1;P.re++;P.born=S.year;P.slot^=1;P.h=Math.max(P.h,52);P.v=2;P.gs=0;}
+  return P;
+ },
  // Mektuplar maskelenmemiş ısınmaya bakar: aerosolle "2 derecenin altında kaldık" denmez
  band(S){const t=this.world(S).t0;return t<2?"lo":t>=2.5?"hi":"mid"},
 
@@ -145,7 +169,7 @@ const Engine={
  },
  // Seçimi uygular, dünyayı bir tur (1 ya da 2 yıl) ilerletir; bir denge 0 ya da 100 olursa son kimliğini döndürür
  apply(S,side){
-  const c=byId[S.card];S.ps={...S.s};
+  const c=byId[S.card];S.ps={...S.s};this.palm(S);
   this.effects(S,c[side]);S.used.push(c.id);S.count++;S.card=null;
   const avg={d:0,h:0,e:0,n:0};let dead=null;
   for(let i=0;i<S.step&&!dead;i++){
@@ -153,7 +177,7 @@ const Engine={
    const dr=this.drift(S);MK.forEach(k=>{S.m[k]=clamp(S.m[k]+dr[k]);avg[k]+=dr[k]/S.step});
    dead=MK.find(k=>S.m[k]<=0||S.m[k]>=100);
   }
-  S.last=avg;
+  S.last=avg;this.palm(S);
   return dead?dead+(S.m[dead]<=0?"0":"100"):null;
  },
  // Arka plandaki sistemlerin görünen dengelere yıllık itişi (en fazla ±3)

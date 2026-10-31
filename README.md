@@ -39,7 +39,7 @@ Yıl 2026. Kurgusal **Küresel İklim Konseyi**'nin başına seçildin. Masanda 
 - **Dört denge.** 🌳 Doğa, 👥 Uluslar, 🪙 Fon, ⚡ Enerji. Biri sıfırlanır ya da taşarsa zaman çizgisi kopar. Yalnızca "yeşil" seçmek de kaybettirir.
 - **Kapanan kapılar.** Bazı kararlar ileride bazı seçenekleri sonsuza dek kapatır. Kararı verdiğin anda "Bu kararın bir bedeli olabilir" notu çıkar; yıllar sonra o konu masana geldiğinde elin bağlıdır.
 - **Gelecekten not.** Arada bir Deniz, masadaki dosyalardan biri hakkında 2075'ten küçük bir not sıkıştırır.
-- **Yaşayan bir dünya.** Arkada gerçek verilere dayanan basit bir iklim modeli çalışır: birikimli CO₂, deniz seviyesi, enerji sistemi, ormanlar, okyanuslar, afetlere hazırlık, güven. Eşikler aşılınca olaylar gelir. Üstteki "Deniz'in dünyası" penceresi kararlarınla canlı olarak değişir; Deniz 2049'da doğar ve kumsalda büyür.
+- **Yaşayan bir dünya.** Arkada gerçek verilere dayanan basit bir iklim modeli çalışır: birikimli CO₂, deniz seviyesi, enerji sistemi, ormanlar, okyanuslar, afetlere hazırlık, güven. Eşikler aşılınca olaylar gelir. Üstteki "Deniz'in dünyası" penceresi kararlarınla canlı olarak değişir; Deniz 2049'da doğar ve kumsalda büyür. Adadaki palmiye zamanla büyür, kararlarına göre gürleşir ya da solar; çok kötü gidişte kırılıp denize sürüklenir, iyi kararlara dönünce yeniden filizlenir.
 - **Final ve çember.** 2075'e ulaşırsan bir süre Deniz'in gözünden bakarsın. Sonra "Bu kadarını başardık… Peki, daha iyisi olabilir miydi?" ve son sahne: Deniz 2026'daki büyüğüne, oyunun başında okuduğun o ilk mektubu yazar. İyi bir sona ulaştıysan bunun yerine bir teşekkür mektubu yazar.
 
 **12 son** · yaklaşık 10 dakika · telefon ve bilgisayar · Türkçe · telefona uygulama gibi kurulabilir, internetsiz çalışır.

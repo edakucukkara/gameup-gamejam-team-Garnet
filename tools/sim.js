@@ -61,7 +61,7 @@ function harness(N,modes){
  let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
  const res={};
  for(const mode of modes)for(const [name,P] of Object.entries(pickers)){
-  const r={n:N,ends:{},year:0,turns:0,t:0,tem:0,uy:0,ev:{},band:{lo:0,mid:0,hi:0},hits:0,firstLock:[],noLock:0,shut:0,doors:0,full:0,both:0,epi:{},rep:0,lrep:0,kill:{},sunk:0,sunkAny:0};
+  const r={n:N,ends:{},year:0,turns:0,t:0,tem:0,uy:0,ev:{},band:{lo:0,mid:0,hi:0},hits:0,firstLock:[],noLock:0,shut:0,doors:0,full:0,both:0,epi:{},rep:0,lrep:0,kill:{},sunk:0,sunkAny:0,pb:0,pr:0,pd:0,pv:0,pvs:[0,0,0,0]};
   for(let i=0;i<N;i++){
    const S=Engine.newState(mode),seen=new Set(),lines=new Set();let end=null;
    while(!end){
@@ -83,7 +83,7 @@ function harness(N,modes){
    }
    S.fired.forEach(e=>r.ev[e]=(r.ev[e]||0)+1);
    const fl=S.hits.find(h=>h.id!=="afrika");if(fl)r.firstLock.push(fl.seen);else r.noLock++;
-   r.ends[end]=(r.ends[end]||0)+1;r.year+=Math.min(S.year,2075);r.hits+=S.hits.length;r.sunk+=S.sunk.length;if(S.sunk.length)r.sunkAny++;
+   r.ends[end]=(r.ends[end]||0)+1;if(S.palm){if(S.palm.n)r.pb++;if(S.palm.re)r.pr++;if(!S.palm.up)r.pd++;r.pv+=S.palm.vc;}r.year+=Math.min(S.year,2075);r.hits+=S.hits.length;r.sunk+=S.sunk.length;if(S.sunk.length)r.sunkAny++;
   }
   res[mode+" · "+name]=r;
  }
@@ -102,6 +102,7 @@ function report({errs,warn,res,drift},detail,log){
   const fl=r.firstLock.length?(r.firstLock.reduce((a,b)=>a+b,0)/r.firstLock.length).toFixed(0):"-";
   log(`\n${k.padEnd(22)} 2075'e varan ${pct(r.full,r.n).padStart(4)} · ort. yıl ${(r.year/r.n).toFixed(0)} · tur ${(r.turns/r.n).toFixed(0)} · vakti dolan dosya ${(r.sunk/r.n).toFixed(1)} (hiç dolmayan ${pct(r.n-r.sunkAny,r.n)}) · görülen kilit ${(r.hits/r.n).toFixed(1)} (2029 dışında hiç görmeyen ${pct(r.noLock,r.n)}, ilk yenisi ort. ${fl})`+
    (r.full?` · 2075 +${(r.t/r.full).toFixed(2)}°C, temiz %${(100*r.tem/r.full).toFixed(0)}, uyum ${(r.uy/r.full).toFixed(0)} (${["lo","mid","hi"].map(b=>b+" "+pct(r.band[b],r.full)).join(" ")}) · Deniz'e kapanan ${(r.shut/r.full).toFixed(1)}/${(r.doors/r.full).toFixed(1)} · final kart sayısı ${top(r.epi,4).map(([n,c])=>n+":"+pct(c,r.full)).join(" ")}`:"")+
+   ` · palmiye kırılan ${pct(r.pb,r.n)}, yeniden filizlenen ${pct(r.pr,r.n)}, sonda kırık ${pct(r.pd,r.n)}, görünüm değişimi/oyun ${(r.pv/r.n).toFixed(1)}`+
    ` · tekrar kart/oyun ${(r.rep/r.n).toFixed(2)} · tekrar mektup satırı/oyun ${(r.lrep/r.n).toFixed(2)}`+(r.both?` · İKİ SEÇENEĞİ DE KİLİTLİ: ${r.both}`:""));
   log("                       sonlar: "+top(r.ends,12).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
   if(detail)log("                       öldüren kartlar: "+top(r.kill,6).map(([e,n])=>`${e} ${pct(n,r.n)}`).join(" · "));
