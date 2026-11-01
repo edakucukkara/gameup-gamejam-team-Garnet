@@ -649,5 +649,6 @@ if(hot&&hot.snapshot)hot.snapshot(()=>({S}));
 if(hot&&hot.ready)hot.ready(boot);else boot(hot&&hot.data||{});
 
 /* ---------- Uygulama olarak kurulum (PWA) ----------
- sw.js oyunu çevrimdışı çalıştırır; telefonda "Ana ekrana ekle" ile uygulama gibi açılır. Dosyadan (file://) açılınca devre dışı. */
-if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+ sw.js oyunu çevrimdışı çalıştırır; telefonda "Ana ekrana ekle" ile uygulama gibi açılır. Dosyadan (file://) ya da
+ mobil uygulamanın içinden (Capacitor; dosyalar zaten cihazda) açılınca devre dışı. */
+if("serviceWorker" in navigator&&location.protocol!=="file:"&&!window.Capacitor)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));

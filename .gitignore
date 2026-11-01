@@ -6,3 +6,6 @@ desktop.ini
 .idea/
 .claude/settings.local.json
 dist/
+node_modules/
+www/
+__pycache__/
