@@ -27,6 +27,8 @@ Kurulum gerekmez; oyun tarayıcıda açılır.
 
 **Başkasına göndermek için tek dosya:** Repo klasöründe `py tools/tekdosya.py` çalıştırın → `dist/Gelecekten-Mektup.html`. Bu tek dosya, çift tıklayınca açılan oyunun tamamıdır; jüriye ya da arkadaşlara WhatsApp, Drive veya e-postayla gönderilebilir.
 
+**Android telefona uygulama olarak:** `Gelecekten-Mektup.apk` dosyasını telefona gönderin (WhatsApp'ta *Belge* olarak ya da Drive linkiyle) ve dokunup kurun. "Bilinmeyen kaynak" ya da Play Protect uyarısı çıkarsa *izin ver* / *yine de yükle*. APK'yı üretmek için aşağıda *Mobil uygulama*.
+
 **Tarayıcıda link (ileride):** Repo herkese açılıp GitHub Pages açılınca oyun https://edakucukkara.github.io/gameup-gamejam-team-Garnet/ adresinde de oynanır ve telefona uygulama gibi kurulabilir (adımlar aşağıda, *Yayınlama*).
 
 ---
@@ -39,7 +41,7 @@ Yıl 2026. Kurgusal **Küresel İklim Konseyi**'nin başına seçildin. Masanda 
 - **Dört denge.** 🌳 Doğa, 👥 Uluslar, 🪙 Fon, ⚡ Enerji. Biri sıfırlanır ya da taşarsa zaman çizgisi kopar. Yalnızca "yeşil" seçmek de kaybettirir.
 - **Kapanan kapılar.** Bazı kararlar ileride bazı seçenekleri sonsuza dek kapatır. Kararı verdiğin anda "Bu kararın bir bedeli olabilir" notu çıkar; yıllar sonra o konu masana geldiğinde elin bağlıdır.
 - **Gelecekten not.** Arada bir Deniz, masadaki dosyalardan biri hakkında 2075'ten küçük bir not sıkıştırır.
-- **Yaşayan bir dünya.** Arkada gerçek verilere dayanan basit bir iklim modeli çalışır: birikimli CO₂, deniz seviyesi, enerji sistemi, ormanlar, okyanuslar, afetlere hazırlık, güven. Eşikler aşılınca olaylar gelir. Üstteki "Deniz'in dünyası" penceresi kararlarınla canlı olarak değişir; Deniz 2049'da doğar ve kumsalda büyür.
+- **Yaşayan bir dünya.** Arkada gerçek verilere dayanan basit bir iklim modeli çalışır: birikimli CO₂, deniz seviyesi, enerji sistemi, ormanlar, okyanuslar, afetlere hazırlık, güven. Eşikler aşılınca olaylar gelir. Üstteki "Deniz'in dünyası" penceresi kararlarınla canlı olarak değişir; Deniz 2049'da doğar ve kumsalda büyür. Adadaki palmiye zamanla büyür, kararlarına göre gürleşir ya da solar; çok kötü gidişte kırılıp denize sürüklenir, iyi kararlara dönünce yeniden filizlenir.
 - **Final ve çember.** 2075'e ulaşırsan bir süre Deniz'in gözünden bakarsın. Sonra "Bu kadarını başardık… Peki, daha iyisi olabilir miydi?" ve son sahne: Deniz 2026'daki büyüğüne, oyunun başında okuduğun o ilk mektubu yazar. İyi bir sona ulaştıysan bunun yerine bir teşekkür mektubu yazar.
 
 **12 son** · yaklaşık 10 dakika · telefon ve bilgisayar · Türkçe · telefona uygulama gibi kurulabilir, internetsiz çalışır.
@@ -147,17 +149,41 @@ Oyun telefona kendi simgesiyle kurulabilir, adres çubuğu olmadan tam ekran aç
 - Bazı editörlerin içindeki önizleme tarayıcıları service worker'a izin vermez; konsolda bir kayıt hatası görünür ama oyun çalışır.
 
 ### Yayınlama
-- **Tek dosya (en kolayı; jüri, demo ve arkadaşlar için):**
+- **Yayın paketi (küçültülmüş; telefona kurulum + tek dosya):**
+  ```bash
+  python3 tools/yayin.py
+  ```
+  `data.js`, `engine.js` ve `ui.js`'i tek bir işleve sarıp küçültür (minify) ve okunmasını zorlaştırır (değişken adları anlamsızlaşır, yorumlar silinir). İki çıktı:
+  - `dist/pwa/` → HTTPS bir yere (Netlify, Cloudflare Pages, itch.io) yüklenecek PWA paketi. Telefonda "Ana ekrana ekle" ile uygulama gibi kurulur, çevrimdışı açılır. **Repo private kalabilir:** yüklenen yalnızca bu birkaç dosyadır, repo'nun geri kalanı GitHub'da private durur.
+  - `dist/Gelecekten-Mektup.html` → çift tıklayınca açılan tek, küçültülmüş dosya; WhatsApp/Drive/e-posta ile gönderilir.
+
+  Not: Tarayıcıda çalışan her oyun gibi kod oyuncunun cihazına iner; küçültme bir kapı kilididir, kasa değil. Asıl koruma repo'nun private olması ve pakete gömülü telif notudur.
+- **Okunur tek dosya (küçültmesiz; hızlı demo için):**
   ```bash
   py tools/tekdosya.py
   ```
-  `dist/Gelecekten-Mektup.html` oluşur. Bu tek dosyaya çift tıklayınca oyun tarayıcıda açılır; sunucu, kurulum ya da internet gerekmez. WhatsApp, Drive ya da e-postayla gönderilebilir. (Telefona uygulama gibi kurulum bu sürümde yok; o GitHub Pages sürümünde.)
-- **GitHub Pages:** Repo → Settings → Pages → *Deploy from a branch* → `main` / `/ (root)` → Save. Birkaç dakika sonra oyun `https://edakucukkara.github.io/gameup-gamejam-team-Garnet/` adresinde açılır.
+  `dist/Gelecekten-Mektup.html` oluşur (küçültmesiz). Çift tıklayınca açılır; sunucu, kurulum ya da internet gerekmez.
+- **GitHub Pages (repo public ise):** Repo → Settings → Pages → *Deploy from a branch* → `main` / `/ (root)` → Save. Private repoda Pages ücretsiz planda açılmaz; onun yerine yukarıdaki PWA paketini Netlify'a yükleyin.
 - **itch.io paketi (isteğe bağlı):**
   ```bash
   py tools/paket.py
   ```
   `dist/gelecekten-mektup.zip` oluşur (Mac/Linux: `python3 tools/paket.py`). itch.io'da *Kind of project: HTML* → zip'i yükle → "This file will be played in the browser" → pencere 440 × 820, "Mobile friendly" ve "Fullscreen button" açık. Sayfa metni ve etiketler [docs/TESLIM.md](docs/TESLIM.md)'de.
+
+### Mobil uygulama (Android APK, iOS)
+Aynı oyun [Capacitor](https://capacitorjs.com/) ile Android ve iOS uygulamasına sarılır; oyun kodunda ayrı bir mobil sürüm yoktur. Mağazada yayın yok: Android'de APK doğrudan telefona kurulur, iPhone'da Netlify linki Safari'den *Ana Ekrana Ekle* ile kurulur.
+
+- **Gerekenler (bir kez):** Node 22+, `npm install`. Android için Android Studio (JDK 21 ve Android SDK 36 ile gelir). iOS için Xcode ve *Xcode → Settings → Components → iOS*.
+- **APK üretmek:**
+  ```bash
+  python3 tools/mobil.py --apk
+  ```
+  `www/` paketini üretir (yayin.py ile aynı küçültülmüş JS), Android ve iOS projelerine kopyalar ve `dist/Gelecekten-Mektup.apk`'yı derler. Mac'te `JAVA_HOME` JDK 21'i göstermeli (ör. `export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"`).
+- **Yalnız kopyalamak** (Android Studio ya da Xcode'dan çalıştırmak için): `python3 tools/mobil.py`, sonra `npx cap open android` / `npx cap open ios`.
+- **Web sürümünden farkları:** yazı tipleri internetten değil `fonts/`'tan gelir (uygulama ilk açılışta da internetsiz aynı görünür); manifest ve service worker yoktur (`ui.js`, `window.Capacitor` varken service worker kaydetmez). Ekran dikeye kilitli, açılış ekranı ve sistem çubukları kum rengi.
+- **İmza:** APK hata ayıklama anahtarıyla imzalanır. Aynı bilgisayardan üretilen yeni APK eskisinin üstüne kurulur ve kayıtlar kalır; başka bilgisayarda üretilen APK için önce eski uygulamayı silmek gerekir.
+- **iPhone:** iOS projesi `ios/` klasöründe ve derlenir; ama App Store/TestFlight için ücretli Apple Developer hesabı gerekir. Ücretsiz hesapla yalnız Mac'e kabloyla bağlı telefona Xcode'dan kurulur, 7 gün geçerlidir.
+- **Simgeler ve açılış ekranı:** kaynaklar `assets/` içinde (`icons/icon.svg`'den üretildi). Değiştirince: `npx @capacitor/assets generate --iconBackgroundColor '#F1E2C4' --splashBackgroundColor '#F1E2C4'` (komut `icons/` içine webp'ler de yazar, onları silin).
 
 ### Repo yapısı
 ```
@@ -168,6 +194,12 @@ ui.js                   Arayüz: portreler, 2075 sahnesi, göstergeler, masa, fi
 manifest.webmanifest    Uygulama tanımı (ad, simge, renk)
 sw.js                   Service worker: çevrimdışı çalışma
 icons/                  Simge (icon.svg asıl çizim; PNG'ler ondan üretildi)
+tools/yayin.py          Yayın paketi: küçültülmüş PWA (dist/pwa/) ve tek dosya (esbuild gerekir)
+tools/mobil.py          Mobil paket: www/ üretir, Android/iOS'a kopyalar; --apk ile APK derler
+fonts/                  Yazı tipleri (mobil uygulama internetsiz kullanır)
+capacitor.config.json   Mobil uygulama tanımı (kimlik, ad, renk); package.json Capacitor paketleri
+android/, ios/          Capacitor'ın Android Studio ve Xcode projeleri
+assets/                 Uygulama simgesi ve açılış ekranı kaynakları
 oyna.bat                Windows'ta tek tıkla çalıştırma
 tools/sim.js            Denge simülasyonu ve içerik kontrolü (Node ve tarayıcı)
 tools/test.html         Simülasyonun tarayıcı sayfası

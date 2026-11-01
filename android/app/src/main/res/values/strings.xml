@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Gelecekten Mektup</string>
+    <string name="title_activity_main">Gelecekten Mektup</string>
+    <string name="package_name">com.teamgarnet.gelecektenmektup</string>
+    <string name="custom_url_scheme">com.teamgarnet.gelecektenmektup</string>
+</resources>

@@ -167,6 +167,34 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 - **Uygulama olarak kurulum (PWA) ve simge:** `manifest.webmanifest`, `sw.js` (çevrimdışı çalışma) ve `icons/` (gün batımında Antalya denizinin üstünde uçak postası zarfı). Telefonda "Ana ekrana ekle" ile uygulama gibi açılır.
 - **Test ve teslim araçları:** `tools/sim.js` artık tarayıcıda da çalışıyor (`tools/test.html`, Node gerekmez). `tools/paket.py` itch.io zip'ini hazırlıyor ve eksik dosyayı yakalıyor. `oyna.bat` Windows'ta çift tıklayınca oyunu açıyor. Dokümanlar (TASARIM, İÇERİK-REHBERİ, YAPILACAKLAR, yeni TESLIM) güncel oyuna göre yeniden yazıldı; YAPILACAKLAR2 YAPILACAKLAR'a birleştirildi.
 
+## 8. Adadaki palmiye · branch `ada-palmiye`
+Denizin ortasındaki adada artık kararlara sık ama abartısız tepki veren bir palmiye var.
+- **Zamanla büyür.** 2026'da genç bir palmiye; her yıl biraz uzar, 2060'larda tam boyuna ulaşır.
+- **Dört hâl.** Gür (koyu yeşil, fazladan yaprak ve hindistancevizi, biraz daha iri), sağlıklı, solgun (yapraklar sararır, sarkar, bir kısmı dökülür, cevizler düşer) ve kuruyor (kahverengi, birkaç yaprak kalır, boyu çöker). Geçişler yavaşça renk ve biçim değiştirerek olur. İnsan gibi dengeli oynayanda tam oyunda ortalama ~7 kez hâl değiştirir (her ~7 kararda bir); sınırlarda pay olduğu için her kararda gidip gelmez.
+- **Kırılmak zordur.** Yalnız kururken ve sağlığı üst üste iki kararda çok düşük kalırsa: gövde ortadan kırılır, tepesi denize devrilir, suya çarptığı yerde halka açılır, taç dalgalarda açığa sürüklenip kaybolur; adada kütük kalır. Not: "Palmiye kırıldı, dalgalar onu açığa sürüklüyor".
+- **İyiye dönünce yeniden doğar.** Kırıldıktan sonra arka arkaya üç karar iyi yönde olursa kütüğün yanında kumdaki bir hindistancevizinden filiz çıkar ("Adada yeni bir palmiye filizlendi"), yıllar içinde yeni bir palmiyeye dönüşür; eski kütük hatıra olarak kalır. Filiz de dört hâli gösterir.
+- **Neye bakıyor?** `Engine.palm`: 0–100 arası bir sağlık. Her kararda 2075 ısınma tahminindeki, doğa göstergesindeki ve okyanus sağlığındaki değişimle oynar ve dünyanın o anki hâline göre bir dengeye çekilir; yani **son kararların yönüne** tepki verir. Durum `S.palm`'da, kaydedilen oyunla birlikte geri gelir. Oyun dengesine etkisi yok.
+- **Simülasyon (`tools/sim.js`, tam oyun):** her zaman kötü seçende palmiye hep kırılır; rastgele oynayanda %26; insan gibi dengeli oynayanda %6, yeşil ve dengeli oynayanda ~%1. Kırıldıktan sonra iyi oynamaya dönen oyuncuda %97–98'i yeniden filizlenir (medyan 3 karar; demo modunda %79–85, kalanında oyun daha önce biter). Sim çıktısına palmiye satırı eklendi (kırılan, filizlenen, sonda kırık, oyun başına hâl değişimi).
+- **Not konumu:** Palmiye kırılırken ya da filizlenirken sahnedeki not üste çıkar, böylece ada görünür kalır.
+- **Kontrol:** Dört hâl, filiz hâlleri, büyüme, kütük, sağa ve sola devrilme, sürüklenme kare kare yakından incelendi; kötü (demo) ve dengeli (tam) oynanan iki oyunda konsolda hata yok.
+
+## 9. Yayın paketi: küçültme ve PWA · branch `ada-palmiye`
+Oyunu telefona uygulama gibi kurulabilir ve kodu okunması zor hâle getirilmiş olarak yayınlamak için `tools/yayin.py`.
+- **Ne yapar:** `data.js` + `engine.js` + `ui.js`'i tek bir işleve (IIFE) sarıp esbuild ile küçültür. Değişken adları anlamsızlaşır (`Engine` gibi adlar kalmaz), yorumlar silinir; pakete telif notu (banner) gömülür.
+- **İki çıktı (`dist/`, git'e girmez):** `dist/pwa/` HTTPS'e yüklenecek PWA paketi (index.html → tek `app.min.js`, güncel önbellek adlı `sw.js`, manifest, simgeler); `dist/Gelecekten-Mektup.html` küçültülmüş tek dosya.
+- **Private repo sorunu çözüldü:** Yüklenen yalnızca birkaç oyun dosyasıdır, repo'nun geri kalanı private kalır. GitHub Pages yerine Netlify/Cloudflare Pages/itch.io yeterli.
+- **Dürüst sınır:** Tarayıcı oyunu cihazda çalışır, kod oraya iner; küçültme sıradan merakı keser ama kararlı birini durdurmaz. Asıl koruma repo'nun private olması ve telif notu.
+- **Kontrol:** Küçültülmüş sürüm (IIFE, adlar karartılmış) hem tam hem demo modunda baştan sona oynandı, konsolda hata yok. PWA paketi yerel HTTP sunucusunda: service worker kaydoldu, manifest tanındı, çevrimdışı yeniden yükleme çalıştı. Tek dosya da baştan sona oynandı.
+
+## 10. Mobil uygulama: Android APK ve iOS · branch `android-apk`
+Oyun, kodu değişmeden Capacitor 8 ile Android ve iOS uygulamasına sarıldı. Mağaza yok: Android'de APK telefona doğrudan kurulur, iPhone'a Netlify linki Safari'den *Ana Ekrana Ekle* ile kurulur.
+- **`tools/mobil.py`:** yayin.py'deki küçültmeyi kullanıp `www/` üretir, `npx cap sync` ile Android ve iOS projelerine kopyalar; `--apk` ile `dist/Gelecekten-Mektup.apk` derler (~5.5 MB).
+- **İnternetsiz yazı tipleri:** Google Fonts dosyaları (yalnız latin ve latin-ext; Türkçe harfler dahil) `fonts/`'a indirildi; uygulama onları kullanır. Web sürümü hâlâ Google Fonts'tan yükler.
+- **Service worker uygulamada kapalı:** dosyalar zaten cihazda; `ui.js` `window.Capacitor` varken kaydetmez. Web sürümüne etkisi yok.
+- **Görünüm:** dikey ekran kilidi; açılış ekranı, durum ve gezinme çubukları kum rengi; uygulama simgesi ve açılış ekranı `icons/icon.svg`'den.
+- **Neden mağaza yok:** Google Play'de yeni kişisel hesaplar yayından önce 12 test kullanıcısıyla 14 gün kapalı test istiyor; App Store ve TestFlight yıllık 99 $ hesap ve inceleme istiyor.
+- **Kontrol:** APK Android 15 emülatöründe kuruldu: açılış, mektup ve ilk karar ekranı doğru; yazı tipleri yerelden geliyor, konsolda oyun hatası yok. iOS projesi gerçek cihaz ve simülatör için derlendi, simülatörde açıldı (ekran görüntüsü alınamadı: makinenin belleği doluydu).
+
 ## Bugünkü durum (31 Ekim, `secimler`)
 | | |
 |---|---|
@@ -178,4 +206,4 @@ Dört gösterge kartlarla anında değişiyor; arkada her yıl ilerleyen bir dü
 | Rastgele oynayan | Tam %8, demo %25 |
 | Vakti dolan dosya | İnsan gibi oynayanda oyun başına ~0,7 |
 | Tarayıcı | Telefon boyutunda (375×812) açılıştan çember sahnesine kadar bütün ekranlar, kaybetme sonu ve demo modu: konsolda hata yok. Teslim zip'i boş bir klasörden açılıp oynatıldı. |
-| Sahne | 37 karar ve olay izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli; büyüyen Deniz |
+| Sahne | 37 karar ve olay izi, önizleme ve not; martılar, insanlar, jaguar, carettalar, yunus, trafik, yelkenli; büyüyen Deniz; kararlara göre gürleşen, solan, kırılan ve yeniden filizlenen ada palmiyesi |

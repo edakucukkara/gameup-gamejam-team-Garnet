@@ -110,6 +110,19 @@ function buildWorld(){
  const gullFly=(cls,d=0)=>`${wing(-1,cls,d)}<ellipse cx="0" cy="0" rx="2.7" ry="1.35" fill="#FFFFFF" stroke="#A7B4B8" stroke-width=".25"/><path d="M-2.6 -.2 l-1.5 -.7 l.15 1.4z" fill="#26343A"/><circle cx="2.8" cy="-.55" r="1.1" fill="#FFFFFF"/><circle cx="3.15" cy="-.8" r=".22" fill="#1B2A30"/><path d="M3.8 -.65 l1.4 .3 l-1.4 .38z" fill="#F2B544"/>${wing(1,cls,d)}`;
  // Ayakta martı: beyaz gövde, gri sırt, siyah kuyruk ucu, sarı gaga ve kırmızı benek; baş gagalarken eğilir
  const gullStand=`<path d="M-.5 -1.7 l-.25 1.7 M.6 -1.7 l.1 1.7" stroke="#E8A46A" stroke-width=".5" stroke-linecap="round"/><path d="M-3.9 -3.2 Q-1.6 -5.7 1.6 -4.9 Q3.3 -4.4 3.2 -3 Q2.5 -1.5 0 -1.5 Q-2.9 -1.6 -3.9 -3.2Z" fill="#FFFFFF" stroke="#B5C0C3" stroke-width=".25"/><path d="M-4.1 -3.4 Q-1.2 -5.3 1.8 -4.4 Q.8 -2.9 -1.6 -2.7 Q-3.4 -2.8 -4.1 -3.4Z" fill="#9AA9AE"/><path d="M-4.1 -3.4 l-1.7 .45 l1.5 .55z" fill="#26343A"/><ellipse cx="2.2" cy="-4.7" rx="1" ry="1.1" fill="#FFFFFF"/><g class="ghead"><circle cx="2.8" cy="-5.7" r="1.3" fill="#FFFFFF" stroke="#B5C0C3" stroke-width=".2"/><circle cx="3.2" cy="-6" r=".24" fill="#1B2A30"/><path d="M4 -5.8 l1.8 .3 l-1.8 .48z" fill="#F2B544"/><circle cx="5.2" cy="-5.55" r=".2" fill="#E5654E"/></g>`;
+ // Palmiye (tabanı 0,0; ölçek 1'de ~18 birim): alt gövde (kırılınca kütük kalır), üst gövde ve taç, filiz.
+ // Kırılma noktası (.85,-7); taç (2.4,-16.2). Yapraklar arkadan öne: koyu, sonra açık
+ // Yaprak sınıfları: fb solgunken, fc kururken dökülür; fx yalnız gürken çıkar. fd: yaprağı aşağı sarkıtan iç grup (--s: sağa/sola)
+ const frond=(a,L,c,k="")=>`<g transform="rotate(${a})"><g class="fd ${k}" style="--s:${Math.cos(a*Math.PI/180)>=0?1:-1}"><path class="${c}" d="M0 0 Q${L*.45} ${-L*.3} ${L} ${L*.2} Q${L*.5} ${L*.02} 0 .75Z"/><path d="M0 .3 Q${L*.45} ${-L*.16} ${L} ${L*.2}" stroke="#24563A" stroke-width=".22" fill="none" opacity=".7"/></g></g>`;
+ const crown=`<g transform="translate(2.4 -16.2)">${[[-150,6.6,"fb"],[-35,6.4,"fc"],[200,5.6],[-20,5.6]].map(([a,L,k])=>frond(a,L,"fr2",k)).join("")}<circle class="pnut" cx="-.6" cy=".9" r=".75" fill="#6B4A2A"/><circle class="pnut" cx=".7" cy="1" r=".75" fill="#7A5532"/><circle class="pnut fx" cx=".05" cy="1.55" r=".7" fill="#5E3F22"/>${[[-140,6.2,"fx"],[-172,7.4],[-118,5.4,"fc"],[-72,5.8,"fb"],[-45,6.4,"fx"],[-8,7.6],[158,6.2],[22,6.4,"fb"]].map(([a,L,k])=>frond(a,L,"fr",k)).join("")}</g>`;
+ const rings=(ys)=>ys.map(([x,y])=>`M${x} ${y} q.6 .35 1.25 0`).join(" ");
+ const palmUp=`<path d="M.2 -7 Q.9 -12 1.9 -16.2 L2.9 -16.2 Q2 -12 1.5 -7Z" fill="#9A6E40"/><path d="${rings([[.3,-8.6],[.6,-10.4],[.95,-12.2],[1.35,-14]])}" stroke="#6B4A2A" stroke-width=".3" fill="none"/>`;
+ const palmSlot=k=>`<g class="palm none" id="wPalm${k}" transform="translate(${k?163.5:171} 138.7)"><g class="pg">
+  <g class="plow"><path d="M-.8 0 Q-.2 -3.6 .2 -7 L1.5 -7 Q1.1 -3.6 .8 0Z" fill="#8A6238"/><path d="${rings([[-.6,-1.6],[-.4,-3.3],[-.15,-5]])}" stroke="#6B4A2A" stroke-width=".3" fill="none"/></g>
+  <path class="pjag" d="M.2 -7 L.45 -8.1 L.8 -7.3 L1.1 -8.5 L1.5 -7Z" fill="#D9B178"/>
+  <g class="ptop">${palmUp}<g class="pcrown">${crown}</g></g>
+  <g class="psprout"><path d="M-1.9 .2 Q0 -1.6 1.9 .2Z" fill="#CDB98A"/><ellipse cx="0" cy="-.25" rx="1.2" ry=".85" fill="#7A5532"/><path class="sl" d="M.1 -.9 Q-.5 -3.8 -2.9 -5 Q-1 -2.8 -.35 -.7Z M.3 -.9 Q1.1 -4.5 3.1 -5.6 Q1.3 -3 .55 -.7Z M.2 -1 Q-.05 -4.2 .7 -6.4 Q.95 -3.8 .6 -.9Z"/></g>
+ </g></g>`;
  // Caretta: kubbe kabuk ve plakaları, açık renk alt kenar, iri baş, kürek gibi çalışan paletler
  const turtle=s=>`<g transform="scale(${s})"><path class="rflip" d="M-3.2 -1.2 Q-5.2 -.4 -6 .2 Q-4.2 .5 -2.8 -.3Z" fill="#9A6232"/><path d="M-4.4 -1 Q-4 -5.2 .4 -5.4 Q4.2 -5.2 4.6 -1.4Z" fill="#8A4E25"/><path d="M-2.2 -1.2 Q-2 -3.8 .2 -4.6 M2.2 -1.2 Q2.2 -3.6 .6 -4.8 M-3.6 -2.8 Q.4 -3.7 4 -2.8" stroke="#5E3216" stroke-width=".4" fill="none"/><path d="M-4.6 -1 H4.8" stroke="#E2C08A" stroke-width=".8" stroke-linecap="round"/><path d="M4.2 -2.6 Q6.8 -3.7 7.8 -2.2 Q7.6 -.9 5.4 -.9 Q4.4 -1.1 4.2 -2.6Z" fill="#B5793E"/><circle cx="6.6" cy="-2.5" r=".3" fill="#1B1208"/><path class="fflip" d="M2.4 -1.2 Q5 -.4 6 .4 Q3.6 .6 1.8 -.4Z" fill="#9A6232"/></g>`;
  // Jaguar: uzun gövde, rozet benekleri, kulaklı baş, adım atan dört bacak, sallanan kuyruk
@@ -166,7 +179,7 @@ function buildWorld(){
   <path class="wave" d="M0 120 ${"q6 -2 12 0 ".repeat(1)}${"t12 0 ".repeat(31)}" stroke="#BFEDE6" stroke-width="1.2" fill="none" opacity=".8"/>
   ${g("dPlastic",`${[[64,124,"#E85D75"],[96,138,"#F2B544"],[134,127,"#EAF2EF"],[178,144,"#E85D75"],[214,123,"#3CC8B4"],[246,139,"#F2B544"],[288,131,"#EAF2EF"],[318,145,"#E85D75"]].map(([x,y,c])=>`<rect x="${x}" y="${y}" width="2.6" height="1.4" rx=".5" fill="${c}" transform="rotate(${x%40-20} ${x} ${y})"/>`).join("")}`)}
   ${g("dSunken",`${[198,208,218,228].map(x=>`<path d="M${x-1} 122 L${x+4} 118.5 L${x+9} 122Z" fill="#9C6B55" opacity=".85"/>`).join("")}<path d="M195 123 h44" stroke="#BFEDE6" stroke-width=".6" opacity=".7"/>`)}
-  ${g("dIsland",`<ellipse cx="167" cy="141" rx="16" ry="3.6" fill="#E3CF9B"/><path d="M155 141 q12 -6 24 0z" fill="#5E9A55"/><path d="M168 140 q1 -6 -1 -10" stroke="#7A5532" stroke-width="1.1" fill="none"/><path d="M167 130 q-5 -1 -7 2 M167 130 q4 -2 7 1 M167 130 q-2 -4 -6 -4 M167 130 q3 -4 6 -3" stroke="#3E9460" stroke-width="1.1" fill="none"/>`)}
+  ${g("dIsland",`<ellipse cx="167" cy="141" rx="16" ry="3.6" fill="#E3CF9B"/><path d="M155 141 q12 -6 24 0z" fill="#5E9A55"/>${palmSlot(1)}${palmSlot(0)}<g id="wPalmDrift"><g class="pdx" opacity="0"><g class="prock"><g class="pds"><g transform="rotate(93) translate(-.85 7)">${palmUp}${crown}</g></g></g><path class="pfoam" d="M-2 .7 q2 -.9 4 0 t4 0 t4 0" stroke="#DDF3EF" stroke-width=".45" fill="none"/></g></g><ellipse id="wPalmRip" rx="3.4" ry=".9" fill="none" stroke="#DDF3EF" stroke-width=".5" opacity="0"/>`)}
   ${g("dIslandWall",`<path d="M149 141 q18 9 36 0" stroke="#B5BABF" stroke-width="1.4" fill="none"/><rect x="160" y="137" width="4" height="3" fill="#EDE6D6"/><rect x="172" y="137.4" width="4" height="3" fill="#EDE6D6"/>`)}
   ${g("dIslet",`<ellipse cx="167" cy="142.5" rx="5" ry="1.2" fill="#E3CF9B"/><path d="M168 142 q2 -5 5 -7" stroke="#7A5532" stroke-width="1" fill="none"/><path d="M173 135 q-3 -1 -5 1 M173 135 q2 1 2 4" stroke="#8C7A4A" stroke-width=".9" fill="none"/>`)}
   ${g("dFish",`<g class="jump"><path d="M188 127 q3 -6 7 -1 l2 -1.6 l-.6 2.6 l-1.4 -1 q-4 4 -7 1z" fill="#C9D6D3"/></g><g class="jump" style="animation-delay:.9s"><path d="M199 129 q3 -6 7 -1 l2 -1.6 l-.6 2.6 l-1.4 -1 q-4 4 -7 1z" fill="#C9D6D3"/></g>`)}
@@ -212,7 +225,7 @@ function buildWorld(){
  W.wins=[...document.querySelectorAll("#wBld .win")];
  W.ppl=[...document.querySelectorAll("#wPpl .ppl")];
  W.turbs=[...document.querySelectorAll("#wTurb > g")];W.sol=[...document.querySelectorAll("#wSolar .sol")];
- ["wSmog","wHeat","wHaze","wSun","wBirds","wGull","wTurb","wSea","wDim","wDeniz","wDenizS","wKite"].concat(Object.keys(DEC)).forEach(id=>W[id]=document.getElementById(id));
+ ["wSmog","wHeat","wHaze","wSun","wBirds","wGull","wTurb","wSea","wDim","wDeniz","wDenizS","wKite","wPalm0","wPalm1","wPalmDrift","wPalmRip"].concat(Object.keys(DEC)).forEach(id=>W[id]=document.getElementById(id));
 }
 // Bir izin üç hâli: açık (on), önizlemede belirecek (gin), önizlemede kaybolacak (gout); yeni açılan iz "pop" ile canlanır
 function mark(el,now,pre,live){
@@ -256,20 +269,55 @@ function updateWorld(pf){
  const age=S.year-2049;W.wDeniz.style.opacity=age>=2?1:0;
  W.wDenizS.setAttribute("transform",`translate(64 118) scale(${(age<3?.55:Math.min(1,.55+(age-3)*.035)).toFixed(2)})`);
  W.wKite.style.display=age>=4&&age<=16?"":"none";
+ // Adadaki palmiye yaşıyla büyür. Kötü gidişte kırılır, tepesi denize düşüp sürüklenir; iyiye dönünce kütüğün yanında
+ // yenisi filizlenir. İki yer var (0: sağda, 1: solda); yeni palmiye her seferinde öbür yerde doğar
+ // Sağlığı da görünür: gür (pv3) koyu yeşil, fazla yaprak ve cevizle biraz daha iri; solgun (pv1) sararır, yaprakları sarkar
+ // ve dökülmeye başlar; kururken (pv0) kahverengileşir, birkaç yaprak kalır, boyu çöker
+ const P=Engine.palm(S),pk=`${P.up}/${P.n}/${P.re}`,pa=S.year-P.born,grow=a=>a<3?.8+a*.1:Math.min(1.2,.25+a*.02),vig=[.86,.94,1,1.06][P.v];
+ const slot=(el,st,sc)=>{el.setAttribute("class",`palm ${st} pv${P.v}`);el.querySelector(".pg").style.transform=`scale(${sc.toFixed(3)})`;};
+ const cur=W["wPalm"+P.slot],oth=W["wPalm"+(1-P.slot)],stump=P.fa>=3?"stump":"none";
+ if(P.up){slot(cur,pa<3?"sprout":"tree",grow(pa)*vig);slot(oth,P.n?stump:"none",grow(P.fa));}
+ else{slot(cur,stump,grow(P.fa));slot(oth,"none",grow(P.fa));}
+ let pcap=null;
+ if(live&&W.palmK&&W.palmK!==pk){
+  if(!P.up){if(P.fa>=3)palmFall(cur,grow(P.fa));pcap=P.fa>=3?"Palmiye kırıldı, dalgalar onu açığa sürüklüyor":"Adadaki filiz kurudu";}
+  else{palmSprout(cur);pcap="Adada yeni bir palmiye filizlendi";}
+ }
+ W.palmK=pk;
  document.getElementById("wstat").textContent=`+${(Math.round(w.t0*10)/10).toString().replace(".",",")}°C${has("aerosol")?"*":""} · deniz +${w.sl} cm`;
  // Not: önizlemede "Seçersen: …"; kararla ya da olayla yeni beliren izde birkaç saniye
  if(pf){showCap(CAP[pf],true);return;}
  if(document.getElementById("wcap").classList.contains("pre"))showCap(null);
  const fresh=S.flags.filter(f=>CAP[f]&&!W.seen.has(f));fresh.forEach(f=>W.seen.add(f));
- if(fresh.length&&W.live)showCap(CAP[fresh[fresh.length-1]]);
+ if(fresh.length&&W.live)showCap(CAP[fresh[fresh.length-1]],false,!!pcap);
+ else if(pcap)showCap(pcap,false,true);
  else if(age>=0&&!W.seen.has("@deniz")){W.seen.add("@deniz");if(W.live)showCap("Deniz doğdu");}
  W.live=true;
 }
+// Kırılma: tepe kırılma noktasından denize devrilir, suya çarpınca halka açılır, taç dalgalarda açığa sürüklenip kaybolur
+function palmFall(el,sc){
+ // Devrilen tepe adanın kenarına kayar (e), sürüklenen taç da oradan başlar: ada 151–183 arası
+ const dir=el.id==="wPalm0"?1:-1,x=+el.getAttribute("transform").match(/[\d.]+/)[0],e=dir>0?182:152,sl=(e-x)/sc,B="translate(.85px,-7px)",U="translate(-.85px,7px)";
+ el.querySelector(".ptop").animate([{transform:`${B} rotate(0deg) ${U}`,opacity:1,easing:"cubic-bezier(.55,0,.9,.45)"},
+  {offset:.55,transform:`${B} rotate(${dir*90}deg) ${U}`,opacity:1,easing:"ease-in"},
+  {offset:1,transform:`translate(${(.85+sl).toFixed(2)}px,-2px) rotate(${dir*97}deg) ${U}`,opacity:0}],{duration:1500});
+ const r=W.wPalmRip;r.setAttribute("cx",(e+dir*9*sc).toFixed(1));r.setAttribute("cy","141.8");
+ r.animate([{opacity:0,transform:"scale(.3)"},{offset:.02,opacity:.95,transform:"scale(.3)",easing:"ease-out"},{opacity:0,transform:"scale(2)"}],{duration:1300,delay:1000});
+ const d=W.wPalmDrift;d.setAttribute("class","pv0");d.setAttribute("transform",`translate(${e} 141.3)`);d.querySelector(".pfoam").setAttribute("transform",`scale(${dir} 1)`);
+ d.querySelector(".pds").setAttribute("transform",`scale(${(dir*sc).toFixed(3)} ${(sc*.7).toFixed(3)})`);
+ d.querySelector(".pdx").animate([{opacity:0,transform:"translate(0px,-1.6px)"},{offset:.09,opacity:0,transform:"translate(0px,-1.6px)"},
+  {offset:.15,opacity:1,transform:"translate(0px,0px)",easing:"cubic-bezier(.3,.5,.6,1)"},{offset:.75,opacity:1},{offset:1,opacity:0,transform:`translate(${dir*46}px,0px)`}],{duration:14000});
+}
+// Yeniden doğuş: kumdaki hindistancevizinden filiz yükselir
+function palmSprout(el){
+ el.querySelector(".psprout").animate([{transform:"scale(0)",opacity:0},{offset:.6,transform:"scale(1.2)",opacity:1},{transform:"scale(1)",opacity:1}],{duration:1300,easing:"ease-out"});
+}
 let capT=null;
-function showCap(t,pre){
+// top: not sahnenin üstünde çıkar (palmiye kırılır ya da filizlenirken ada görünür kalsın)
+function showCap(t,pre,top){
  const c=document.getElementById("wcap"),wd=c.parentElement;clearTimeout(capT);
  if(!t){c.hidden=true;c.classList.remove("pre");wd.classList.remove("capping");return;}
- c.textContent=(pre?"Seçersen: ":"")+t;c.classList.toggle("pre",!!pre);c.hidden=false;wd.classList.add("capping");
+ c.textContent=(pre?"Seçersen: ":"")+t;c.classList.toggle("pre",!!pre);c.classList.toggle("top",!!top);c.hidden=false;wd.classList.add("capping");
  if(!pre)capT=setTimeout(()=>showCap(null),3800);
 }
 
@@ -601,5 +649,6 @@ if(hot&&hot.snapshot)hot.snapshot(()=>({S}));
 if(hot&&hot.ready)hot.ready(boot);else boot(hot&&hot.data||{});
 
 /* ---------- Uygulama olarak kurulum (PWA) ----------
- sw.js oyunu çevrimdışı çalıştırır; telefonda "Ana ekrana ekle" ile uygulama gibi açılır. Dosyadan (file://) açılınca devre dışı. */
-if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+ sw.js oyunu çevrimdışı çalıştırır; telefonda "Ana ekrana ekle" ile uygulama gibi açılır. Dosyadan (file://) ya da
+ mobil uygulamanın içinden (Capacitor; dosyalar zaten cihazda) açılınca devre dışı. */
+if("serviceWorker" in navigator&&location.protocol!=="file:"&&!window.Capacitor)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
