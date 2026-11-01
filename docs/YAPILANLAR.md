@@ -186,6 +186,15 @@ Oyunu telefona uygulama gibi kurulabilir ve kodu okunması zor hâle getirilmiş
 - **Dürüst sınır:** Tarayıcı oyunu cihazda çalışır, kod oraya iner; küçültme sıradan merakı keser ama kararlı birini durdurmaz. Asıl koruma repo'nun private olması ve telif notu.
 - **Kontrol:** Küçültülmüş sürüm (IIFE, adlar karartılmış) hem tam hem demo modunda baştan sona oynandı, konsolda hata yok. PWA paketi yerel HTTP sunucusunda: service worker kaydoldu, manifest tanındı, çevrimdışı yeniden yükleme çalıştı. Tek dosya da baştan sona oynandı.
 
+## 10. Mobil uygulama: Android APK ve iOS · branch `android-apk`
+Oyun, kodu değişmeden Capacitor 8 ile Android ve iOS uygulamasına sarıldı. Mağaza yok: Android'de APK telefona doğrudan kurulur, iPhone'a Netlify linki Safari'den *Ana Ekrana Ekle* ile kurulur.
+- **`tools/mobil.py`:** yayin.py'deki küçültmeyi kullanıp `www/` üretir, `npx cap sync` ile Android ve iOS projelerine kopyalar; `--apk` ile `dist/Gelecekten-Mektup.apk` derler (~5.5 MB).
+- **İnternetsiz yazı tipleri:** Google Fonts dosyaları (yalnız latin ve latin-ext; Türkçe harfler dahil) `fonts/`'a indirildi; uygulama onları kullanır. Web sürümü hâlâ Google Fonts'tan yükler.
+- **Service worker uygulamada kapalı:** dosyalar zaten cihazda; `ui.js` `window.Capacitor` varken kaydetmez. Web sürümüne etkisi yok.
+- **Görünüm:** dikey ekran kilidi; açılış ekranı, durum ve gezinme çubukları kum rengi; uygulama simgesi ve açılış ekranı `icons/icon.svg`'den.
+- **Neden mağaza yok:** Google Play'de yeni kişisel hesaplar yayından önce 12 test kullanıcısıyla 14 gün kapalı test istiyor; App Store ve TestFlight yıllık 99 $ hesap ve inceleme istiyor.
+- **Kontrol:** APK Android 15 emülatöründe kuruldu: açılış, mektup ve ilk karar ekranı doğru; yazı tipleri yerelden geliyor, konsolda oyun hatası yok. iOS projesi gerçek cihaz ve simülatör için derlendi, simülatörde açıldı (ekran görüntüsü alınamadı: makinenin belleği doluydu).
+
 ## Bugünkü durum (31 Ekim, `secimler`)
 | | |
 |---|---|

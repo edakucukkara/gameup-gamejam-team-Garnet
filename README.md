@@ -27,6 +27,8 @@ Kurulum gerekmez; oyun tarayıcıda açılır.
 
 **Başkasına göndermek için tek dosya:** Repo klasöründe `py tools/tekdosya.py` çalıştırın → `dist/Gelecekten-Mektup.html`. Bu tek dosya, çift tıklayınca açılan oyunun tamamıdır; jüriye ya da arkadaşlara WhatsApp, Drive veya e-postayla gönderilebilir.
 
+**Android telefona uygulama olarak:** `Gelecekten-Mektup.apk` dosyasını telefona gönderin (WhatsApp'ta *Belge* olarak ya da Drive linkiyle) ve dokunup kurun. "Bilinmeyen kaynak" ya da Play Protect uyarısı çıkarsa *izin ver* / *yine de yükle*. APK'yı üretmek için aşağıda *Mobil uygulama*.
+
 **Tarayıcıda link (ileride):** Repo herkese açılıp GitHub Pages açılınca oyun https://edakucukkara.github.io/gameup-gamejam-team-Garnet/ adresinde de oynanır ve telefona uygulama gibi kurulabilir (adımlar aşağıda, *Yayınlama*).
 
 ---
@@ -168,6 +170,21 @@ Oyun telefona kendi simgesiyle kurulabilir, adres çubuğu olmadan tam ekran aç
   ```
   `dist/gelecekten-mektup.zip` oluşur (Mac/Linux: `python3 tools/paket.py`). itch.io'da *Kind of project: HTML* → zip'i yükle → "This file will be played in the browser" → pencere 440 × 820, "Mobile friendly" ve "Fullscreen button" açık. Sayfa metni ve etiketler [docs/TESLIM.md](docs/TESLIM.md)'de.
 
+### Mobil uygulama (Android APK, iOS)
+Aynı oyun [Capacitor](https://capacitorjs.com/) ile Android ve iOS uygulamasına sarılır; oyun kodunda ayrı bir mobil sürüm yoktur. Mağazada yayın yok: Android'de APK doğrudan telefona kurulur, iPhone'da Netlify linki Safari'den *Ana Ekrana Ekle* ile kurulur.
+
+- **Gerekenler (bir kez):** Node 22+, `npm install`. Android için Android Studio (JDK 21 ve Android SDK 36 ile gelir). iOS için Xcode ve *Xcode → Settings → Components → iOS*.
+- **APK üretmek:**
+  ```bash
+  python3 tools/mobil.py --apk
+  ```
+  `www/` paketini üretir (yayin.py ile aynı küçültülmüş JS), Android ve iOS projelerine kopyalar ve `dist/Gelecekten-Mektup.apk`'yı derler. Mac'te `JAVA_HOME` JDK 21'i göstermeli (ör. `export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"`).
+- **Yalnız kopyalamak** (Android Studio ya da Xcode'dan çalıştırmak için): `python3 tools/mobil.py`, sonra `npx cap open android` / `npx cap open ios`.
+- **Web sürümünden farkları:** yazı tipleri internetten değil `fonts/`'tan gelir (uygulama ilk açılışta da internetsiz aynı görünür); manifest ve service worker yoktur (`ui.js`, `window.Capacitor` varken service worker kaydetmez). Ekran dikeye kilitli, açılış ekranı ve sistem çubukları kum rengi.
+- **İmza:** APK hata ayıklama anahtarıyla imzalanır. Aynı bilgisayardan üretilen yeni APK eskisinin üstüne kurulur ve kayıtlar kalır; başka bilgisayarda üretilen APK için önce eski uygulamayı silmek gerekir.
+- **iPhone:** iOS projesi `ios/` klasöründe ve derlenir; ama App Store/TestFlight için ücretli Apple Developer hesabı gerekir. Ücretsiz hesapla yalnız Mac'e kabloyla bağlı telefona Xcode'dan kurulur, 7 gün geçerlidir.
+- **Simgeler ve açılış ekranı:** kaynaklar `assets/` içinde (`icons/icon.svg`'den üretildi). Değiştirince: `npx @capacitor/assets generate --iconBackgroundColor '#F1E2C4' --splashBackgroundColor '#F1E2C4'` (komut `icons/` içine webp'ler de yazar, onları silin).
+
 ### Repo yapısı
 ```
 index.html              Sayfa iskeleti ve stiller (retro poster paleti)
@@ -178,6 +195,11 @@ manifest.webmanifest    Uygulama tanımı (ad, simge, renk)
 sw.js                   Service worker: çevrimdışı çalışma
 icons/                  Simge (icon.svg asıl çizim; PNG'ler ondan üretildi)
 tools/yayin.py          Yayın paketi: küçültülmüş PWA (dist/pwa/) ve tek dosya (esbuild gerekir)
+tools/mobil.py          Mobil paket: www/ üretir, Android/iOS'a kopyalar; --apk ile APK derler
+fonts/                  Yazı tipleri (mobil uygulama internetsiz kullanır)
+capacitor.config.json   Mobil uygulama tanımı (kimlik, ad, renk); package.json Capacitor paketleri
+android/, ios/          Capacitor'ın Android Studio ve Xcode projeleri
+assets/                 Uygulama simgesi ve açılış ekranı kaynakları
 oyna.bat                Windows'ta tek tıkla çalıştırma
 tools/sim.js            Denge simülasyonu ve içerik kontrolü (Node ve tarayıcı)
 tools/test.html         Simülasyonun tarayıcı sayfası
